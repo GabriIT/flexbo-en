@@ -30,32 +30,39 @@ const values = [
 // Timeline data
 const timeline = [
   {
-    year: '2005',
-    title: 'Company Founded',
-    description: 'Started as a small workshop with a vision for quality packaging.'
-  },
-  {
-    year: '2011',
-    title: 'International Expansion',
-    description: 'Began serving clients outside our home country, establishing global partnerships.'
-  },
-  {
     year: '2012',
-    title: 'Sustainability Initiative',
-    description: 'Launched our eco-friendly product line, focusing on sustainable materials.'
+    title: 'Company Founded',
+    description: 'Started as a small clean room workshop with a vision for quality aseptic packaging relying on Italian packaging technology.'
   },
+  {
+    year: '2014',
+    title: 'International Expansion',
+    description: 'Serving mainly European clients, establishing global partnerships.'
+  },
+
   {
     year: '2015',
+    title: 'First Asian Giant Themo-Lamination machine',
+    description: 'Serving mainly European clients, establishing global partnerships.'
+  },
+
+  {
+    year: '2016',
+    title: 'Invention Patents and Sustainability Initiative',
+    description: 'Launched new patented inventions for eco-friendly solutions, focusing on sustainable materials.'
+  },
+  {
+    year: '2017',
     title: 'Modern Facility',
     description: 'Moved to a larger production facility with state-of-the-art equipment.'
   },
   {
-    year: '2016',
+    year: '2018',
     title: 'Three Invention Patents and Design Innovation Award',
     description: 'Recognized for excellence in packaging design and innovation.'
   },
   {
-    year: '2022',
+    year: '2025',
     title: 'Digital Transformation',
     description: 'Implemented digital design and production processes for greater efficiency.'
   }
@@ -83,7 +90,7 @@ const About = () => {
               About Us
             </h1>
             <p className="mt-4 text-lg text-gray-600">
-              We're dedicated to creating premium packaging solutions that secure products integrity in global logistics.
+              We're dedicated to creating B2B packaging solutions that secure products integrity in global logistics.
             </p>
           </motion.div>
         </div>
@@ -122,16 +129,21 @@ const About = () => {
                 Our Story
               </span>
               <h2 className="text-3xl font-bold text-gray-900">
-                Creating Premium Packaging Since 2005
+                Creating Premium Packaging Since 2012
               </h2>
               <p className="text-gray-600">
-                Flexbo Packaging was founded with a mission to provide exceptional packaging solutions that combine functionality with aesthetic appeal. Over the years, we've grown from a small workshop to a global packaging partner serving clients around the world.
+                Flexbo Packaging was founded with a mission to provide reliable, effective and environment-friendly 
+                packaging solutions. Over the years, we've developed new technologies becoming a global packaging partner serving clients around the world.
               </p>
               <p className="text-gray-600">
-                Our journey has been driven by innovation, quality, and a deep understanding of our clients' needs. We believe that packaging is not just a container but an essential part of the product experience and brand identity.
+                Our journey has been driven by innovation, quality, environment-consciousness. 
+                We secure that large and small packaging is a safe and
+                reliable tool for moving and store goods in a global economy.
               </p>
               <p className="text-gray-600">
-                Today, we continue to push the boundaries of packaging design, utilizing sustainable materials and cutting-edge technology to create solutions that are both beautiful and responsible.
+                Today, we continue to push the boundaries of packaging design and manufacturing,
+                utilizing sustainable materials and cutting-edge technology to create
+                performing and efficient solutions.
               </p>
             </motion.div>
           </div>

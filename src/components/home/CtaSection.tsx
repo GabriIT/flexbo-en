@@ -21,10 +21,11 @@ const CtaSection = () => {
           className="max-w-2xl mx-auto text-center"
         >
           <h2 className="text-3xl font-bold sm:text-4xl mb-6">
-            Ready to Elevate Your Brand Packaging?
+            Ready to secure your product for Global Logistics ?
           </h2>
           <p className="text-lg text-gray-300 mb-8">
-            Let's discuss how our premium packaging solutions can help your products stand out.
+            Let's discuss how our packaging solutions can secure long shelf-life, freshness, long-term storage without
+            temperature conditioning.
           </p>
           <Link
             to="/contact"
