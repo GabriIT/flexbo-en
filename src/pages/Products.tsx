@@ -6,92 +6,97 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const allProducts = [
   // Aseptic Bags
+ 
   {
     id: 'aseptic-bag-1',
-    title: 'Luxury Aseptic Bags',
-    category: 'Aseptic Bags',
-    image: 'https://images.unsplash.com/photo-1607083206968-13611e3d76db?q=80&w=2215&auto=format&fit=crop'
-  },
-  {
-    id: 'aseptic-bag-2',
-    title: 'Kraft Aseptic Bags',
+    title: 'Aseptic Bags',
     category: 'Aseptic Bags',
     image: 'https://images.unsplash.com/photo-1572196284554-4e321b0e7e0b?q=80&w=2074&auto=format&fit=crop'
   },
+
   {
-    id: 'aseptic-bag-3',
-    title: 'Custom Print Aseptic Bags',
+    id: 'aseptic-bag-2',
+    title: 'Brand-Name Aseptic Bags',
     category: 'Aseptic Bags',
     image: 'https://images.unsplash.com/photo-1605000797499-95a51c5269ae?q=80&w=2071&auto=format&fit=crop'
   },
   
   // Boxes
+  // {
+  //   id: 'box-1',
+  //   title: 'Premium Gift Boxes',
+  //   category: 'Boxes',
+  //   image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=2024&auto=format&fit=crop'
+  // },
+  // {
+  //   id: 'box-2',
+  //   title: 'Rigid Setup Boxes',
+  //   category: 'Boxes',
+  //   image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=1988&auto=format&fit=crop'
+  // },
+  
   {
-    id: 'box-1',
-    title: 'Premium Gift Boxes',
-    category: 'Boxes',
-    image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=2024&auto=format&fit=crop'
+    id: 'IBC-1',
+    title: 'IBC Bags',
+    category: 'IBC Containers',
+    image: '/images/IBC_bag.png'
+    
   },
+  
   {
     id: 'box-2',
-    title: 'Rigid Setup Boxes',
-    category: 'Boxes',
-    image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=1988&auto=format&fit=crop'
-  },
-  {
-    id: 'box-3',
-    title: 'Folding Carton Boxes',
-    category: 'Boxes',
+    title: 'Folding IBC Boxes',
+    category: 'IBC Containers',
     image: 'https://images.unsplash.com/photo-1531256379416-9f000e90aacc?q=80&w=2074&auto=format&fit=crop'
   },
   
   // Gift Packaging
+  // {
+  //   id: 'gift-1',
+  //   title: 'Luxury Gift Sets',
+  //   category: 'Gift Packaging',
+  //   image: 'https://images.unsplash.com/photo-1564144006388-615f376c3cb3?q=80&w=2070&auto=format&fit=crop'
+  // },
+  // {
+  //   id: 'gift-2',
+  //   title: 'Jewelry Packaging',
+  //   category: 'Gift Packaging',
+  //   image: 'https://images.unsplash.com/photo-1535632787350-4e68ef0ac584?q=80&w=2024&auto=format&fit=crop'
+  // },
   {
-    id: 'gift-1',
-    title: 'Luxury Gift Sets',
-    category: 'Gift Packaging',
-    image: 'https://images.unsplash.com/photo-1564144006388-615f376c3cb3?q=80&w=2070&auto=format&fit=crop'
-  },
-  {
-    id: 'gift-2',
-    title: 'Jewelry Packaging',
-    category: 'Gift Packaging',
-    image: 'https://images.unsplash.com/photo-1535632787350-4e68ef0ac584?q=80&w=2024&auto=format&fit=crop'
-  },
-  {
-    id: 'gift-3',
+    id: 'gift',
     title: 'Wine Packaging',
-    category: 'Gift Packaging',
+    category: 'BIB',
     image: 'https://images.unsplash.com/photo-1566060475410-1153add6c698?q=80&w=2071&auto=format&fit=crop'
   },
   
   // Custom Packaging
   {
-    id: 'custom-1',
-    title: 'Retail Packaging',
-    category: 'Custom Packaging',
+    id: 'Thermo-Laminated Film',
+    title: 'Thermo-Laminated Film',
+    category: 'Thermo-Laminated Film',
     image: 'https://images.unsplash.com/photo-1589782182703-2aaa69037b5b?q=80&w=2074&auto=format&fit=crop'
   },
-  {
-    id: 'custom-2',
-    title: 'Cosmetic Packaging',
-    category: 'Custom Packaging',
-    image: 'https://images.unsplash.com/photo-1619116712711-20cb2891b211?q=80&w=1974&auto=format&fit=crop'
-  },
-  {
-    id: 'custom-3',
-    title: 'Food Packaging',
-    category: 'Custom Packaging',
-    image: 'https://images.unsplash.com/photo-1603033156166-2ae22eb2b7e2?q=80&w=2069&auto=format&fit=crop'
-  }
+//   {
+//     id: 'custom-2',
+//     title: 'Cosmetic Packaging',
+//     category: 'Custom Packaging',
+//     image: 'https://images.unsplash.com/photo-1619116712711-20cb2891b211?q=80&w=1974&auto=format&fit=crop'
+//   },
+//   {
+//     id: 'custom-3',
+//     title: 'Food Packaging',
+//     category: 'Custom Packaging',
+//     image: 'https://images.unsplash.com/photo-1603033156166-2ae22eb2b7e2?q=80&w=2069&auto=format&fit=crop'
+//   }
 ];
 
 const categories = [
   { value: 'all', label: 'All Products' },
   { value: 'Aseptic Bags', label: 'Aseptic Bags' },
-  { value: 'Boxes', label: 'Boxes' },
-  { value: 'BIB', label: 'Bag-In_Box' },
-  { value: 'Custom Packaging', label: 'Custom Packaging' }
+  { value: 'IBC Containers', label: 'IBC Containers' },
+  { value: 'BIB', label: 'Bag-In-Box' },
+  { value: 'Thermo-Laminated Film', label: 'Thermo-Laminated Film' }
 ];
 
 const Products = () => {

@@ -19,7 +19,7 @@ const AboutSection = () => {
               About Us
             </span>
             <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">
-              Manufacturing Aseptic Packaging Since 2011            </h2>
+              Manufacturing Aseptic Packaging Since 2012            </h2>
             <p className="text-lg text-gray-600">
               At Flexbo Packaging, we combine traditional craftsmanship with modern technology to create packaging solutions that stand out. Our commitment to quality and sustainability drives every decision we make.
             </p>
