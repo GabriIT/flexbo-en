@@ -23,3 +23,10 @@ This project is built with .
 - React
 - shadcn-ui
 - Tailwind CSS
+
+---
+
+Environments
+-threads_service.py uvicorn -> (cv) python threads_service.py
+-bridge.py -> base
+-llm_app.py -> docling
