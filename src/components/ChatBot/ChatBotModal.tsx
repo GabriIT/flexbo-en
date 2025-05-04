@@ -18,17 +18,17 @@ type LLMType = 'llama' | 'openai' | 'claude';
 
 
 
-// 1) create a thread
-const createRes = await fetch(`${process.env.THREADS_BASE_URL}/thread`, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ content: inputValue })
-});
-const { id: threadId } = await createRes.json();
+// // 1) create a thread
+// const createRes = await fetch(`${process.env.THREADS_BASE_URL}/thread`, {
+//   method: "POST",
+//   headers: { "Content-Type": "application/json" },
+//   body: JSON.stringify({ content: inputValue })
+// });
+// const { id: threadId } = await createRes.json();
 
-// 2) your bridge will pick it up, call your LLM, post the answer,
-//    and then you can poll GET `/thread/${threadId}/prompt/messages`
-//    to retrieve the bot’s reply and render it.
+// // 2) your bridge will pick it up, call your LLM, post the answer,
+// //    and then you can poll GET `/thread/${threadId}/prompt/messages`
+// //    to retrieve the bot’s reply and render it.
 
 
 
