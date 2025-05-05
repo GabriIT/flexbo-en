@@ -1,0 +1,2 @@
+API_KEY=secret
+POSTGRES_URL="postgresql://postgres@<ip>:<port>/promptq?sslmode=disable"

@@ -16,27 +16,6 @@ interface Message {
 // Define LLM types
 type LLMType = 'llama' | 'openai' | 'claude';
 
-
-
-// 1) create a thread
-const createRes = await fetch(`${process.env.THREADS_BASE_URL}/thread`, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ content: inputValue })
-});
-const { id: threadId } = await createRes.json();
-
-// 2) your bridge will pick it up, call your LLM, post the answer,
-//    and then you can poll GET `/thread/${threadId}/prompt/messages`
-//    to retrieve the bot’s reply and render it.
-
-
-
-
-
-
-
-
 // Mock function to simulate LLM response
 const generateLLMResponse = async (
   message: string, 
@@ -65,29 +44,8 @@ const tabContent = {
     "Tell me about examples of aseptic packaging solutions",
     "Do you have custom packaging solutions?",
     "Which kind of spouts are used in IBC solutions ?"
-  ],
-  solutions: [
-    "How can you help with environment-friendly packaging ?",
-    "What custom branding options do you offer?",
-    "Can you supply laminated film without glue or tie layer ?",
-    "What regions in the world can you supply ?"
-  ],
-  certifications: [
-    "What quality certifications do you have?",
-    "Are your products FDA approved?",
-    "Do you have BRC and ISO certification?"    
-  ],
-  quality: [
-    "What is the self-life of the products packed in your aseptic bags ?",
-    "How do you ensure product quality?",
-    "What materials do you use in your packaging?",
-    "What is your quality control process?"    
-  ],
-  service: [
-    "What's your typical response time?",
-    "Do you offer rush delivery options?",
-    "How can I place a bulk order?"   
   ]
+ 
 };
 
 interface ChatBotModalProps {
