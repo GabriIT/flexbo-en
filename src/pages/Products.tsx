@@ -18,7 +18,7 @@ const allProducts = [
     id: 'aseptic-bag-2',
     title: 'Brand-Name Aseptic Bags',
     category: 'Aseptic Bags',
-    image: 'https://images.unsplash.com/photo-1605000797499-95a51c5269ae?q=80&w=2071&auto=format&fit=crop'
+    image: '/images/aseptic_bag14.jpg'
   },
   
   // Boxes
