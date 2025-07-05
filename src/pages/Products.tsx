@@ -39,7 +39,7 @@ const allProducts = [
     id: 'IBC-1',
     title: 'IBC Bags',
     category: 'IBC Containers',
-    image: '/media/IBC_bag.png'
+    image: '/media/IBC_bag23.png'
     
   },
   
