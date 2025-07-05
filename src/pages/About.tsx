@@ -107,11 +107,24 @@ const About = () => {
               viewport={{ once: true }}
               className="relative"
             >
-              <img 
+              <video
+                className="w-full h-full object-cover"
+                autoPlay       // play immediately
+                loop           // repeat forever
+                muted          // required for autoplay on most browsers
+                playsInline    // prevent iOS full-screen takeover
+              >
+                <source src="/media/Flexbo_Introduction_EN.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>  
+
+
+
+              {/* <img 
                 src="https://images.unsplash.com/photo-1605000798985-4c28c779cc2e?q=80&w=2071&auto=format&fit=crop" 
                 alt="Our Workshop" 
                 className="rounded-lg shadow-lg w-full"
-              />
+              /> */}
               <div className="absolute -bottom-6 -right-6 bg-white p-4 rounded-lg shadow-lg hidden md:block">
                 <Award size={40} className="text-primary" />
                 <p className="mt-2 font-medium text-sm text-gray-900">Excellence in Packaging</p>

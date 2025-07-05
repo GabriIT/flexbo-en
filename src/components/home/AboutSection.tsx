@@ -42,7 +42,7 @@ const AboutSection = () => {
             viewport={{ once: true }}
             className="relative aspect-video lg:aspect-square overflow-hidden rounded-lg"
           >
-            <video
+            {/* <video
                 className="w-full h-full object-cover"
                 autoPlay       // play immediately
                 loop           // repeat forever
@@ -51,7 +51,7 @@ const AboutSection = () => {
             >
                 <source src="/media/Flexbo_Introduction_EN.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
-            </video>
+            </video> */}
 
 
 
