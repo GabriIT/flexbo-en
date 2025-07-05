@@ -43,6 +43,16 @@ const featuredProducts = [
     src: '/media/mPet_TL.jpg',
     mediaType: 'image',
   },
+
+  {
+    id: 'Flexbo Intro Video',
+    title: 'Flexbo Presentation',
+    category: 'Presentation',
+    src: '/media/Flexbo_Introduction_EN.mp4',
+    mediaType: 'video', // ③ tell the card it’s a video
+  },
+
+
 ];
 
 const FeaturedProducts = () => (
