@@ -9,19 +9,20 @@ export interface ProductCardProps {
   id: string;
   title: string;
   category: string;
-  src: string;        // file path for either image or video
+  src: string;           // image or video file
   mediaType: MediaType;
+  poster?: string;       // optional poster for videos
 }
 
-/**
- * <ProductCard>
- * Renders either an <img> or a <video> element based on `mediaType`.
- */
-const ProductCard = ({ id, title, category, src, mediaType }: ProductCardProps) => {
+const ProductCard = ({
+  id,
+  title,
+  category,
+  src,
+  mediaType,
+  poster,           // <- new, optional
+}: ProductCardProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
-
-  /* Common handler for image or video load */
-  const handleLoaded = () => setIsLoaded(true);
 
   return (
     <Link to={`/products/${id}`} className="block">
@@ -31,14 +32,20 @@ const ProductCard = ({ id, title, category, src, mediaType }: ProductCardProps) 
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35 }}
       >
-        <div className="image-container aspect-square overflow-hidden bg-black">
+        {/* media wrapper */}
+        <div className="image-container aspect-square overflow-hidden bg-black video-card">
           {mediaType === "video" ? (
             <video
               className={`w-full h-full object-cover transition-opacity duration-700 ${
                 isLoaded ? "opacity-100" : "opacity-0"
               }`}
+              autoPlay       // decode first frame immediately
+              loop
+              muted
+              playsInline
               controls
-              onLoadedData={handleLoaded}   // video equivalent of onLoad
+              poster={poster}                     // shows instantly
+              onLoadedMetadata={() => setIsLoaded(true)} // fires early
             >
               <source src={src} type="video/mp4" />
               Your browser does not support the video tag.
@@ -47,7 +54,7 @@ const ProductCard = ({ id, title, category, src, mediaType }: ProductCardProps) 
             <img
               src={src}
               alt={title}
-              onLoad={handleLoaded}
+              onLoad={() => setIsLoaded(true)}
               className={`w-full h-full object-cover transition-opacity duration-700 ${
                 isLoaded ? "opacity-100" : "opacity-0"
               }`}
@@ -56,7 +63,7 @@ const ProductCard = ({ id, title, category, src, mediaType }: ProductCardProps) 
           )}
         </div>
 
-        {/* Text area */}
+        {/* text */}
         <div className="p-4">
           <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
             {category}
@@ -70,7 +77,6 @@ const ProductCard = ({ id, title, category, src, mediaType }: ProductCardProps) 
   );
 };
 
-/* Skeleton (unchanged) */
 export const ProductCardSkeleton = () => (
   <div className="rounded-lg overflow-hidden bg-gray-100 animate-pulse">
     <div className="aspect-square bg-gray-200"></div>
