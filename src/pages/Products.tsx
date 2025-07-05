@@ -11,14 +11,14 @@ const allProducts = [
     id: 'aseptic-bag-1',
     title: 'Aseptic Bags',
     category: 'Aseptic Bags',
-    image: 'https://images.unsplash.com/photo-1572196284554-4e321b0e7e0b?q=80&w=2074&auto=format&fit=crop'
+    image: '/media/aseptic_bag14.jpg' 
   },
 
   {
     id: 'aseptic-bag-2',
-    title: 'Brand-Name Aseptic Bags',
+    title: 'High Barrier Aseptic Bags',
     category: 'Aseptic Bags',
-    image: '/media/aseptic_bag14.jpg'
+    image: '/media/HB_bags24.jpg'
   },
   
   // Boxes
@@ -39,15 +39,15 @@ const allProducts = [
     id: 'IBC-1',
     title: 'IBC Bags',
     category: 'IBC Containers',
-    image: '/media/IBC_bag23.png'
+    image: '/media/IBC_bag23.jpg'
     
   },
   
   {
     id: 'box-2',
-    title: 'Folding IBC Boxes',
-    category: 'IBC Containers',
-    image: 'https://images.unsplash.com/photo-1531256379416-9f000e90aacc?q=80&w=2074&auto=format&fit=crop'
+    title: 'Industrial Bulk Containers',
+    category: 'Industrial Bulk Containers IBC Valves',
+    image: '/media/IBC_Valves.jpg'
   },
   
   // Gift Packaging
@@ -65,9 +65,9 @@ const allProducts = [
   // },
   {
     id: 'gift',
-    title: 'Wine Packaging',
+    title: 'Wine/Oil/Diary Packaging',
     category: 'BIB',
-    image: '/media/BIB_diary.jpg'
+    image: '/media/wine_v.jpg'
   },
   
   // Custom Packaging
@@ -75,7 +75,7 @@ const allProducts = [
     id: 'Thermo-Laminated Film',
     title: 'Thermo-Laminated Film',
     category: 'Thermo-Laminated Film',
-    image: 'https://images.unsplash.com/photo-1589782182703-2aaa69037b5b?q=80&w=2074&auto=format&fit=crop'
+    image: '/media/mPet_TL.jpg'
   },
 //   {
 //     id: 'custom-2',

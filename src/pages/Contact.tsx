@@ -87,13 +87,13 @@ const Contact = () => {
                 <ContactItem 
                   icon={<MapPin size={24} />} 
                   title="Our Location" 
-                  details={["123 Packaging Street", "City, State 12345", "China"]} 
+                  details={["Balitai Industrial Park, Jianshi YiZhi Road,4", "Tianjin", "China"]} 
                 />
                 
                 <ContactItem 
                   icon={<Phone size={24} />} 
                   title="Phone" 
-                  details={["+1 (234) 567-8900", "+1 (234) 567-8901"]} 
+                  details={["+86 (22) 2872 0595"]} 
                 />
                 
                 <ContactItem 
@@ -236,7 +236,7 @@ const Contact = () => {
               Our Location
             </h2>
             <p className="mt-4 text-gray-600">
-              Visit our headquarters and showroom to see our premium packaging solutions in person.
+              Visit our headquarter and showroom to see our premium packaging solutions in person.
             </p>
           </motion.div>
 
