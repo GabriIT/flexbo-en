@@ -87,7 +87,7 @@ const Contact = () => {
                 <ContactItem 
                   icon={<MapPin size={24} />} 
                   title="Our Location" 
-                  details={["123 Packaging Street", "City, State 12345", "Country"]} 
+                  details={["123 Packaging Street", "City, State 12345", "China"]} 
                 />
                 
                 <ContactItem 
