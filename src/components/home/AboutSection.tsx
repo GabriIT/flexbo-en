@@ -42,11 +42,24 @@ const AboutSection = () => {
             viewport={{ once: true }}
             className="relative aspect-video lg:aspect-square overflow-hidden rounded-lg"
           >
-            <img
+            <video
+                className="w-full h-full object-cover"
+                autoPlay       // play immediately
+                loop           // repeat forever
+                muted          // required for autoplay on most browsers
+                playsInline    // prevent iOS full-screen takeover
+            >
+                <source src="/media/Flexbo_Introduction_EN.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+            </video>
+
+
+
+            {/* <img
               src="https://images.unsplash.com/photo-1628566880119-0a035ee1ae72?q=80&w=2068&auto=format&fit=crop"
               alt="Our Workshop"
               className="w-full h-full object-cover"
-            />
+            /> */}
           </motion.div>
         </div>
       </div>

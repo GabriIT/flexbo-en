@@ -26,6 +26,16 @@ const featuredProducts = [
     src: '/media/HB_bags24.jpg',
     mediaType: 'image',
   },
+
+  {
+    id: 'BIB',
+    title: 'More than 40 valves types',
+    category: 'Specialty',
+    src: '/media/most_common_valves.jpg',
+    mediaType: 'image',
+  },
+
+  
   {
     id: 'Solvent-Free Laminated Film',
     title: 'Environment-friendly solutions',
