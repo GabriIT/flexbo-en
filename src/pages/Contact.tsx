@@ -92,8 +92,8 @@ const Contact = () => {
                 
                 <ContactItem 
                   icon={<Phone size={24} />} 
-                  title="Phone" 
-                  details={["+86 (22) 2872 0595"]} 
+                  title="Phone       China  /     Italy" 
+                  details={["+86 (22) 2872 0595", "+39 (335) 80 87 179" ]} 
                 />
                 
                 <ContactItem 

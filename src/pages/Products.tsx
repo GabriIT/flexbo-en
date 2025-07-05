@@ -16,107 +16,75 @@ export interface Product {
 }
 
 
-const allProducts = [
-  // Aseptic Bags
- 
+// Products.tsx  – top of the file
+const allProducts: Product[] = [
+  // ─── Aseptic Bags ────────────────────────────────────────────
   {
     id: 'aseptic-bag-1',
     title: 'Aseptic Bags',
     category: 'Aseptic Bags',
-    image: '/media/aseptic_bag14.jpg' 
+    src: '/media/aseptic_bag14.jpg',   // ← rename image→src
+    mediaType: 'image',               // ← tell the card it’s an image
   },
-
   {
     id: 'aseptic-bag-2',
     title: 'High Barrier Aseptic Bags',
     category: 'Aseptic Bags',
-    image: '/media/CustomMadeBags20.jpg'
+    src: '/media/CustomMadeBags20.jpg',
+    mediaType: 'image',
   },
-  
-  // Boxes
-  // {
-  //   id: 'box-1',
-  //   title: 'Premium Gift Boxes',
-  //   category: 'Boxes',
-  //   image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=2024&auto=format&fit=crop'
-  // },
-  // {
-  //   id: 'box-2',
-  //   title: 'Rigid Setup Boxes',
-  //   category: 'Boxes',
-  //   image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=1988&auto=format&fit=crop'
-  // },
-  
+
+  // ─── IBC ─────────────────────────────────────────────────────
   {
     id: 'IBC-1',
     title: 'IBC Bags',
     category: 'IBC Containers',
-    image: '/media/IBC_bag23.jpg'
-    
+    src: '/media/IBC_bag23.jpg',
+    mediaType: 'image',
   },
-  
   {
-    id: 'box-2',
+    id: 'IBC-2',
     title: 'Industrial Bulk Containers',
     category: 'Industrial Bulk Containers IBC Valves',
-    image: '/media/IBC_Valves.jpg'
+    src: '/media/IBC_Valves.jpg',
+    mediaType: 'image',
   },
-  
-  // Gift Packaging
-  // {
-  //   id: 'gift-1',
-  //   title: 'Luxury Gift Sets',
-  //   category: 'Gift Packaging',
-  //   image: 'https://images.unsplash.com/photo-1564144006388-615f376c3cb3?q=80&w=2070&auto=format&fit=crop'
-  // },
-  // {
-  //   id: 'gift-2',
-  //   title: 'Jewelry Packaging',
-  //   category: 'Gift Packaging',
-  //   image: 'https://images.unsplash.com/photo-1535632787350-4e68ef0ac584?q=80&w=2024&auto=format&fit=crop'
-  // },
+
+  // ─── Bag-in-Box ──────────────────────────────────────────────
   {
     id: 'gift',
-    title: 'Wine/Oil/Diary Packaging',
+    title: 'Wine/Oil/Dairy Packaging',
     category: 'BIB',
-    image: '/media/HB_bags24.jpg'
+    src: '/media/HB_bags24.jpg',
+    mediaType: 'image',
   },
-  
-  // Custom Packaging
+
+  // ─── Film ────────────────────────────────────────────────────
   {
     id: 'Thermo-Laminated Film',
     title: 'Thermo-Laminated Film',
     category: 'Thermo-Laminated Film',
-    image: '/media/mPet_TL.jpg'
+    src: '/media/mPet_TL.jpg',
+    mediaType: 'image',
   },
-//   {
-//     id: 'custom-2',
-//     title: 'Cosmetic Packaging',
-//     category: 'Custom Packaging',
-//     image: 'https://images.unsplash.com/photo-1619116712711-20cb2891b211?q=80&w=1974&auto=format&fit=crop'
-//   },
-//   {
-//     id: 'custom-3',
-//     title: 'Food Packaging',
-//     category: 'Custom Packaging',
-//     image: 'https://images.unsplash.com/photo-1603033156166-2ae22eb2b7e2?q=80&w=2069&auto=format&fit=crop'
-//   }
 
- // ── NEW: videos ───────────────────────────────────────────────
- {
-  id: 'video-lid',
-  title: 'Install: Open / Close Lid',
-  category: 'VIDEO Istruzione Bocchello Apri-Chiudi',      // shows under the same tab
-  src: '/media/Install_Open_Close_Lid.mp4',
-  mediaType: 'video',
-},
-{
-  id: 'video-tap-valve',
-  title: 'Install Tap Valve',
-  category: 'VIDEO Istruzione Installazione Rubinetto',
-  src: '/media/Install_tap_valve.mp4',
-  mediaType: 'video',
-},
+  // ─── Videos (already correct) ───────────────────────────────
+  {
+    id: 'video-lid',
+    title: 'Install: Open / Close Lid',
+    category: 'VIDEO Istruzione Bocchello Apri-Chiudi',
+    src: '/media/Install_Open_Close_Lid.mp4',
+    mediaType: 'video',
+  },
+  {
+    id: 'video-tap-valve',
+    title: 'Install Tap Valve',
+    category: 'VIDEO Istruzione Installazione Rubinetto',
+    src: '/media/Install_tap_valve.mp4',
+    mediaType: 'video',
+  },
+];
+
 
 
 ];
