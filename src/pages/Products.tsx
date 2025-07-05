@@ -86,9 +86,6 @@ const allProducts: Product[] = [
 ];
 
 
-
-];
-
 const categories = [
   { value: 'all', label: 'All Products' },
   { value: 'Aseptic Bags', label: 'Aseptic Bags' },
