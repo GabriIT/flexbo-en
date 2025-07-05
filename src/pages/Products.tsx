@@ -18,7 +18,7 @@ const allProducts = [
     id: 'aseptic-bag-2',
     title: 'Brand-Name Aseptic Bags',
     category: 'Aseptic Bags',
-    image: '/images/aseptic_bag14.jpg'
+    image: '/media/aseptic_bag14.jpg'
   },
   
   // Boxes
@@ -39,7 +39,7 @@ const allProducts = [
     id: 'IBC-1',
     title: 'IBC Bags',
     category: 'IBC Containers',
-    image: '/images/IBC_bag.png'
+    image: '/media/IBC_bag.png'
     
   },
   
@@ -67,7 +67,7 @@ const allProducts = [
     id: 'gift',
     title: 'Wine Packaging',
     category: 'BIB',
-    image: 'https://images.unsplash.com/photo-1566060475410-1153add6c698?q=80&w=2071&auto=format&fit=crop'
+    image: '/media/BIB_diary.jpg'
   },
   
   // Custom Packaging
