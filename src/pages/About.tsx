@@ -43,7 +43,7 @@ const timeline = [
   {
     year: '2015',
     title: 'First Asian Giant Themo-Lamination machine',
-    description: 'Serving mainly European clients, establishing global partnerships.'
+    description: 'Highest Productivity through Patented Technology, establishing global partnerships.'
   },
 
   {
@@ -54,17 +54,17 @@ const timeline = [
   {
     year: '2017',
     title: 'Modern Facility',
-    description: 'Moved to a larger production facility with state-of-the-art equipment.'
+    description: 'Moved to a larger production facility with triple capacity and state-of-the-art equipment.'
   },
   {
     year: '2018',
-    title: 'Three Invention Patents and Design Innovation Award',
+    title: 'Developing Three Invention Patents and Design Innovation Awards',
     description: 'Recognized for excellence in packaging design and innovation.'
   },
   {
     year: '2025',
     title: 'Digital Transformation',
-    description: 'Implemented digital design and production processes for greater efficiency.'
+    description: 'Implemented digital management of production processes for greater efficiency.'
   }
 ];
 

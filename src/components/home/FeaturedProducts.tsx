@@ -10,26 +10,26 @@ const featuredProducts = [
     id: 'aseptic-bags',
     title: 'Premium Aseptic Bags',
     category: 'Bags',
-    image: 'https://images.unsplash.com/photo-1607083206968-13611e3d76db?q=80&w=2215&auto=format&fit=crop'
+    image: '/media/aseptic_bag14.jpg' 
   },
   {
-    id: 'carton or IBC Containers',
-    title: 'Luxury Gift Boxes',
-    category: 'Boxes',
-    image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=2024&auto=format&fit=crop'
+    id: 'Carton or IBC Containers',
+    title: 'Logistics IBC Containers',
+    category: 'IBC',
+    image: '/media/IBC_Valves.jpg'
   },
   {
-    id: 'jewelry-packaging',
-    title: 'Jewelry Packaging',
+    id: 'BIB',
+    title: 'BIB',
     category: 'Specialty',
-    image: 'https://images.unsplash.com/photo-1535632787350-4e68ef0ac584?q=80&w=2024&auto=format&fit=crop'
+    image: '/media/HB_bags24.jpg'
   },
   {
-    id: 'retail-packaging',
-    title: 'Retail Packaging Solutions',
-    category: 'Retail',
-    image: 'https://images.unsplash.com/photo-1589782182703-2aaa69037b5b?q=80&w=2074&auto=format&fit=crop'
-  }
+    id: 'Solvent-Free Laminated Film',
+    title: 'Environment-friendly solutions',
+    category: 'Film',
+    image: '/media/mPet_TL.jpg' 
+  },
 ];
 
 const FeaturedProducts = () => {
@@ -63,7 +63,7 @@ const FeaturedProducts = () => {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <ProductCard {...product} />
+              <ProductCard src={''} mediaType={'video'} {...product} />
             </motion.div>
           ))}
         </div>

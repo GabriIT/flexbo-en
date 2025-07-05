@@ -4,6 +4,18 @@ import { motion } from 'framer-motion';
 import ProductCard from '@/components/ProductCard';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+// src/types/product.ts       (or put it at the top of Products.tsx)
+export type MediaType = 'image' | 'video';
+
+export interface Product {
+  id: string;
+  title: string;
+  category: string;
+  src: string;          // image or video file
+  mediaType: MediaType; // tells <ProductCard> how to render it
+}
+
+
 const allProducts = [
   // Aseptic Bags
  
@@ -18,7 +30,7 @@ const allProducts = [
     id: 'aseptic-bag-2',
     title: 'High Barrier Aseptic Bags',
     category: 'Aseptic Bags',
-    image: '/media/HB_bags24.jpg'
+    image: '/media/CustomMadeBags20.jpg'
   },
   
   // Boxes
@@ -67,7 +79,7 @@ const allProducts = [
     id: 'gift',
     title: 'Wine/Oil/Diary Packaging',
     category: 'BIB',
-    image: '/media/wine_v.jpg'
+    image: '/media/HB_bags24.jpg'
   },
   
   // Custom Packaging
@@ -89,6 +101,24 @@ const allProducts = [
 //     category: 'Custom Packaging',
 //     image: 'https://images.unsplash.com/photo-1603033156166-2ae22eb2b7e2?q=80&w=2069&auto=format&fit=crop'
 //   }
+
+ // ── NEW: videos ───────────────────────────────────────────────
+ {
+  id: 'video-lid',
+  title: 'Install: Open / Close Lid',
+  category: 'VIDEO Istruzione Bocchello Apri-Chiudi',      // shows under the same tab
+  src: '/media/Install_Open_Close_Lid.mp4',
+  mediaType: 'video',
+},
+{
+  id: 'video-tap-valve',
+  title: 'Install Tap Valve',
+  category: 'VIDEO Istruzione Installazione Rubinetto',
+  src: '/media/Install_tap_valve.mp4',
+  mediaType: 'video',
+},
+
+
 ];
 
 const categories = [
