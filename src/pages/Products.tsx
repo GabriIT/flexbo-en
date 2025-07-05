@@ -13,6 +13,8 @@ export interface Product {
   category: string;
   src: string;          // image or video file
   mediaType: MediaType; // tells <ProductCard> how to render it
+  poster?: string;      // ← add this (optional = ?)
+
 }
 
 
@@ -69,13 +71,24 @@ const allProducts: Product[] = [
   },
 
   // ─── Videos (already correct) ───────────────────────────────
+  // {
+  //   id: 'video-lid',
+  //   title: 'Install: Open / Close Lid',
+  //   category: 'VIDEO Istruzione Bocchello Apri-Chiudi',
+  //   src: '/media/Install_Open_Close_Lid.mp4',
+  //   mediaType: 'video',
+  // },
+
+
   {
     id: 'video-lid',
     title: 'Install: Open / Close Lid',
-    category: 'VIDEO Istruzione Bocchello Apri-Chiudi',
+    category: 'Videos',
     src: '/media/Install_Open_Close_Lid.mp4',
+    poster: '/media/Install_Open_Close_Lid.jpg',   // <- quick thumbnail
     mediaType: 'video',
   },
+
   {
     id: 'video-tap-valve',
     title: 'Install Tap Valve',

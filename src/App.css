@@ -40,3 +40,23 @@
 .read-the-docs {
   color: #888;
 }
+
+/* ─────────────────────────────────────────────
+   Video zoom when playing or keyboard-focused
+   ──────────────────────────────────────────── */
+   .video-card video {
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .video-card video:playing,
+  .video-card video:focus-visible {
+    transform: scale(1.05);        /* slightly larger */
+  }
+  
+  @media (min-width: 1024px) {      /* bigger zoom on large screens */
+    .video-card video:playing,
+    .video-card video:focus-visible {
+      transform: scale(1.1);
+    }
+  }
+  

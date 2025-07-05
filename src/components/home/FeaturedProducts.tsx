@@ -44,14 +44,14 @@ const featuredProducts = [
     mediaType: 'image',
   },
 
+  
   {
     id: 'Flexbo Intro Video',
     title: 'Flexbo Presentation',
-    category: 'Presentation',
+    category: 'Videos',
     src: '/media/Flexbo_Introduction_EN.mp4',
-    mediaType: 'video', // ③ tell the card it’s a video
-  },
-
+    mediaType: 'video', 
+  }
 
 ];
 
