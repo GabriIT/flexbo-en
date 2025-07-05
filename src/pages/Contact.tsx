@@ -99,7 +99,7 @@ const Contact = () => {
                 <ContactItem 
                   icon={<Mail size={24} />} 
                   title="Email" 
-                  details={["info@flexbopackaging.com", "sales@flexbopackaging.com"]} 
+                  details={["info@flexbo.com.cn", "sales@flexbo.com.cn"]} 
                 />
               </div>
 

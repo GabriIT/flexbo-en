@@ -49,7 +49,7 @@ const timeline = [
   {
     year: '2016',
     title: 'Invention Patents and Sustainability Initiative',
-    description: 'Launched new patented inventions for eco-friendly solutions, focusing on sustainable materials.'
+    description: 'Launched five new patented inventions for eco-friendly solutions, focusing on sustainable materials.'
   },
   {
     year: '2017',
