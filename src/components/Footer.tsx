@@ -38,9 +38,9 @@ const Footer = () => {
             <h3 className="text-lg font-semibold">Products</h3>
             <nav className="flex flex-col space-y-2">
               <FooterLink to="/products/BIB" label="BIB" />
-              <FooterLink to="/products/aseptic" label="Aseptic Bags" />
+              <FooterLink to="/products/aseptic-packaging" label="Aseptic Bags" />
               <FooterLink to="/products/ibc-packaging" label="IBC Packaging" />
-              <FooterLink to="/products/custom-packaging" label="Custom Packaging" />
+              <FooterLink to="/products/high-barrier-laminates" label="Custom Packaging" />
             </nav>
           </div>
 

@@ -9,7 +9,7 @@ const products = [
   {
     id: 'BIB',
     title: 'Premium Barrier Bags',
-    category: 'BIB',
+    category: 'BIB bags',
     price: 'Euro 0.50 - 4.00',
     minOrder: '50 units',
     description: 'Our premium aseptic BIB bags are manufactured through automated processing, full Quality tracking through AI technology.',
@@ -26,7 +26,7 @@ const products = [
     ]
   },
   {
-    id: 'ibc-packaging',
+    id: 'aseptice-packaging',
     title: 'Aseptic Bags',
     category: 'Aseptic Bags',
     price: 'Euro 1.20 - 8.00',
