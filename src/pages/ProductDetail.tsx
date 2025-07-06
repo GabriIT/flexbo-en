@@ -26,7 +26,7 @@ const products = [
     ]
   },
   {
-    id: 'Aseptic Bags',
+    id: 'ibc-packaging',
     title: 'Aseptic Bags',
     category: 'Aseptic Bags',
     price: 'Euro 1.20 - 8.00',
@@ -64,22 +64,21 @@ const products = [
     ]
   },
   {
-    id: 'retail-packaging',
-    title: 'Retail Packaging Solutions',
-    category: 'Retail',
+    id: 'high-barrier-laminates',
+    title: 'Wide Thermo-laminated high barrier film',
+    category: 'Laminated Film',
     price: 'Custom quote',
-    minOrder: '1,000 units',
-    description: 'Comprehensive retail packaging solutions designed to protect products, enhance shelf presence, and strengthen brand identity in competitive retail environments.',
+    minOrder: '1,000 meters',
+    description: 'Custom-made Thermo-lamination machine 2400 mm wide, with high barrier properties for long-term storage of food and chemicals.',
     features: [
-      'Point-of-sale display options',
-      'Shelf-ready packaging',
-      'Hang tags and header cards',
-      'Blister packs and clamshells'
+      'Customized solutions for different barrier, thickeness and technical film structures',
+      'Eco-friendly processing and materials',
+      'Suitable for Food, Chemicals, Electronics applications',
+      'Fully-automated and Tracked manufcaturing process'
     ],
     images: [
-      'https://images.unsplash.com/photo-1589782182703-2aaa69037b5b?q=80&w=2074&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1543512214-318c7553f230?q=80&w=2071&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1628566340883-58b425f979a3?q=80&w=2071&auto=format&fit=crop'
+      '/media/mPet_TL.jpg',
+            
     ]
   }
 ];
