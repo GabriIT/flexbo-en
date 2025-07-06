@@ -7,60 +7,60 @@ import { ChevronRight, Shield, Zap, RefreshCw, Package } from 'lucide-react';
 // Sample products data (in a real app, this would be fetched from an API)
 const products = [
   {
-    id: 'paper-bags',
-    title: 'Premium Paper Bags',
-    category: 'Bags',
-    price: '$0.50 - $2.00',
-    minOrder: '1,000 units',
-    description: 'Our premium paper bags are crafted from high-quality materials, offering durability and elegance. Perfect for retail, gifting, or promotional purposes.',
+    id: 'BIB',
+    title: 'Premium Barrier Bags',
+    category: 'BIB',
+    price: 'Euro 0.50 - 4.00',
+    minOrder: '50 units',
+    description: 'Our premium aseptic BIB bags are manufactured through automated processing, full Quality tracking through AI technology.',
     features: [
-      'Custom sizes and designs',
+      'Sizes 1 Lt - 25 Lt with custom sizes and designs',
       'Eco-friendly materials',
-      'Various handle options',
-      'Full-color printing'
+      'Various spouts options',
+      'Color printing optional'
     ],
     images: [
-      'https://images.unsplash.com/photo-1607083206968-13611e3d76db?q=80&w=2215&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?q=80&w=2069&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1606293926075-69a00c1e652f?q=80&w=2071&auto=format&fit=crop'
+      '/media/HB_bags24.jpg',
+      '/media/CustomMadeBags20.jpg',     
+      '/media/diary_valves.jpg'
     ]
   },
   {
-    id: 'gift-boxes',
-    title: 'Luxury Gift Boxes',
-    category: 'Boxes',
-    price: '$1.20 - $5.00',
-    minOrder: '500 units',
-    description: 'Elegant gift boxes designed to enhance the presentation of premium products. Available in various styles, sizes, and finishing options.',
+    id: 'Aseptic Bags',
+    title: 'Aseptic Bags',
+    category: 'Aseptic Bags',
+    price: 'Euro 1.20 - 8.00',
+    minOrder: '2000 units',
+    description: 'Long-term storage of liquid or high-viscosity foods or chemicals concentrates. Available in various sizes, and finishing options.',
     features: [
-      'Premium cardboard construction',
-      'Custom inserts and padding',
-      'Magnetic closure options',
-      'Embossing and foil stamping available'
+      'Sizes 50 Lt - 220 Lt with custom sizes and designs',
+      'Eco-friendly materials',
+      'Various spouts options',
+      'Color printing optional'
     ],
     images: [
-      'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=2024&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1608755728617-aefab37d2edd?q=80&w=2070&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1544829832-c8047d6b9d26?q=80&w=2072&auto=format&fit=crop'
+     '/media/aseptic_bag21.jpg',
+      '/media/aseptic_bag14.jpg',
+      '/media/BIB_transparent.jpg'
     ]
   },
   {
-    id: 'jewelry-packaging',
-    title: 'Jewelry Packaging',
-    category: 'Specialty',
-    price: '$0.80 - $3.50',
-    minOrder: '500 units',
-    description: 'Specialized packaging solutions for jewelry items that provide both protection and elegant presentation. Designed to enhance the perceived value of your products.',
+    id: 'ibc-packaging',
+    title: 'IBC Packaging',
+    category: 'IBC Packaging',
+    price: 'Euro 6 - 30',
+    minOrder: '50 units',
+    description: 'Specialized and tailor-made packaging solutions for Industrial Bulk Containers (IBC)',
     features: [
-      'Velvet and satin lining options',
-      'Ring, necklace, and earring inserts',
-      'Custom foam padding',
-      'Luxury finishing options'
+      'Sizes 800 Lt - 1500 Lt with custom sizes and designs',
+      'Eco-friendly materials',
+      'Various spouts sizes, positions and auxiliary equipment options for waste savings ',
+      'Color printing optional'
     ],
     images: [
-      'https://images.unsplash.com/photo-1535632787350-4e68ef0ac584?q=80&w=2024&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1611085583191-a3b181a88401?q=80&w=2070&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1633810075952-126be900ca4b?q=80&w=2070&auto=format&fit=crop'
+      '/media/IBC_bag23.jpg',
+      '/media/IBCBagHB22.jpg',
+      '/media/IBC_Valves.jpg'
     ]
   },
   {
