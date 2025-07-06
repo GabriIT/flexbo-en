@@ -5,9 +5,7 @@
   "type": "module",
   "scripts": {      
     
-
     "dev": "concurrently \"nodemon --watch server_resend --ext js,ts --exec node -r dotenv/config server_resend/server.js\" \"vite\"",
-
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",

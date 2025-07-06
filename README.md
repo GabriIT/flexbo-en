@@ -28,3 +28,9 @@ This project is built with .
 - A Flexbo website, dokku dployed flexbo-en with persistent storage
 - Server backed in Go to manage Postgresql db
 - server_resend is a Express server to forward email from the website
+
+-Added Procfile to run in container server_resend/forward,js
+-Both server_resend and media are served through buildpack node
+
+# Pending 
+-For Server, Go App for Postgresql I will need to add it as well 

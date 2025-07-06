@@ -32,7 +32,7 @@ const port = process.env.PORT || 3000;   // Dokku/Heroku will inject PORT
 
 app.use(cors());
 app.use(express.json());
-
+app.use('/media', express.static('/media')); // static media files from VPS assets
 // --- API -----------
 app.post('/api/forward', forwardHandler);
 
