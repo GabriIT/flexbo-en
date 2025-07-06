@@ -48,9 +48,9 @@ const Footer = () => {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Contact Us</h3>
             <div className="space-y-3">
-              <ContactItem icon={<MapPin size={18} />} text="123 Packaging Street, City, Country" />
-              <ContactItem icon={<Phone size={18} />} text="+1 (234) 567-8900" />
-              <ContactItem icon={<Mail size={18} />} text="info@flexbopackaging.com" />
+              <ContactItem icon={<MapPin size={18} />} text="Balitai Industrial Park, Jianshi YiZhi Road,4 - Tianjin China" />
+              <ContactItem icon={<Phone size={18} />} text="+86 (22) 2872 0595" />
+              <ContactItem icon={<Mail size={18} />} text="sales@flexbo.com.cn" />
             </div>
           </div>
         </div>

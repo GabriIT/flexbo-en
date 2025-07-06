@@ -20,27 +20,78 @@ const Contact = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setIsSubmitting(true);
     
-    // Simulate form submission
-    setTimeout(() => {
-      toast({
-        title: "Message Sent",
-        description: "Thank you for your message. We will get back to you shortly.",
-        duration: 5000,
-      });
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        company: '',
-        message: ''
-      });
-      setIsSubmitting(false);
-    }, 1500);
-  };
+  //   // Simulate form submission
+  //   setTimeout(() => {
+  //     toast({
+  //       title: "Message Sent",
+  //       description: "Thank you for your message. We will get back to you shortly.",
+  //       duration: 5000,
+  //     });
+  //     setFormData({
+  //       name: '',
+  //       email: '',
+  //       phone: '',
+  //       company: '',
+  //       message: ''
+  //     });
+  //     setIsSubmitting(false);
+  //   }, 1500);
+  // };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+       e.preventDefault();
+       setIsSubmitting(true);
+    
+       // pick only the fields your Express route needs; you can send them all if you like
+       const payload = {
+         name:    formData.name,
+         email:   formData.email,
+         message: `
+           Phone   : ${formData.phone || '—'}
+           Company : ${formData.company || '—'}
+    
+           ${formData.message}
+         `,
+       };
+    
+       try {
+         const res = await fetch('/api/forward', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+           body: JSON.stringify(payload),
+         });
+    
+         if (!res.ok) throw new Error((await res.json()).error || 'Mail failed');
+    
+         toast({
+           title: 'Message sent ✅',
+           description: 'Thank you for reaching out. We’ll reply as soon as possible.',
+           duration: 5000,
+         });
+    
+         setFormData({
+           name: '',
+           email: '',
+           phone: '',
+           company: '',
+           message: '',
+         });
+       } catch (err: any) {
+         toast({
+           title: 'Whoops, something went wrong',
+           description: err.message ?? 'Please try again later.',
+           duration: 6000,
+           variant: 'destructive',
+         });
+       } finally {
+         setIsSubmitting(false);
+       }
+     };
+
 
   return (
     <div className="pt-20">
@@ -62,6 +113,11 @@ const Contact = () => {
           </motion.div>
         </div>
       </section>
+
+     
+
+
+
 
       {/* Contact Information & Form */}
       <section className="py-16 bg-white">
@@ -215,12 +271,18 @@ const Contact = () => {
                       <Send size={16} className="ml-2" />
                     </>
                   )}
+               
+               
+               
                 </button>
               </form>
             </motion.div>
           </div>
         </div>
       </section>
+
+
+
 
       {/* Map */}
       <section className="py-16 bg-gray-50">
@@ -236,7 +298,7 @@ const Contact = () => {
               Our Location
             </h2>
             <p className="mt-4 text-gray-600">
-              Visit our headquarter and showroom to see our premium packaging solutions in person.
+              Visit our headquarter and factory to see our premium packaging solutions in person.
             </p>
           </motion.div>
 
@@ -248,8 +310,13 @@ const Contact = () => {
             className="h-96 rounded-lg overflow-hidden shadow-md"
           >
             <img 
-              src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5ce?q=80&w=2133&auto=format&fit=crop" 
+              src="/media/Flexbo_map.jpg" 
               alt="Office Location Map" 
+              className="w-full h-full object-cover" 
+            />
+            <img 
+              src="/media/Flexbo_map1.jpg" 
+              alt="Office Location Map1" 
               className="w-full h-full object-cover" 
             />
           </motion.div>

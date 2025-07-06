@@ -19,7 +19,7 @@ const AboutSection = () => {
               About Us
             </span>
             <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">
-              Manufacturing Aseptic Packaging Since 2012            </h2>
+              Manufacturing Aseptic Packaging Since 2011            </h2>
             <p className="text-lg text-gray-600">
               At Flexbo Packaging, we combine traditional craftsmanship with modern technology to create packaging solutions that stand out. Our commitment to quality and sustainability drives every decision we make.
             </p>
@@ -41,20 +41,7 @@ const AboutSection = () => {
             transition={{ duration: 0.7 }}
             viewport={{ once: true }}
             className="relative aspect-video lg:aspect-square overflow-hidden rounded-lg"
-          >
-            {/* <video
-                className="w-full h-full object-cover"
-                autoPlay       // play immediately
-                loop           // repeat forever
-                muted          // required for autoplay on most browsers
-                playsInline    // prevent iOS full-screen takeover
-            >
-                <source src="/media/Flexbo_Introduction_EN.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-            </video> */}
-
-
-
+          >           
             {/* <img
               src="https://images.unsplash.com/photo-1628566880119-0a035ee1ae72?q=80&w=2068&auto=format&fit=crop"
               alt="Our Workshop"

@@ -30,7 +30,7 @@ const values = [
 // Timeline data
 const timeline = [
   {
-    year: '2012',
+    year: '2011',
     title: 'Company Founded',
     description: 'Started as a small clean room workshop with a vision for quality aseptic packaging relying on Italian packaging technology.'
   },

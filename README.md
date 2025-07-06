@@ -23,3 +23,8 @@ This project is built with .
 - React
 - shadcn-ui
 - Tailwind CSS
+-------------------------
+## Project Description
+- A Flexbo website, dokku dployed flexbo-en with persistent storage
+- Server backed in Go to manage Postgresql db
+- server_resend is a Express server to forward email from the website
