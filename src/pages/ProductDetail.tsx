@@ -26,7 +26,7 @@ const products = [
     ]
   },
   {
-    id: 'aseptice-packaging',
+    id: 'aseptic-packaging',
     title: 'Aseptic Bags',
     category: 'Aseptic Bags',
     price: 'Euro 1.20 - 8.00',
