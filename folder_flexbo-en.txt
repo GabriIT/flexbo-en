@@ -1,0 +1,55 @@
+.
+├── bun.lockb
+├── components.json
+├── Dockerfile
+├── DockerfileNew_not working
+├── DockerfileOrginal
+├── eslint.config.js
+├── folder_flexbo-en.txt
+├── index.html
+├── local_LLM_bridge
+│   ├── llm_app.py
+│   ├── __pycache__
+│   ├── threads_service.py
+│   └── UI
+├── nginx.conf
+├── package.json
+├── package-lock.json
+├── postcss.config.js
+├── Procfile
+├── public
+│   ├── favicon.ico
+│   └── placeholder.svg
+├── README.md
+├── server
+│   ├── api
+│   ├── cmd
+│   ├── database
+│   ├── Dockerfile
+│   ├── dotenv.sample
+│   ├── go.mod
+│   ├── go.sum
+│   ├── middleware
+│   ├── pkg
+│   └── README1.md
+├── server_resend
+│   ├── api
+│   ├── README.md
+│   └── server.js
+├── src
+│   ├── App.css
+│   ├── App.tsx
+│   ├── components
+│   ├── hooks
+│   ├── index.css
+│   ├── lib
+│   ├── main.tsx
+│   ├── pages
+│   └── vite-env.d.ts
+├── tailwind.config.ts
+├── tsconfig.app.json
+├── tsconfig.json
+├── tsconfig.node.json
+└── vite.config.ts
+
+17 directories, 35 files
