@@ -106,3 +106,5 @@ The custom location /media/ (lines ⑤-⑥) ensures:
 Because the built bundle also lives under /usr/share/nginx/html, you want user uploads kept in their own path (/media) to avoid name clashes with /assets or root-level files. Having that dedicated location block isolates them. 4. Ability to add headers / tuning now or later
 A custom file is your hook to add compression, cache policies, CORS, rate limits, WebSocket upgrades for the Go backend (if you later reverse-proxy it), etc. It’s future-proofing.
 If you relied on the Nginx defaults, only the first request to / would work; every other client-side route would fail, and your uploads directory might not be exposed at all.
+
+
