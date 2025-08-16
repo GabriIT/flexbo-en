@@ -4,6 +4,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MessageCircle, X, Send, Bot, ChevronDown } from "lucide-react";
+import { sendChat } from "@/lib/api";
 
 interface Message {
   type: "user" | "bot";
@@ -15,84 +16,39 @@ type LLMType = "llama" | "openai" | "claude";
 
 const tabContent = {
   products: [
-    "What types of aseptic bags do you supply?",
-    "What are the specific features of Flexbo aseptic bags?",
+    "What types of aseptic bags do you offer?",
     "Tell me about examples of aseptic packaging solutions",
     "Do you have custom packaging solutions?",
-    "Which kind of spouts are used in IBC solutions?",
-    "What are aseptic bags used for?",
+    "Which kind of spouts are used in IBC solutions ?",
   ],
   solutions: [
     "How can you help with environment-friendly packaging ?",
-    "Can we order directly liquid bags from Flexbo and how ?",
-    "What solutions do you offer ?",
+    "What custom branding options do you offer?",
     "Can you supply laminated film without glue or tie layer ?",
     "What regions in the world can you supply ?",
   ],
   certifications: [
-    "What quality certifications do you have ?",
-    "Are your products FDA approved ?",
-    "Do you have BRC and ISO certification ?",
+    "What quality certifications do you have?",
+    "Are your products FDA approved?",
+    "Do you have BRC and ISO certification?",
   ],
   quality: [
-    "What is the shelf life of the products packed in your aseptic bags ?",
-    "How do you ensure product quality ?",
-    "What materials do you use in your packaging ?",
-    "What is your quality control process ?",
+    "What is the self-life of the products packed in your aseptic bags ?",
+    "How do you ensure product quality?",
+    "What materials do you use in your packaging?",
+    "What is your quality control process?",
   ],
   service: [
-    "What's your typical response time ?",
-    "Do you offer rush delivery options ?",
-    "How can I place a bulk order ?",
+    "What's your typical response time?",
+    "Do you offer rush delivery options?",
+    "How can I place a bulk order?",
   ],
 };
 
 interface ChatBotModalProps {
   isOpen: boolean;
-  onClose: () => void; // we pass toggleChat from App
+  onClose: () => void;      // we pass toggleChat from App
   defaultLLM?: LLMType;
-}
-
-const API_KEY = import.meta.env.VITE_API_KEY || "secret";
-
-async function sendChatOnce(message: string, threadId: number | null) {
-  const res = await fetch("/api/chat", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-API-KEY": API_KEY,
-    },
-    body: JSON.stringify({ message, thread_id: threadId }),
-  });
-  let data: any = null;
-  try {
-    data = await res.json();
-  } catch (e) {
-    // if proxy/nginx sent HTML or empty body
-    throw new Error(`chat ${res.status} - invalid JSON`);
-  }
-  if (!res.ok) {
-    const detail = (data && (data.detail || data.response || data.error)) || res.statusText;
-    const err = new Error(`chat ${res.status} - ${detail}`);
-    // @ts-expect-error attach status
-    (err as any).status = res.status;
-    throw err;
-  }
-  return data;
-}
-
-/** Robust send: retries once with thread_id=null if server rejects old id */
-async function sendChatRobust(message: string, currentTid: number | null) {
-  try {
-    return await sendChatOnce(message, currentTid);
-  } catch (err: any) {
-    // If stale thread id caused 404/500, retry with null (server auto-creates)
-    if (err?.message?.startsWith("chat 404") || err?.message?.startsWith("chat 500")) {
-      console.warn("[chat] retrying with thread_id=null due to", err?.message);
-      return await sendChatOnce(message, null);
-    }
-    throw err;
-  }
 }
 
 const ChatBotModal: React.FC<ChatBotModalProps> = ({
@@ -100,6 +56,7 @@ const ChatBotModal: React.FC<ChatBotModalProps> = ({
   onClose,
   defaultLLM = "llama",
 }) => {
+  // NOTE: all hooks live INSIDE the component
   const [messages, setMessages] = useState<Message[]>([
     {
       type: "bot",
@@ -112,72 +69,63 @@ const ChatBotModal: React.FC<ChatBotModalProps> = ({
   const [isTyping, setIsTyping] = useState(false);
   const [selectedLLM, setSelectedLLM] = useState<LLMType>(defaultLLM);
   const [isLLMMenuOpen, setIsLLMMenuOpen] = useState(false);
-  const [threadId, setThreadId] = useState<number | null>(null);
-
-  // hydrate thread id from localStorage
-  useEffect(() => {
-    const raw = localStorage.getItem("flexbo_tid");
-    const tid = raw ? Number(raw) : null;
-    if (tid && !Number.isNaN(tid)) setThreadId(tid);
-  }, []);
+  const [threadId, setThreadId] = useState<number | undefined>(undefined);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
   useEffect(() => {
-    if (isOpen && inputRef.current) inputRef.current.focus();
+    if (isOpen && inputRef.current) {
+      inputRef.current.focus();
+    }
   }, [isOpen]);
 
-  const pushBot = (text: string) =>
-    setMessages((prev) => [
-      ...prev,
-      { type: "bot", content: text, timestamp: new Date() },
-    ]);
+  const handleSendMessage = async () => {
+    if (!inputValue.trim()) return;
 
-  const pushUser = (text: string) =>
-    setMessages((prev) => [
-      ...prev,
-      { type: "user", content: text, timestamp: new Date() },
-    ]);
+    const userMessage: Message = {
+      type: "user",
+      content: inputValue,
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, userMessage]);
 
-  const handleSend = async (text: string) => {
-    const trimmed = text.trim();
-    if (!trimmed) return;
-
-    pushUser(trimmed);
+    const toSend = inputValue;
     setInputValue("");
     setIsTyping(true);
 
     try {
-      const data = await sendChatRobust(trimmed, threadId);
-      // Always adopt the server's thread_id
-      const newTid = Number(data.thread_id);
-      if (newTid && !Number.isNaN(newTid)) {
-        setThreadId(newTid);
-        localStorage.setItem("flexbo_tid", String(newTid));
-      }
+      // Currently we ignore selectedLLM in backend; keep UI affordance
+      const data = await sendChat(toSend, threadId);
+      if (!threadId) setThreadId(data.thread_id);
 
-      pushBot(data.response);
-    } catch (err: any) {
-      console.error("Chat error:", err);
-      // If we retried and still failed, clear thread & tell user
-      localStorage.removeItem("flexbo_tid");
-      setThreadId(null);
-      pushBot(
-        "I ran into a connection error. I’ve reset the conversation—please try again."
-      );
+      const botMessage: Message = {
+        type: "bot",
+        content: data.response,
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, botMessage]);
+    } catch (error) {
+      console.error("Error generating response:", error);
+      const errorMessage: Message = {
+        type: "bot",
+        content:
+          "I'm sorry, I encountered an error talking to the backend. Please try again.",
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsTyping(false);
     }
   };
-
-  const handleSendMessage = () => handleSend(inputValue);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -187,14 +135,13 @@ const ChatBotModal: React.FC<ChatBotModalProps> = ({
   };
 
   const handleQuickReply = (query: string) => {
-    // send immediately for snappier UX
-    handleSend(query);
+    setInputValue(query);
+    inputRef.current?.focus();
   };
 
   const changeLLM = (type: LLMType) => {
     setSelectedLLM(type);
     setIsLLMMenuOpen(false);
-    // (backend currently ignores this; UI affordance only)
   };
 
   return (
@@ -234,17 +181,30 @@ const ChatBotModal: React.FC<ChatBotModalProps> = ({
 
                 {isLLMMenuOpen && (
                   <div className="absolute right-0 mt-1 w-36 bg-white rounded-md shadow-lg py-1 border border-gray-200 z-10">
-                    {(["llama", "openai", "claude"] as LLMType[]).map((k) => (
-                      <button
-                        key={k}
-                        className={`block px-4 py-2 text-sm w-full text-left hover:bg-gray-100 ${
-                          selectedLLM === k ? "bg-gray-50" : ""
-                        }`}
-                        onClick={() => changeLLM(k)}
-                      >
-                        {k === "llama" ? "Llama3.2" : k === "openai" ? "OpenAI" : "Claude"}
-                      </button>
-                    ))}
+                    <button
+                      className={`block px-4 py-2 text-sm w-full text-left hover:bg-gray-100 ${
+                        selectedLLM === "llama" ? "bg-gray-50" : ""
+                      }`}
+                      onClick={() => changeLLM("llama")}
+                    >
+                      Llama3.2
+                    </button>
+                    <button
+                      className={`block px-4 py-2 text-sm w-full text-left hover:bg-gray-100 ${
+                        selectedLLM === "openai" ? "bg-gray-50" : ""
+                      }`}
+                      onClick={() => changeLLM("openai")}
+                    >
+                      OpenAI
+                    </button>
+                    <button
+                      className={`block px-4 py-2 text-sm w-full text-left hover:bg-gray-100 ${
+                        selectedLLM === "claude" ? "bg-gray-50" : ""
+                      }`}
+                      onClick={() => changeLLM("claude")}
+                    >
+                      Claude
+                    </button>
                   </div>
                 )}
               </div>
@@ -327,23 +287,71 @@ const ChatBotModal: React.FC<ChatBotModalProps> = ({
                 </TabsTrigger>
               </TabsList>
               <div className="p-2 bg-gray-50 max-h-32 overflow-y-auto">
-                {(
-                  Object.keys(tabContent) as Array<keyof typeof tabContent>
-                ).map((k) => (
-                  <TabsContent key={k} value={k} className="m-0">
-                    <div className="flex flex-wrap gap-2">
-                      {tabContent[k].map((query, i) => (
-                        <button
-                          key={i}
-                          className="text-xs bg-white hover:bg-gray-100 text-gray-800 font-medium py-1 px-2 border border-gray-200 rounded transition-colors"
-                          onClick={() => handleQuickReply(query)}
-                        >
-                          {query}
-                        </button>
-                      ))}
-                    </div>
-                  </TabsContent>
-                ))}
+                <TabsContent value="products" className="m-0">
+                  <div className="flex flex-wrap gap-2">
+                    {tabContent.products.map((query, index) => (
+                      <button
+                        key={index}
+                        className="text-xs bg-white hover:bg-gray-100 text-gray-800 font-medium py-1 px-2 border border-gray-200 rounded transition-colors"
+                        onClick={() => handleQuickReply(query)}
+                      >
+                        {query}
+                      </button>
+                    ))}
+                  </div>
+                </TabsContent>
+                <TabsContent value="solutions" className="m-0">
+                  <div className="flex flex-wrap gap-2">
+                    {tabContent.solutions.map((query, index) => (
+                      <button
+                        key={index}
+                        className="text-xs bg-white hover:bg-gray-100 text-gray-800 font-medium py-1 px-2 border border-gray-200 rounded transition-colors"
+                        onClick={() => handleQuickReply(query)}
+                      >
+                        {query}
+                      </button>
+                    ))}
+                  </div>
+                </TabsContent>
+                <TabsContent value="certifications" className="m-0">
+                  <div className="flex flex-wrap gap-2">
+                    {tabContent.certifications.map((query, index) => (
+                      <button
+                        key={index}
+                        className="text-xs bg-white hover:bg-gray-100 text-gray-800 font-medium py-1 px-2 border border-gray-200 rounded transition-colors"
+                        onClick={() => handleQuickReply(query)}
+                      >
+                        {query}
+                      </button>
+                    ))}
+                  </div>
+                </TabsContent>
+                <TabsContent value="quality" className="m-0">
+                  <div className="flex flex-wrap gap-2">
+                    {tabContent.quality.map((query, index) => (
+                      <button
+                        key={index}
+                        className="text-xs bg-white hover:bg-gray-100 text-gray-800 font-medium py-1 px-2 border border-gray-200 rounded transition-colors"
+                        onClick={() => handleQuickReply(query)}
+                      >
+                        {query}
+                      </button>
+                    ))}
+                  </div>
+                </TabsContent>
+                <TabsContent value="service" className="m-0">
+                  <div className="flex flex-wrap gap-2">
+                    {tabContent.service.map((query, index) => (
+                      <button
+                        key={index}
+                        className="text-xs bg-white hover:bg-gray-100 text-gray-800 font-medium py-1 px-2 border border-gray-200 rounded transition-colors"
+                        onClick={() => handleQuickReply(query)}
+                      >
+                        {query}
+                      </button>
+                    ))}
+                  </div>
+                </TabsContent>
               </div>
             </Tabs>
           </div>
@@ -378,7 +386,7 @@ const ChatBotModal: React.FC<ChatBotModalProps> = ({
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           className="fixed right-6 bottom-6 bg-primary text-white rounded-full p-4 shadow-lg z-50 hover:bg-primary/90 transition-colors"
-          onClick={onClose}
+          onClick={onClose} // onClose is actually toggleChat from App
           aria-label="Open chat"
         >
           <MessageCircle className="h-6 w-6" />

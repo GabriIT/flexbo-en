@@ -44,3 +44,7 @@ dist-ssr
 *.pyc
 **/__pycache__/
 *.pyc
+
+# Python cache
+__pycache__/
+*.pyc
