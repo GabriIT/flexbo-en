@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Home (highest priority) -->
+  <url>
+    <loc>https://flexbo-en.athenalabo.com/</loc>
+    <lastmod>2025-08-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Products (high) -->
+  <url>
+    <loc>https://flexbo-en.athenalabo.com/products</loc>
+    <lastmod>2025-08-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Contact (high) -->
+  <url>
+    <loc>https://flexbo-en.athenalabo.com/contact</loc>
+    <lastmod>2025-08-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- About -->
+  <url>
+    <loc>https://flexbo-en.athenalabo.com/about</loc>
+    <lastmod>2025-08-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- 404 is intentionally NOT indexed -->
+  <!-- Product details: include concrete URLs if you have stable IDs/slugs.
+       Example (replace :id with real slugs):
+       <url>
+         <loc>https://flexbo-en.athenalabo.com/products/widget-a</loc>
+         <lastmod>2025-08-16</lastmod>
+         <changefreq>weekly</changefreq>
+         <priority>0.7</priority>
+       </url>
+  -->
+</urlset>
