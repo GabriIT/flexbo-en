@@ -17,7 +17,7 @@ def initialize_chatbot():
         ]
     )
     
-    llm = Ollama(model="llama3.2:latest")
+    llm = Ollama=(model="tinyllama:1.1b-chat-v1-q4_0")  #      (model="llama3.2:latest")
     output_parser = StrOutputParser()
     
     chain = prompt | llm | output_parser
