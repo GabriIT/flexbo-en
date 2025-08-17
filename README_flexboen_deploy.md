@@ -136,3 +136,11 @@ dokku letsencrypt:cron-job --add
   - `builder selected: herokuish`
   - `nginx.conf` exists
   - `lets_encrypt:report` shows active cert
+
+---------------
+
+# Added sitemap.xml and robot.txt for crawling
+
+# Adding pgvector extension in Postgresql for RAG
+
+
