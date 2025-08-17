@@ -31,15 +31,5 @@
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
-
-  <!-- 404 is intentionally NOT indexed -->
-  <!-- Product details: include concrete URLs if you have stable IDs/slugs.
-       Example (replace :id with real slugs):
-       <url>
-         <loc>https://flexbo-en.athenalabo.com/products/widget-a</loc>
-         <lastmod>2025-08-16</lastmod>
-         <changefreq>weekly</changefreq>
-         <priority>0.7</priority>
-       </url>
-  -->
+  
 </urlset>
