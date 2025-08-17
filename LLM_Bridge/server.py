@@ -40,7 +40,7 @@ if not DB_URL:
     raise RuntimeError("RAG_DB_URL not set (put it in LLM_Bridge/.env or export it)")
 >>>>>>> ab5be12 (added polish answer and improved client-oriented prompt)
 
-MODEL_NAME = os.getenv("OLLAMA_MODEL", "llama3.2:latest")
+MODEL_NAME = os.getenv("OLLAMA_MODEL", "tinyllama:1.1b-chat-v1-q4_0")
 EMBED_MODEL = os.getenv("EMBED_MODEL", "nomic-embed-text")
 <<<<<<< HEAD
 =======
