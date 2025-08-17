@@ -6,11 +6,11 @@
   "scripts": {
     "dev": "concurrently \"nodemon --watch server_resend --ext js,ts --exec node -r dotenv/config server_resend/server.js\" \"vite\"",
     "build": "vite build",
+    "heroku-postbuild": "npm run build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "node server_resend/server.js",
-    "heroku-postbuild": "npm run build"
+    "start": "node server_resend/server.js"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
@@ -52,6 +52,7 @@
     "embla-carousel-react": "^8.3.0",
     "express": "^5.1.0",
     "framer-motion": "^12.4.10",
+    "http-proxy-middleware": "^3.0.0",
     "input-otp": "^1.2.4",
     "lucide-react": "^0.462.0",
     "next-themes": "^0.3.0",
@@ -67,8 +68,7 @@
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.3",
-    "zod": "^3.23.8",
-    "http-proxy-middleware": "^3.0.0"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
@@ -91,6 +91,7 @@
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1"
   },
-  "engines": { "node": ">=18" }
-
+  "engines": {
+    "node": ">=18"
+  }
 }

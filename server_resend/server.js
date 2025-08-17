@@ -1,26 +1,29 @@
-import 'dotenv/config';          // ← loads .env into process.env
-
+import 'dotenv/config';
 import express from 'express';
-import cors    from 'cors';
-import path    from 'path';
+import cors from 'cors';
+import path from 'path';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import forwardHandler from './api/forward.js';
 
-const app  = express();
-const port = process.env.PORT || 3000;   // Dokku/Heroku will inject PORT
+const app = express();
+const port = process.env.PORT || 3000;
+const PY_BACKEND = process.env.PY_BACKEND || 'http://127.0.0.1:8000'; // uvicorn inside same container
 
 app.use(cors());
 app.use(express.json());
-app.use('/media', express.static('/media')); // static media files from VPS assets
-// --- API -----------
+
+// keep contact form on Node
 app.post('/api/forward', forwardHandler);
 
-// serve built React files (prod)
+// proxy the Python API
+app.use(
+  ['/api/health', '/api/chat', '/api/thread', '/api/thread/*'],
+  createProxyMiddleware({ target: PY_BACKEND, changeOrigin: false })
+);
+
+// serve built React SPA
 const dist = path.join(path.resolve(), 'dist');
 app.use(express.static(dist));
-// app.get('/*', (_, res) => res.sendFile(path.join(dist, 'index.html')));
-app.get(/^\/(?!api).*/, (_, res) =>
-      res.sendFile(path.join(dist, 'index.html'))
-   );
+app.get(/^\/(?!api).*/, (_, res) => res.sendFile(path.join(dist, 'index.html')));
 
-app.listen(port, () => console.log(`Server listening on ${port}`));
-
+app.listen(port, () => console.log(`Express listening on ${port}, proxy → ${PY_BACKEND}`));
