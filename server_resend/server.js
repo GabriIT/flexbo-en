@@ -19,6 +19,13 @@ app.use(
   createProxyMiddleware({ target: PY_BACKEND, changeOrigin: false })
 );
 
+
+// Simple, direct health endpoint (no DB, no Python)
+app.get('/api/health', (_req, res) => {
+  res.json({ ok: true, ts: Date.now() });
+});
+
+
 // keep contact form on Node
 app.post('/api/forward', forwardHandler);
 
