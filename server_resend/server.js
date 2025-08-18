@@ -12,6 +12,13 @@ const PY_BACKEND = process.env.PY_BACKEND || 'http://127.0.0.1:8000'; // uvicorn
 app.use(cors());
 app.use(express.json());
 
+
+// proxy the Python API
+app.use(
+  ['/api/health', '/api/chat', '/api/thread', '/api/thread/*'],
+  createProxyMiddleware({ target: PY_BACKEND, changeOrigin: false })
+);
+
 // keep contact form on Node
 app.post('/api/forward', forwardHandler);
 

@@ -26,7 +26,6 @@ dist-ssr
 .env
 **/__pycache__/
 *.pyc
-<<<<<<< HEAD
 **/__pycache__/
 *.pyc
 **/__pycache__/
@@ -41,7 +40,5 @@ dist-ssr
 *.pyc
 **/__pycache__/
 *.pyc
-=======
->>>>>>> 25740d2 (Ignore pycache, remove mis-cased folders from index)
 **/__pycache__/
 *.pyc
