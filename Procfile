@@ -1,1 +1,1 @@
-web: node server_resend/server.js
+web: ./start.sh
