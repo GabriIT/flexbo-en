@@ -12,7 +12,7 @@ from langchain_community.llms import Ollama
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
-from duckduckgo_search import DDGS  # optional web search
+# from duckduckgo_search import DDGS  # optional web search
 from langchain_community.vectorstores import FAISS
 
 from knowledge_loader import build_or_load_vectorstore, reload_vectorstore
@@ -24,7 +24,7 @@ ALLOW_ORIGINS = os.getenv("ALLOW_ORIGINS", "*").split(",")
 REQUIRE_API_KEY = os.getenv("REQUIRE_API_KEY", "false").lower() == "true"
 
 FAQ_CONFIDENCE = float(os.getenv("FAQ_CONFIDENCE", "0.70"))   # cosine sim, 0..1
-ENABLE_WEB_SEARCH = os.getenv("ENABLE_WEB_SEARCH", "false").lower() == "true"
+# ENABLE_WEB_SEARCH = os.getenv("ENABLE_WEB_SEARCH", "false").lower() == "true"
 WEB_SNIPPETS = int(os.getenv("WEB_SNIPPETS", "3"))
 
 CONTACT_MESSAGE = os.getenv(
@@ -237,14 +237,14 @@ def chat(req: ChatRequest, request: Request):
             return ChatResponse(thread_id=tid, response=output, elapsed_ms=elapsed_ms, messages=messages)
 
     # ------- 2) Low confidence → Web or Contact -------
-    if ENABLE_WEB_SEARCH:
-        web_ans = web_search_answer(req.message)
-        if web_ans:
-            with _lock:
-                _threads[tid]["messages"].append({"type": "bot", "content": web_ans})
-                messages = [Message(**m) for m in _threads[tid]["messages"]]
-            elapsed_ms = int((time.time() - start) * 1000)
-            return ChatResponse(thread_id=tid, response=web_ans, elapsed_ms=elapsed_ms, messages=messages)
+    # if ENABLE_WEB_SEARCH:
+        # web_ans = web_search_answer(req.message)
+        # if web_ans:
+        #     with _lock:
+        #         _threads[tid]["messages"].append({"type": "bot", "content": web_ans})
+        #         messages = [Message(**m) for m in _threads[tid]["messages"]]
+        #     elapsed_ms = int((time.time() - start) * 1000)
+        #     return ChatResponse(thread_id=tid, response=web_ans, elapsed_ms=elapsed_ms, messages=messages)
 
     # ------- 3) Contact fallback -------
     output = CONTACT_MESSAGE
