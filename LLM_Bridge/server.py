@@ -15,7 +15,7 @@ from langchain_core.output_parsers import StrOutputParser
 # from duckduckgo_search import DDGS  # optional web search
 from langchain_community.vectorstores import FAISS
 
-from knowledge_loader import build_or_load_vectorstore, reload_vectorstore
+from .knowledge_loader import build_or_load_vectorstore, reload_vectorstore
 
 MODEL_NAME = os.getenv("OLLAMA_MODEL", "tinyllama:1.1b-chat-v1-q4_0")
 EMBED_MODEL = os.getenv("EMBED_MODEL", "nomic-embed-text")
