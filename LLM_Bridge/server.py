@@ -101,14 +101,14 @@ def _guard_api_key(headers) -> None:
         raise HTTPException(status_code=401, detail="Invalid API key")
 
 # ---------------- Health & Admin ----------------
-@app.get("/api/health")
-def health():
-    return {
-        "status": "ok",
-        "model": MODEL_NAME,
-        "embed_model": EMBED_MODEL,
-        "web_search": ENABLE_WEB_SEARCH,
-    }
+# @app.get("/api/health")
+# def health():
+#     return {
+#         "status": "ok",
+#         "model": MODEL_NAME,
+#         "embed_model": EMBED_MODEL,
+#         "web_search": ENABLE_WEB_SEARCH,
+#     }
 
 @app.post("/api/knowledge/reload")
 def knowledge_reload(csv_path: Optional[str] = Query(default=None)):
