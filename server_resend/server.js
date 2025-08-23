@@ -10,8 +10,22 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
 
 const app       = express();
-const port      = process.env.PORT || 5000;                     // Dokku maps :5000
+const port      = process.env.PORT || 5000;     
+
+
+import morgan from 'morgan';
+app.use(morgan("dev"));
+
+// Dokku maps :5000
 const PY_BACKEND = process.env.PY_BACKEND || 'http://127.0.0.1:8000';
+
+// proxy *everything* under /api to FastAPI
+app.use("/api", createProxyMiddleware({
+  target: PY_BACKEND,
+  changeOrigin: false,
+  logLevel: "debug",
+}));
+app.use("/api", apiProxy);   
 
 app.use(cors());
 app.use(express.json());
