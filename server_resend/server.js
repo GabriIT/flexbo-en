@@ -27,6 +27,13 @@ app.use('/api/chat',   createProxyMiddleware({ target: PY_BACKEND, changeOrigin:
 app.use('/api/thread', createProxyMiddleware({ target: PY_BACKEND, changeOrigin: false }));
 app.use('/api/thread/:id', createProxyMiddleware({ target: PY_BACKEND, changeOrigin: false }));
 
+
+
+// serve the mounted directory at /media
+app.use('/media', express.static('/media'));
+
+
+
 // 4) Serve SPA
 const dist = path.join(__dirname, '..', 'dist');
 app.use(express.static(dist));
