@@ -19,12 +19,12 @@ app.use(morgan("dev"));
 // Dokku maps :5000
 const PY_BACKEND = process.env.PY_BACKEND || 'http://127.0.0.1:8000';
 
-// proxy *everything* under /api to FastAPI
-app.use("/api", createProxyMiddleware({
+// --- proxy ALL /api/* BEFORE static/SPA ---
+const apiProxy = createProxyMiddleware({
   target: PY_BACKEND,
   changeOrigin: false,
   logLevel: "debug",
-}));
+});
 app.use("/api", apiProxy);   
 
 app.use(cors());
