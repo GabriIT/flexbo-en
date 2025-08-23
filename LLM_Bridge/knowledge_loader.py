@@ -7,13 +7,25 @@ from langchain_community.embeddings import OllamaEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
 
+# --- Env config ---
 DEFAULT_CSV = os.getenv("FAQ_CSV_PATH", os.path.join(os.path.dirname(__file__), "faq.csv"))
 EMBED_MODEL = os.getenv("EMBED_MODEL", "nomic-embed-text")
-INDEX_DIR = os.getenv("FAQ_INDEX_DIR", os.path.join(os.path.dirname(__file__), "faiss_index"))
+INDEX_DIR   = os.getenv("FAQ_INDEX_DIR", os.path.join(os.path.dirname(__file__), "faiss_index"))
+OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://host.docker.internal:11434")
+
+
+def _make_embeddings() -> OllamaEmbeddings:
+    """Helper to consistently create OllamaEmbeddings with base_url set."""
+    return OllamaEmbeddings(
+        model=EMBED_MODEL,
+        base_url=OLLAMA_HOST,   # critical: don't fall back to localhost
+    )
+
 
 def load_faq_csv(csv_path: Optional[str] = None) -> List[Document]:
     csv_path = csv_path or DEFAULT_CSV
     df = pd.read_csv(csv_path)
+
     # Normalize headings
     cols = {c.lower().strip(): c for c in df.columns}
     q_col = cols.get("question")
@@ -27,12 +39,13 @@ def load_faq_csv(csv_path: Optional[str] = None) -> List[Document]:
         a = str(row[a_col]).strip()
         if not q or not a:
             continue
-        # We index by Question text; store the Answer in metadata
         docs.append(Document(page_content=q, metadata={"answer": a}))
     return docs
 
+
 def build_or_load_vectorstore(csv_path: Optional[str] = None) -> Tuple[FAISS, OllamaEmbeddings]:
-    embeddings = OllamaEmbeddings(model=EMBED_MODEL)  # Uses OLLAMA_HOST if set
+    embeddings = _make_embeddings()
+
     # Try loading existing index
     if os.path.isdir(INDEX_DIR) and os.listdir(INDEX_DIR):
         try:
@@ -45,6 +58,7 @@ def build_or_load_vectorstore(csv_path: Optional[str] = None) -> Tuple[FAISS, Ol
     vs = FAISS.from_documents(docs, embeddings)
     vs.save_local(INDEX_DIR)
     return vs, embeddings
+
 
 def reload_vectorstore(csv_path: Optional[str] = None) -> FAISS:
     vs, _ = build_or_load_vectorstore(csv_path)
