@@ -65,7 +65,7 @@ dokku builder:set flexbo-en selected herokuish
 echo "web: node server_resend/server.js" > Procfile
 
 # Mount media volume
-dokku storage:mount flexbo-en /var/lib/dokku/data/storage/flexbo-en-media:/media
+dokku storage:mount flexbo-en /var/lib/dokku/data/storage/flexbo-en-asset:/media
 
 # Set proxy port mapping
 dokku config:set flexbo-en DOKKU_PROXY_PORT_MAP="http:80:5000 https:443:5000"
