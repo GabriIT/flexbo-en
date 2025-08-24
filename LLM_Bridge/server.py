@@ -214,3 +214,21 @@ def chat(req: ChatRequest, request: Request):
         messages = [Message(**m) for m in _threads[tid]["messages"]]
     elapsed_ms = int((time.time() - start) * 1000)
     return ChatResponse(thread_id=tid, response=output, elapsed_ms=elapsed_ms, messages=messages)
+
+# ---------------- Debug Similarity ----------------
+@app.get("/api/debug/sim")
+def debug_sim(q: str = Query(..., min_length=1)):
+    vs = get_faq_vs()
+    pairs: List[Tuple] = vs.similarity_search_with_score(q, k=5)
+    def norm(score: float) -> float:
+        s = float(score)
+        return 1.0/(1.0+s) if s > 1.0 else 1.0 - s
+    out = []
+    for doc, score in pairs:
+        out.append({
+            "q": doc.page_content[:160],
+            "a": doc.metadata.get("answer","")[:160],
+            "raw_score": float(score),
+            "sim": round(norm(score), 4),
+        })
+    return {"query": q, "results": out}
