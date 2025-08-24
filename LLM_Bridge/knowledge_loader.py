@@ -42,7 +42,11 @@ def load_faq_csv(csv_path: Optional[str] = None) -> List[Document]:
         a = str(row[a_col]).strip()
         if not q or not a:
             continue
-        docs.append(Document(page_content=q, metadata={"answer": a}))
+        docs.append(Document(
+            page_content=f"Q: {q}\nA: {a}",
+            metadata={"answer": a}
+        ))
+            
     return docs
 
 
