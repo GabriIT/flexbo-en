@@ -33,8 +33,12 @@ def load_faq_csv(csv_path: Optional[str] = None) -> List[Document]:
         a = str(row[a_col]).strip()
         if not q or not a:
             continue
-        # Index only the QUESTION; store the answer in metadata
-        docs.append(Document(page_content=q, metadata={"answer": a}))
+        # Index only the QUESTION; store the answer in metadata for retrieval
+        docs.append(Document(
+        page_content=q,            # <= just the question
+        metadata={"answer": a}
+    ))
+   
     return docs
 
 def build_or_load_vectorstore(csv_path: Optional[str] = None) -> Tuple[FAISS, OllamaEmbeddings]:

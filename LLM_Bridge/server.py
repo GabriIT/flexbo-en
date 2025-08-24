@@ -205,3 +205,14 @@ def debug_sim(q: str = Query(..., min_length=1)):
             "sim": round(norm(score), 4),
         })
     return {"query": q, "results": out}
+
+@app.on_event("startup")
+def _warm_faiss():
+    global faq_vs
+    try:
+        vs, _ = build_or_load_vectorstore()
+        faq_vs = vs
+        print(f"[STARTUP] FAISS loaded. ntotal={int(faq_vs.index.ntotal)}")
+    except Exception as e:
+        # Don’t crash the app; just log. You can curl /api/knowledge/reload later.
+        print(f"[STARTUP] FAISS load/build failed: {e}")
