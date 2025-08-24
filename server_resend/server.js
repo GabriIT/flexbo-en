@@ -18,6 +18,14 @@ app.use(morgan('dev'));
 // Only parse JSON on the Node-handled contact route
 app.post('/api/forward', express.json(), forwardHandler);
 
+// ✅ Direct echo on Express (NO proxy) just for debugging
+app.post('/api/debug/echo', express.json(), (req, res) => {
+  console.log('[ECHO:EXPRESS]', req.headers['x-api-key'], req.body);
+  res.json({ ok: true, layer: 'express', body: req.body });
+});
+
+
+
 // Single proxy for everything else under /api
 const apiProxy = createProxyMiddleware({
   target: PY_BACKEND,
