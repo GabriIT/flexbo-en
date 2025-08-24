@@ -181,11 +181,18 @@ def chat(req: ChatRequest, request: Request):
             faq_q = best_doc.page_content
             faq_a = best_doc.metadata.get("answer", "")
             try:
-                out = StrOutputParser().invoke(
-                    _ollama_llm().invoke(FAQ_PROMPT.format_messages(
-                        question=req.message, faq_q=faq_q, faq_a=faq_a
-                    ))
+                # Only pass variables used by the template
+                messages = FAQ_PROMPT.format_messages(
+                    question=req.message,
+                    faq_a=faq_a,
                 )
+                out = StrOutputParser().invoke(_ollama_llm().invoke(messages))
+
+                # out = StrOutputParser().invoke(
+                #     _ollama_llm().invoke(FAQ_PROMPT.format_messages(
+                #         question=req.message, faq_q=faq_q, faq_a=faq_a
+                #     ))
+                # )
             except Exception:
                 out = faq_a
             with _lock:
