@@ -36,6 +36,7 @@ CONTACT_MESSAGE = os.getenv(
 app = FastAPI(title="Flexbo LLM + FAQ Backend", version="2.1.0")
 app.add_middleware(
     CORSMiddleware(
+        CORSMiddleware,
         allow_origins=ALLOW_ORIGINS,
         allow_credentials=True,
         allow_methods=["*"],
