@@ -4,7 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import morgan from 'morgan';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import forwardHandler from './forward.js';   // <-- import your handler
+import forwardHandler from './api/forward.js';   // <-- import your handler
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
