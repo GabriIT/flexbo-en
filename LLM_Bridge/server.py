@@ -15,7 +15,7 @@ from langchain_community.vectorstores import FAISS
 
 from .knowledge_loader import build_or_load_vectorstore, reload_vectorstore
 
-# ---------------- Env ----------------
+# --- Env ---
 MODEL_NAME      = os.getenv("OLLAMA_MODEL", "tinyllama:1.1b-chat-v1-q4_0")
 EMBED_MODEL     = os.getenv("EMBED_MODEL", "nomic-embed-text")
 OLLAMA_URL      = os.getenv("OLLAMA_BASE_URL") or os.getenv("OLLAMA_HOST") or "http://127.0.0.1:11434"
@@ -23,56 +23,46 @@ API_KEY         = os.getenv("API_KEY", "secret")
 REQUIRE_API_KEY = os.getenv("REQUIRE_API_KEY", "false").lower() == "true"
 ALLOW_ORIGINS   = os.getenv("ALLOW_ORIGINS", "*").split(",")
 
-# threshold is on a 0..1 similarity scale (higher is better)
 FAQ_SIM_THRESHOLD = float(os.getenv("FAQ_SIM_THRESHOLD", "0.35"))
-WEB_SNIPPETS      = int(os.getenv("WEB_SNIPPETS", "3"))
 
-CONTACT_MESSAGE = os.getenv(
-    "CONTACT_MESSAGE",
-    "This seems outside my current knowledge base. Please reach out via the Contact page (/contact) and we’ll get back to you quickly."
-)
-
-# ---------------- App ----------------
-app = FastAPI(title="Flexbo LLM + FAQ Backend", version="2.1.0")
+app = FastAPI(title="Flexbo LLM + FAQ Backend", version="2.1.1")
 app.add_middleware(
-    CORSMiddleware(
-        CORSMiddleware,
-        allow_origins=ALLOW_ORIGINS,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+    CORSMiddleware,
+    allow_origins=ALLOW_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# ---------------- Helpers ----------------
 def _ollama_llm() -> Ollama:
     return Ollama(model=MODEL_NAME, base_url=OLLAMA_URL)
 
 def _score_to_similarity(score: float) -> float:
-    """Cosine distance → similarity in [0,1]."""
+    """
+    Normalize FAISS score to similarity in [0,1] (higher is better).
+    - If score > 1.0, treat it as a distance -> sim = 1/(1+score)
+    - Else, treat it as cosine-distance -> sim = 1 - score
+    """
     try:
         s = float(score)
     except Exception:
         return 0.0
+    if s > 1.0:
+        return 1.0 / (1.0 + s)       # <-- this return was missing
     return max(0.0, min(1.0, 1.0 - s))
 
-# ---------------- LLM Chain ----------------
 def build_llm_chain():
-    prompt = ChatPromptTemplate.from_messages(
-        [
-            ("system",
-             "You are FLEXBO Assistant. Speak like a helpful product specialist. "
-             "Be concise, confident, and client-oriented. Never mention 'context', 'snippets', "
-             "or your internal reasoning. Avoid hedging or apologies unless necessary."),
-            ("user", "Prompt: {query}")
-        ]
-    )
-    llm = _ollama_llm()
-    return prompt | llm | StrOutputParser()
+    prompt = ChatPromptTemplate.from_messages([
+        ("system",
+         "You are FLEXBO Assistant. Speak like a helpful product specialist. "
+         "Answer directly, without prefacing how you derived the answer."),
+        ("user", "Prompt: {query}")
+    ])
+    return prompt | _ollama_llm() | StrOutputParser()
 
 chain = build_llm_chain()
 
-# ---------------- FAQ Vector Store ----------------
+# --- Vector store ---
 faq_vs: Optional[FAISS] = None
 faq_lock = threading.Lock()
 
@@ -83,16 +73,12 @@ def get_faq_vs() -> FAISS:
             faq_vs, _ = build_or_load_vectorstore()
         return faq_vs
 
-# ---------------- In-memory threads (simple) ----------------
-_threads: Dict[int, Dict] = {}
-_next_id = 1
-_lock = threading.Lock()
-
+# --- Models ---
 class CreateThreadRequest(BaseModel):
     content: str = Field(..., min_length=1)
 
 class Message(BaseModel):
-    type: str   # 'user' | 'bot'
+    type: str
     content: str
 
 class ThreadMessagesResponse(BaseModel):
@@ -114,7 +100,7 @@ def _guard_api_key(headers) -> None:
     if headers.get("x-api-key") != API_KEY:
         raise HTTPException(status_code=401, detail="Invalid API key")
 
-# ---------------- Health & Admin ----------------
+# --- Health/Admin ---
 @app.get("/api/health")
 def health():
     return {
@@ -136,81 +122,80 @@ def knowledge_reload(csv_path: Optional[str] = Query(default=None)):
         faq_vs = reload_vectorstore(csv_path)
     return {"status": "reloaded", "count": int(faq_vs.index.ntotal) if faq_vs else 0}
 
-# ---------------- Chat Flow ----------------
+# --- Chat ---
 FAQ_PROMPT = ChatPromptTemplate.from_template(
-    "You are a helpful assistant. You are given a user question and the most relevant FAQ pair.\n"
-    "Answer **directly** and **concisely** using the FAQ answer. Do **not** add prefaces like "
-    "'Based on the given FAQ...' or mention that you used an FAQ. Do not invent new facts.\n\n"
+    "Answer the user directly using the FAQ answer. Do not mention that you used an FAQ.\n\n"
     "USER QUESTION:\n{question}\n\n"
     "FAQ PAIR:\nQ: {faq_q}\nA: {faq_a}\n\n"
-    "Final answer (one paragraph max):"
+    "Final answer:"
 )
+
+_threads: Dict[int, Dict] = {}
+_next_id = 1
+_lock = threading.Lock()
 
 @app.post("/api/chat", response_model=ChatResponse)
 def chat(req: ChatRequest, request: Request):
     _guard_api_key(request.headers)
     start = time.time()
 
-    # Ensure thread
     with _lock:
-        tid = req.thread_id
-        if tid is None:
-            global _next_id
-            tid = _next_id
+        global _next_id
+        tid = req.thread_id or _next_id
+        if req.thread_id is None:
             _next_id += 1
             _threads[tid] = {"messages": []}
-        if tid not in _threads:
-            raise HTTPException(status_code=404, detail="Thread not found")
         _threads[tid]["messages"].append({"type": "user", "content": req.message})
 
-    # ------- 1) Try FAQ retrieval -------
+    # 1) retrieve
     try:
         vs = get_faq_vs()
-        similar: List[Tuple] = vs.similarity_search_with_score(req.message, k=3)
-        sims = [(d, _score_to_similarity(s)) for d, s in similar]
+        pairs: List[Tuple] = vs.similarity_search_with_score(req.message, k=3)
+        sims = [(d, _score_to_similarity(s)) for d, s in pairs]
         sims.sort(key=lambda x: x[1], reverse=True)
-        print("[FAQ DEBUG]", [(d.metadata.get("answer","")[:30], f"{sim:.3f}") for d, sim in sims])
+        print("[FAQ DEBUG]", [(d.page_content[:40], f"{sim:.3f}") for d, sim in sims])
     except Exception as e:
         sims = []
         print(f"[FAQ RETRIEVAL ERROR] {e}")
 
+    # 2) threshold
     if sims:
         best_doc, best_sim = sims[0]
         if best_sim >= FAQ_SIM_THRESHOLD:
             faq_q = best_doc.page_content
             faq_a = best_doc.metadata.get("answer", "")
-            # Either rephrase with LLM or return faq_a directly
             try:
-                output = (_ollama_llm()
-                          .invoke(FAQ_PROMPT.format(question=req.message, faq_q=faq_q, faq_a=faq_a)))
-                # If your Ollama binding returns a Message, unwrap to str if needed:
-                if hasattr(output, "content"):
-                    output = output.content
+                out = StrOutputParser().invoke(
+                    _ollama_llm().invoke(FAQ_PROMPT.format_messages(
+                        question=req.message, faq_q=faq_q, faq_a=faq_a
+                    ))
+                )
             except Exception:
-                output = faq_a
-
+                out = faq_a
             with _lock:
-                _threads[tid]["messages"].append({"type": "bot", "content": str(output)})
+                _threads[tid]["messages"].append({"type": "bot", "content": out})
                 messages = [Message(**m) for m in _threads[tid]["messages"]]
-            elapsed_ms = int((time.time() - start) * 1000)
-            return ChatResponse(thread_id=tid, response=str(output), elapsed_ms=elapsed_ms, messages=messages)
+            return ChatResponse(thread_id=tid, response=out,
+                                elapsed_ms=int((time.time()-start)*1000), messages=messages)
 
-    # ------- 2) Fallback -------
-    output = CONTACT_MESSAGE
+    # 3) fallback
+    fallback = os.getenv(
+        "CONTACT_MESSAGE",
+        "This seems outside my current knowledge base. Please reach out via the Contact page (/contact) and we’ll get back to you quickly."
+    )
     with _lock:
-        _threads[tid]["messages"].append({"type": "bot", "content": output})
+        _threads[tid]["messages"].append({"type": "bot", "content": fallback})
         messages = [Message(**m) for m in _threads[tid]["messages"]]
-    elapsed_ms = int((time.time() - start) * 1000)
-    return ChatResponse(thread_id=tid, response=output, elapsed_ms=elapsed_ms, messages=messages)
+    return ChatResponse(thread_id=tid, response=fallback,
+                        elapsed_ms=int((time.time()-start)*1000), messages=messages)
 
-# ---------------- Debug Similarity ----------------
 @app.get("/api/debug/sim")
 def debug_sim(q: str = Query(..., min_length=1)):
     vs = get_faq_vs()
     pairs: List[Tuple] = vs.similarity_search_with_score(q, k=5)
     def norm(score: float) -> float:
         s = float(score)
-        return max(0.0, min(1.0, 1.0 - s))  # cosine distance -> similarity
+        return 1.0/(1.0+s) if s > 1.0 else 1.0 - s
     out = []
     for doc, score in pairs:
         out.append({
