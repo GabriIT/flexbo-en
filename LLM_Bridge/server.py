@@ -16,13 +16,12 @@ from langchain_community.vectorstores import FAISS
 from .knowledge_loader import build_or_load_vectorstore, reload_vectorstore
 
 # ---------------- Env ----------------
-MODEL_NAME     = os.getenv("OLLAMA_MODEL", "tinyllama:1.1b-chat-v1-q4_0")
-EMBED_MODEL    = os.getenv("EMBED_MODEL", "nomic-embed-text")
-OLLAMA_HOST    = os.getenv("OLLAMA_HOST", "http://host.docker.internal:11434")
-OLLAMA_URL = os.getenv("OLLAMA_BASE_URL") or os.getenv("OLLAMA_HOST") or "http://127.0.0.1:11434"
-API_KEY        = os.getenv("API_KEY", "secret")
+MODEL_NAME      = os.getenv("OLLAMA_MODEL", "tinyllama:1.1b-chat-v1-q4_0")
+EMBED_MODEL     = os.getenv("EMBED_MODEL", "nomic-embed-text")
+OLLAMA_URL      = os.getenv("OLLAMA_BASE_URL") or os.getenv("OLLAMA_HOST") or "http://127.0.0.1:11434"
+API_KEY         = os.getenv("API_KEY", "secret")
 REQUIRE_API_KEY = os.getenv("REQUIRE_API_KEY", "false").lower() == "true"
-ALLOW_ORIGINS  = os.getenv("ALLOW_ORIGINS", "*").split(",")
+ALLOW_ORIGINS   = os.getenv("ALLOW_ORIGINS", "*").split(",")
 
 # threshold is on a 0..1 similarity scale (higher is better)
 FAQ_SIM_THRESHOLD = float(os.getenv("FAQ_SIM_THRESHOLD", "0.35"))
@@ -36,34 +35,24 @@ CONTACT_MESSAGE = os.getenv(
 # ---------------- App ----------------
 app = FastAPI(title="Flexbo LLM + FAQ Backend", version="2.1.0")
 app.add_middleware(
-    CORSMiddleware,
-    allow_origins=ALLOW_ORIGINS,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    CORSMiddleware(
+        allow_origins=ALLOW_ORIGINS,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 )
 
 # ---------------- Helpers ----------------
 def _ollama_llm() -> Ollama:
-    # Ensure we always use the right base_url (no implicit localhost)
     return Ollama(model=MODEL_NAME, base_url=OLLAMA_URL)
 
 def _score_to_similarity(score: float) -> float:
-    """
-    Normalize FAISS 'score' to a similarity in [0,1], higher is better.
-
-    - Many LangChain FAISS calls return a *distance* where lower is better.
-      Distances often exceed 1.0 for L2, while cosine distances are 0..2.
-    - If score > 1.0, treat as distance → sim = 1 / (1 + score).
-    - Else (0..1 range), treat as cosine distance → sim = 1 - score.
-    """
+    """Cosine distance → similarity in [0,1]."""
     try:
         s = float(score)
     except Exception:
         return 0.0
-    if s > 1.0:
-        return 1.0 / (1.0 + s)   # distance → similarity
-    # assume cosine distance in [0,1]
     return max(0.0, min(1.0, 1.0 - s))
 
 # ---------------- LLM Chain ----------------
@@ -131,8 +120,7 @@ def health():
         "status": "ok",
         "model": MODEL_NAME,
         "embed_model": EMBED_MODEL,
-        "ollama_host": OLLAMA_HOST,
-        "ollama_url": OLLAMA_URL,  
+        "ollama_url": OLLAMA_URL,
     }
 
 @app.get("/api/debug/faiss")
@@ -149,14 +137,12 @@ def knowledge_reload(csv_path: Optional[str] = Query(default=None)):
 
 # ---------------- Chat Flow ----------------
 FAQ_PROMPT = ChatPromptTemplate.from_template(
-    (
-        "You are a helpful assistant. A user asked a question.\n"
-        "You are given the most relevant FAQ pair below. Use the ANSWER verbatim if it fully addresses the query.\n"
-        "If slight rewording improves clarity, you may do so but do not introduce new facts.\n\n"
-        "USER QUESTION:\n{question}\n\n"
-        "MATCHED FAQ:\nQ: {faq_q}\nA: {faq_a}\n\n"
-        "Final answer:"
-    )
+    "You are a helpful assistant. You are given a user question and the most relevant FAQ pair.\n"
+    "Answer **directly** and **concisely** using the FAQ answer. Do **not** add prefaces like "
+    "'Based on the given FAQ...' or mention that you used an FAQ. Do not invent new facts.\n\n"
+    "USER QUESTION:\n{question}\n\n"
+    "FAQ PAIR:\nQ: {faq_q}\nA: {faq_a}\n\n"
+    "Final answer (one paragraph max):"
 )
 
 @app.post("/api/chat", response_model=ChatResponse)
@@ -180,7 +166,6 @@ def chat(req: ChatRequest, request: Request):
     try:
         vs = get_faq_vs()
         similar: List[Tuple] = vs.similarity_search_with_score(req.message, k=3)
-        # convert to (doc, sim) with sim in [0..1] higher better
         sims = [(d, _score_to_similarity(s)) for d, s in similar]
         sims.sort(key=lambda x: x[1], reverse=True)
         print("[FAQ DEBUG]", [(d.metadata.get("answer","")[:30], f"{sim:.3f}") for d, sim in sims])
@@ -193,19 +178,21 @@ def chat(req: ChatRequest, request: Request):
         if best_sim >= FAQ_SIM_THRESHOLD:
             faq_q = best_doc.page_content
             faq_a = best_doc.metadata.get("answer", "")
-            # Optionally let LLM rephrase; or return faq_a directly
+            # Either rephrase with LLM or return faq_a directly
             try:
-                llm = _ollama_llm()
-                prompt = FAQ_PROMPT.format_messages(question=req.message, faq_q=faq_q, faq_a=faq_a)
-                output = StrOutputParser().invoke(llm.invoke(prompt))
-            except Exception as _:
-                output = faq_a  # safe fallback
+                output = (_ollama_llm()
+                          .invoke(FAQ_PROMPT.format(question=req.message, faq_q=faq_q, faq_a=faq_a)))
+                # If your Ollama binding returns a Message, unwrap to str if needed:
+                if hasattr(output, "content"):
+                    output = output.content
+            except Exception:
+                output = faq_a
 
             with _lock:
-                _threads[tid]["messages"].append({"type": "bot", "content": output})
+                _threads[tid]["messages"].append({"type": "bot", "content": str(output)})
                 messages = [Message(**m) for m in _threads[tid]["messages"]]
             elapsed_ms = int((time.time() - start) * 1000)
-            return ChatResponse(thread_id=tid, response=output, elapsed_ms=elapsed_ms, messages=messages)
+            return ChatResponse(thread_id=tid, response=str(output), elapsed_ms=elapsed_ms, messages=messages)
 
     # ------- 2) Fallback -------
     output = CONTACT_MESSAGE
@@ -222,7 +209,7 @@ def debug_sim(q: str = Query(..., min_length=1)):
     pairs: List[Tuple] = vs.similarity_search_with_score(q, k=5)
     def norm(score: float) -> float:
         s = float(score)
-        return 1.0/(1.0+s) if s > 1.0 else 1.0 - s
+        return max(0.0, min(1.0, 1.0 - s))  # cosine distance -> similarity
     out = []
     for doc, score in pairs:
         out.append({
