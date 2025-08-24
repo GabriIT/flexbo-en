@@ -15,36 +15,30 @@ const PY_BACKEND = process.env.PY_BACKEND || 'http://127.0.0.1:8000';
 
 app.use(morgan('dev'));
 
-// ✅ Only parse JSON on the Node-handled route
+// Only parse JSON on the Node-handled contact route
 app.post('/api/forward', express.json(), forwardHandler);
 
-// ✅ One proxy mounted at /api. Do NOT run express.json() before this.
+// Single proxy for everything else under /api
 const apiProxy = createProxyMiddleware({
   target: PY_BACKEND,
   changeOrigin: false,
   logLevel: 'debug',
-  // Express strips the mount path (/api). Put it back so FastAPI sees /api/*
-  pathRewrite: (path) => '/api' + path,  // '/chat' -> '/api/chat'
-  // (Optional) If you ever re-add a body parser before this, uncomment the block below
-  // to manually re-send the body upstream.
-  /*
-  onProxyReq(proxyReq, req) {
-    if (req.method === 'POST' &&
-        req.headers['content-type']?.includes('application/json') &&
-        req.body && typeof req.body === 'object') {
-      const bodyData = JSON.stringify(req.body);
-      proxyReq.setHeader('content-length', Buffer.byteLength(bodyData));
-      proxyReq.write(bodyData);
+  // Express strips '/api' from the path. Put it back.
+  pathRewrite: (path) => '/api' + path, // '/chat' -> '/api/chat'
+  onError(err, req, res) {
+    console.error('[PROXY ERROR]', err?.message);
+    if (!res.headersSent) {
+      res.writeHead(502, { 'Content-Type': 'text/plain' });
     }
-  }
-  */
+    res.end('Proxy error');
+  },
 });
 app.use('/api', apiProxy);
 
-// Serve the mounted media volume
+// Media volume
 app.use('/media', express.static('/media'));
 
-// Serve SPA
+// SPA
 const dist = path.join(__dirname, '..', 'dist');
 app.use(express.static(dist));
 app.get(/^\/(?!api).*/, (_req, res) => res.sendFile(path.join(dist, 'index.html')));
