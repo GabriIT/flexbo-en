@@ -216,3 +216,8 @@ def _warm_faiss():
     except Exception as e:
         # Don’t crash the app; just log. You can curl /api/knowledge/reload later.
         print(f"[STARTUP] FAISS load/build failed: {e}")
+
+@app.post("/api/debug/echo")
+def echo(payload: dict):
+    # lets you see exactly what FastAPI received
+    return payload
