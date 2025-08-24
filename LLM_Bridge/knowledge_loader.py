@@ -59,6 +59,8 @@ def build_or_load_vectorstore(csv_path: Optional[str] = None) -> Tuple[FAISS, Ol
 
     docs = load_faq_csv(csv_path)
     vs = FAISS.from_documents(docs, embeddings)
+    os.makedirs(INDEX_DIR, exist_ok=True)
+
     vs.save_local(INDEX_DIR)
     return vs, embeddings
 
