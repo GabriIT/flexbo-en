@@ -12,6 +12,9 @@ DEFAULT_CSV = os.getenv("FAQ_CSV_PATH", os.path.join(os.path.dirname(__file__), 
 EMBED_MODEL = os.getenv("EMBED_MODEL", "nomic-embed-text")
 INDEX_DIR   = os.getenv("FAQ_INDEX_DIR", os.path.join(os.path.dirname(__file__), "faiss_index"))
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://host.docker.internal:11434")
+OLLAMA_URL = os.getenv("OLLAMA_BASE_URL") or os.getenv("OLLAMA_HOST") or "http://127.0.0.1:11434"
+
+embeddings = OllamaEmbeddings(model=EMBED_MODEL, base_url=OLLAMA_URL)
 
 
 def _make_embeddings() -> OllamaEmbeddings:

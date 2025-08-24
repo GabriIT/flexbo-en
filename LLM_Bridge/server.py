@@ -19,7 +19,7 @@ from .knowledge_loader import build_or_load_vectorstore, reload_vectorstore
 MODEL_NAME     = os.getenv("OLLAMA_MODEL", "tinyllama:1.1b-chat-v1-q4_0")
 EMBED_MODEL    = os.getenv("EMBED_MODEL", "nomic-embed-text")
 OLLAMA_HOST    = os.getenv("OLLAMA_HOST", "http://host.docker.internal:11434")
-
+OLLAMA_URL = os.getenv("OLLAMA_BASE_URL") or os.getenv("OLLAMA_HOST") or "http://127.0.0.1:11434"
 API_KEY        = os.getenv("API_KEY", "secret")
 REQUIRE_API_KEY = os.getenv("REQUIRE_API_KEY", "false").lower() == "true"
 ALLOW_ORIGINS  = os.getenv("ALLOW_ORIGINS", "*").split(",")
@@ -46,7 +46,7 @@ app.add_middleware(
 # ---------------- Helpers ----------------
 def _ollama_llm() -> Ollama:
     # Ensure we always use the right base_url (no implicit localhost)
-    return Ollama(model=MODEL_NAME, base_url=OLLAMA_HOST)
+    return Ollama(model=MODEL_NAME, base_url=OLLAMA_URL)
 
 def _score_to_similarity(score: float) -> float:
     """
@@ -132,6 +132,7 @@ def health():
         "model": MODEL_NAME,
         "embed_model": EMBED_MODEL,
         "ollama_host": OLLAMA_HOST,
+        "ollama_url": OLLAMA_URL,  
     }
 
 @app.get("/api/debug/faiss")
