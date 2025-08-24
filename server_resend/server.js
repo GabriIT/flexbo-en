@@ -24,24 +24,35 @@ app.post('/api/debug/echo', express.json(), (req, res) => {
   res.json({ ok: true, layer: 'express', body: req.body });
 });
 
-
-
-// Single proxy for everything else under /api
+// One proxy for everything else under /api (AFTER the direct routes above)
 const apiProxy = createProxyMiddleware({
-  target: PY_BACKEND,
+  target: PY_BACKEND,          // e.g. http://127.0.0.1:8000
   changeOrigin: false,
   logLevel: 'debug',
-  // Express strips '/api' from the path. Put it back.
-  pathRewrite: (path) => '/api' + path, // '/chat' -> '/api/chat'
-  onError(err, req, res) {
-    console.error('[PROXY ERROR]', err?.message);
-    if (!res.headersSent) {
-      res.writeHead(502, { 'Content-Type': 'text/plain' });
+  // Express removes '/api' from req.path; add it back so FastAPI sees '/api/...'
+  pathRewrite: (path) => '/api' + path, // '/chat' -> '/api/chat', '/debug/sim' -> '/api/debug/sim'
+  onProxyReq(proxyReq, req, res) {
+    console.log('[PROXY:REQ]', req.method, req.originalUrl, '→', proxyReq.path);
+    const body = req.body && typeof req.body === 'object' ? JSON.stringify(req.body) : null;
+    // If someone accidentally attached a body parser before the proxy, re-send the body
+    if (body) {
+      proxyReq.setHeader('Content-Type', 'application/json');
+      proxyReq.setHeader('Content-Length', Buffer.byteLength(body));
+      proxyReq.write(body);
     }
+  },
+  onProxyRes(proxyRes, req, res) {
+    console.log('[PROXY:RES]', req.method, req.originalUrl, '←', proxyRes.statusCode);
+  },
+  onError(err, req, res) {
+    console.error('[PROXY:ERROR]', req.method, req.originalUrl, err?.message);
+    if (!res.headersSent) res.writeHead(502, { 'Content-Type': 'text/plain' });
     res.end('Proxy error');
   },
 });
+
 app.use('/api', apiProxy);
+
 
 // Media volume
 app.use('/media', express.static('/media'));
