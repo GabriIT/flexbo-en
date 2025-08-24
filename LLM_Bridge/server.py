@@ -124,10 +124,26 @@ def knowledge_reload(csv_path: Optional[str] = Query(default=None)):
 
 # --- Chat ---
 FAQ_PROMPT = ChatPromptTemplate.from_template(
-    "Answer the user directly using the FAQ answer. Do not mention that you used an FAQ.\n\n"
-    "USER QUESTION:\n{question}\n\n"
-    "FAQ PAIR:\nQ: {faq_q}\nA: {faq_a}\n\n"
-    "Final answer:"
+    """
+You are a concise, friendly product specialist.
+Rewrite the provided ANSWER into natural, customer-facing prose to directly reply to the user’s question.
+
+Rules:
+- Use ONLY facts from ANSWER. Do not invent or add details.
+- Keep numbers/units exactly as given.
+- Fix grammar/wording for clarity and professionalism.
+- Do NOT mention FAQs, sources, “context”, or your process.
+- Do NOT restate the user’s question unless necessary.
+- Prefer 1–2 short sentences. If the ANSWER is a list, you may use a clean sentence + short bullet list.
+
+USER QUESTION:
+{question}
+
+ANSWER:
+{faq_a}
+
+Now write the final reply to the user:
+"""
 )
 
 _threads: Dict[int, Dict] = {}
