@@ -1,5 +1,6 @@
 # LLM_Bridge/server.py
 import os
+import re
 import time
 import threading
 from typing import Dict, List, Optional, Tuple
@@ -8,7 +9,8 @@ from fastapi import FastAPI, HTTPException, Request, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-from langchain_community.llms import Ollama
+from langchain_community.llms import Ollama            # kept for your generic chain
+from langchain_community.chat_models import ChatOllama # <-- chat model for strict FAQ rewrite
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_community.vectorstores import FAISS
@@ -16,16 +18,16 @@ from langchain_community.vectorstores import FAISS
 from .knowledge_loader import build_or_load_vectorstore, reload_vectorstore
 
 # --- Env ---
-MODEL_NAME      = os.getenv("OLLAMA_MODEL", "tinyllama:1.1b-chat-v1-q4_0")
-EMBED_MODEL     = os.getenv("EMBED_MODEL", "nomic-embed-text")
-OLLAMA_URL      = os.getenv("OLLAMA_BASE_URL") or os.getenv("OLLAMA_HOST") or "http://127.0.0.1:11434"
-API_KEY         = os.getenv("API_KEY", "secret")
-REQUIRE_API_KEY = os.getenv("REQUIRE_API_KEY", "false").lower() == "true"
-ALLOW_ORIGINS   = os.getenv("ALLOW_ORIGINS", "*").split(",")
-
+MODEL_NAME       = os.getenv("OLLAMA_MODEL", "tinyllama:1.1b-chat-v1-q4_0")
+EMBED_MODEL      = os.getenv("EMBED_MODEL", "nomic-embed-text")
+OLLAMA_URL       = os.getenv("OLLAMA_BASE_URL") or os.getenv("OLLAMA_HOST") or "http://127.0.0.1:11434"
+API_KEY          = os.getenv("API_KEY", "secret")
+REQUIRE_API_KEY  = os.getenv("REQUIRE_API_KEY", "false").lower() == "true"
+ALLOW_ORIGINS    = os.getenv("ALLOW_ORIGINS", "*").split(",")
 FAQ_SIM_THRESHOLD = float(os.getenv("FAQ_SIM_THRESHOLD", "0.35"))
+STRICT_FAQ       = os.getenv("FAQ_REWRITE", "true").lower() != "false"  # set to false to return raw CSV answers
 
-app = FastAPI(title="Flexbo LLM + FAQ Backend", version="2.1.1")
+app = FastAPI(title="Flexbo LLM + FAQ Backend", version="2.1.2")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOW_ORIGINS,
@@ -34,8 +36,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# --- LLM helpers ---
 def _ollama_llm() -> Ollama:
+    # your generic chain (still available)
     return Ollama(model=MODEL_NAME, base_url=OLLAMA_URL)
+
+def _ollama_chat(**kw) -> ChatOllama:
+    # strict, deterministic chat interface for FAQ rewrites
+    return ChatOllama(
+        model=MODEL_NAME,
+        base_url=OLLAMA_URL,
+        temperature=0,
+        num_predict=120,
+        **kw,
+    )
 
 def _score_to_similarity(score: float) -> float:
     """
@@ -48,10 +62,11 @@ def _score_to_similarity(score: float) -> float:
     except Exception:
         return 0.0
     if s > 1.0:
-        return 1.0 / (1.0 + s)       # <-- this return was missing
+        return 1.0 / (1.0 + s)
     return max(0.0, min(1.0, 1.0 - s))
 
 def build_llm_chain():
+    # kept for completeness; not used by FAQ path
     prompt = ChatPromptTemplate.from_messages([
         ("system",
          "You are FLEXBO Assistant. Speak like a helpful product specialist. "
@@ -122,19 +137,18 @@ def knowledge_reload(csv_path: Optional[str] = Query(default=None)):
         faq_vs = reload_vectorstore(csv_path)
     return {"status": "reloaded", "count": int(faq_vs.index.ntotal) if faq_vs else 0}
 
-# --- Chat ---
+# --- Prompt & sanitizer ---
 FAQ_PROMPT = ChatPromptTemplate.from_template(
     """
-You are a concise, friendly product specialist.
-Rewrite the provided ANSWER into natural, customer-facing prose to directly reply to the user’s question.
+You must reply using ONLY the content in ANSWER.
 
 Rules:
-- Use ONLY facts from ANSWER. Do not invent or add details.
-- Keep numbers/units exactly as given.
-- Fix grammar/wording for clarity and professionalism.
-- Do NOT mention FAQs, sources, “context”, or your process.
-- Do NOT restate the user’s question unless necessary.
-- Prefer 1–2 short sentences. If the ANSWER is a list, you may use a clean sentence + short bullet list.
+- Do not invent or add details not present in ANSWER.
+- Do not say things like “based on the FAQ”, “based on the record”, “from the FAQ”, “from the context”, or similar.
+- Do not mention sources or your process.
+- Keep numbers and units exactly as written.
+- Prefer 1–2 short sentences (or a short bullet list if ANSWER is a list).
+- If you cannot answer using only ANSWER, reply with exactly ANSWER.
 
 USER QUESTION:
 {question}
@@ -142,10 +156,32 @@ USER QUESTION:
 ANSWER:
 {faq_a}
 
-Now write the final reply to the user:
+Final reply (no preface, no meta-text):
 """
 )
 
+# aggressively strip meta-prefaces if the model tries anyway
+_META_PATTERNS = [
+    r"^\s*based on (the )?(faq|record|context|information).{0,40}:\s*",
+    r"^\s*(according to|from) (the )?(faq|record|context).{0,40}:\s*",
+    r"^\s*(as per|per) (the )?(faq|record|context).{0,40}:\s*",
+    r"^\s*this (answer|reply) (is|was) (generated|derived).{0,80}\s*",
+]
+_META_RE = re.compile("|".join(_META_PATTERNS), re.IGNORECASE)
+
+def _clean_answer(text: str) -> str:
+    t = (text or "").strip()
+    # remove wrapping quotes the model sometimes adds
+    if len(t) >= 2 and t[0] in {"'", '"', "“"} and t[-1] in {"'", '"', "”"}:
+        t = t[1:-1].strip()
+    # remove any leading meta prefaces we disallow
+    t = _META_RE.sub("", t).strip()
+    # collapse excessive whitespace
+    t = re.sub(r"\s+\n", "\n", t)
+    t = re.sub(r"\n{3,}", "\n\n", t)
+    return t
+
+# --- Chat ---
 _threads: Dict[int, Dict] = {}
 _next_id = 1
 _lock = threading.Lock()
@@ -155,12 +191,14 @@ def chat(req: ChatRequest, request: Request):
     _guard_api_key(request.headers)
     start = time.time()
 
+    # ensure thread map is initialized safely
     with _lock:
         global _next_id
         tid = req.thread_id or _next_id
-        if req.thread_id is None:
-            _next_id += 1
+        if req.thread_id is None or tid not in _threads:
             _threads[tid] = {"messages": []}
+            if req.thread_id is None:
+                _next_id += 1
         _threads[tid]["messages"].append({"type": "user", "content": req.message})
 
     # 1) retrieve
@@ -178,28 +216,27 @@ def chat(req: ChatRequest, request: Request):
     if sims:
         best_doc, best_sim = sims[0]
         if best_sim >= FAQ_SIM_THRESHOLD:
-            faq_q = best_doc.page_content
-            faq_a = best_doc.metadata.get("answer", "")
-            try:
-                # Only pass variables used by the template
-                messages = FAQ_PROMPT.format_messages(
-                    question=req.message,
-                    faq_a=faq_a,
-                )
-                out = StrOutputParser().invoke(_ollama_llm().invoke(messages))
-
-                # out = StrOutputParser().invoke(
-                #     _ollama_llm().invoke(FAQ_PROMPT.format_messages(
-                #         question=req.message, faq_q=faq_q, faq_a=faq_a
-                #     ))
-                # )
-            except Exception:
+            faq_a = (best_doc.metadata.get("answer", "") or "").strip()
+            if not STRICT_FAQ:
                 out = faq_a
+            else:
+                try:
+                    msgs = FAQ_PROMPT.format_messages(question=req.message, faq_a=faq_a)
+                    ai_msg = _ollama_chat().invoke(msgs)
+                    out = getattr(ai_msg, "content", str(ai_msg)) or faq_a
+                    out = _clean_answer(out) or faq_a
+                except Exception:
+                    out = faq_a
+
             with _lock:
                 _threads[tid]["messages"].append({"type": "bot", "content": out})
                 messages = [Message(**m) for m in _threads[tid]["messages"]]
-            return ChatResponse(thread_id=tid, response=out,
-                                elapsed_ms=int((time.time()-start)*1000), messages=messages)
+            return ChatResponse(
+                thread_id=tid,
+                response=out,
+                elapsed_ms=int((time.time()-start)*1000),
+                messages=messages,
+            )
 
     # 3) fallback
     fallback = os.getenv(
@@ -209,9 +246,14 @@ def chat(req: ChatRequest, request: Request):
     with _lock:
         _threads[tid]["messages"].append({"type": "bot", "content": fallback})
         messages = [Message(**m) for m in _threads[tid]["messages"]]
-    return ChatResponse(thread_id=tid, response=fallback,
-                        elapsed_ms=int((time.time()-start)*1000), messages=messages)
+    return ChatResponse(
+        thread_id=tid,
+        response=fallback,
+        elapsed_ms=int((time.time()-start)*1000),
+        messages=messages,
+    )
 
+# --- Debug Similarity ---
 @app.get("/api/debug/sim")
 def debug_sim(q: str = Query(..., min_length=1)):
     vs = get_faq_vs()
@@ -229,6 +271,7 @@ def debug_sim(q: str = Query(..., min_length=1)):
         })
     return {"query": q, "results": out}
 
+# --- Warm FAISS on boot ---
 @app.on_event("startup")
 def _warm_faiss():
     global faq_vs
@@ -237,10 +280,9 @@ def _warm_faiss():
         faq_vs = vs
         print(f"[STARTUP] FAISS loaded. ntotal={int(faq_vs.index.ntotal)}")
     except Exception as e:
-        # Don’t crash the app; just log. You can curl /api/knowledge/reload later.
         print(f"[STARTUP] FAISS load/build failed: {e}")
 
+# --- Echo debug ---
 @app.post("/api/debug/echo")
 def echo(payload: dict):
-    # lets you see exactly what FastAPI received
     return payload
