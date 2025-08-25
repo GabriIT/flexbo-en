@@ -9,8 +9,7 @@ from fastapi import FastAPI, HTTPException, Request, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-from langchain_community.llms import Ollama            # kept for your generic chain
-from langchain_community.chat_models import ChatOllama # <-- chat model for strict FAQ rewrite
+from langchain_community.llms import Ollama
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_community.vectorstores import FAISS
@@ -24,10 +23,12 @@ OLLAMA_URL       = os.getenv("OLLAMA_BASE_URL") or os.getenv("OLLAMA_HOST") or "
 API_KEY          = os.getenv("API_KEY", "secret")
 REQUIRE_API_KEY  = os.getenv("REQUIRE_API_KEY", "false").lower() == "true"
 ALLOW_ORIGINS    = os.getenv("ALLOW_ORIGINS", "*").split(",")
-FAQ_SIM_THRESHOLD = float(os.getenv("FAQ_SIM_THRESHOLD", "0.35"))
-STRICT_FAQ       = os.getenv("FAQ_REWRITE", "true").lower() != "false"  # set to false to return raw CSV answers
 
-app = FastAPI(title="Flexbo LLM + FAQ Backend", version="2.1.2")
+FAQ_SIM_THRESHOLD = float(os.getenv("FAQ_SIM_THRESHOLD", "0.35"))
+FAQ_USE_REWRITER  = os.getenv("FAQ_USE_REWRITER", "false").lower() == "true"  # default OFF
+
+# --- App ---
+app = FastAPI(title="Flexbo LLM + FAQ Backend", version="2.2.0")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOW_ORIGINS,
@@ -36,26 +37,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- LLM helpers ---
+# --- Helpers ---
 def _ollama_llm() -> Ollama:
-    # your generic chain (still available)
+    # Always pass base_url to avoid implicit localhost
     return Ollama(model=MODEL_NAME, base_url=OLLAMA_URL)
-
-def _ollama_chat(**kw) -> ChatOllama:
-    # strict, deterministic chat interface for FAQ rewrites
-    return ChatOllama(
-        model=MODEL_NAME,
-        base_url=OLLAMA_URL,
-        temperature=0,
-        num_predict=120,
-        **kw,
-    )
 
 def _score_to_similarity(score: float) -> float:
     """
     Normalize FAISS score to similarity in [0,1] (higher is better).
-    - If score > 1.0, treat it as a distance -> sim = 1/(1+score)
-    - Else, treat it as cosine-distance -> sim = 1 - score
+    - If score > 1.0, assume 'distance' -> sim = 1/(1+score)
+    - Else, assume 'cosine distance' in [0,1] -> sim = 1 - score
     """
     try:
         s = float(score)
@@ -65,8 +56,50 @@ def _score_to_similarity(score: float) -> float:
         return 1.0 / (1.0 + s)
     return max(0.0, min(1.0, 1.0 - s))
 
+def _clean_answer(text: str) -> str:
+    """Trim quotes/markdown and drop meta-headings if present."""
+    t = (text or "").strip()
+
+    # Drop lines that look like meta headings (defensive)
+    cleaned_lines = []
+    for line in t.splitlines():
+        if re.match(r"^\s*(task|user\s*question|answer|final\s*reply)\b", line, re.I):
+            continue
+        cleaned_lines.append(line)
+    t = " ".join(cleaned_lines).strip()
+
+    # Strip simple wrapping quotes/backticks
+    if len(t) >= 2 and t[0] in {'"', "'", "“", "‘", "`"} and t[-1] in {'"', "'", "”", "’", "`"}:
+        t = t[1:-1].strip()
+
+    # Collapse excessive spaces
+    t = re.sub(r"\s{2,}", " ", t)
+    return t
+
+# Optional rewriter (only used if FAQ_USE_REWRITER=true)
+FAQ_PROMPT = ChatPromptTemplate.from_template(
+    """
+You are a FLEXBO product specialist. Your job is to deliver a polished final reply for a customer.
+
+STRICT RULES:
+- Use ONLY the content in ANSWER.
+- Do NOT mention FAQ, sources, records, context, or your process.
+- Do NOT include meta text like "Task:", "User Question:", "Answer:", or "Final reply".
+- Keep numbers/units exactly as given.
+- Fix minor grammar/typos only; DO NOT add new facts.
+- Prefer one short paragraph or a short bullet list.
+
+USER QUESTION:
+{question}
+
+ANSWER:
+{faq_a}
+
+Write the final reply (no headings, no meta text):
+"""
+)
+
 def build_llm_chain():
-    # kept for completeness; not used by FAQ path
     prompt = ChatPromptTemplate.from_messages([
         ("system",
          "You are FLEXBO Assistant. Speak like a helpful product specialist. "
@@ -137,61 +170,6 @@ def knowledge_reload(csv_path: Optional[str] = Query(default=None)):
         faq_vs = reload_vectorstore(csv_path)
     return {"status": "reloaded", "count": int(faq_vs.index.ntotal) if faq_vs else 0}
 
-# --- Prompt & sanitizer ---
-FAQ_PROMPT = ChatPromptTemplate.from_template(
-    """
-You are a FLEXBO product specialist.
-
-TASK:
-- Respond to the user question using ONLY the content in ANSWER.
-- The reply must sound natural and professional, as if spoken to a customer.
-- DO NOT mention that you are using an FAQ, a record, a context, or a source.
-- DO NOT include meta-text such as "here’s the final reply", "answer:", "user question:", etc.
-- DO NOT restate the question unless absolutely necessary.
-- DO NOT wrap the answer in quotes or code formatting.
-- If ANSWER is already clear and short, return it nearly verbatim.
-- Fix grammar/typos lightly if needed, but never add new facts.
-
-USER QUESTION:
-{question}
-
-ANSWER:
-{faq_a}
-
-Final reply to customer (one short paragraph or clean list):
-"""
-)
-
-
-# aggressively strip meta-prefaces if the model tries anyway
-_META_PATTERNS = [
-    r"^\s*based on (the )?(faq|record|context|information).{0,40}:\s*",
-    r"^\s*(according to|from) (the )?(faq|record|context).{0,40}:\s*",
-    r"^\s*(as per|per) (the )?(faq|record|context).{0,40}:\s*",
-    r"^\s*this (answer|reply) (is|was) (generated|derived).{0,80}\s*",
-]
-_META_RE = re.compile("|".join(_META_PATTERNS), re.IGNORECASE)
-
-def _clean_answer(text: str) -> str:
-    t = (text or "").strip()
-
-    # Drop any unwanted meta lines like "User Question:" or "Answer:"
-    lines = []
-    for line in t.splitlines():
-        if re.match(r"^\s*(user question|answer|final reply|here.?s)\b", line, re.I):
-            continue
-        lines.append(line)
-    t = " ".join(lines).strip()
-
-    # Strip leading/trailing quotes or markdown
-    if len(t) >= 2 and t[0] in {"'", '"', "“"} and t[-1] in {"'", '"', "”"}:
-        t = t[1:-1].strip()
-
-    # Collapse whitespace
-    t = re.sub(r"\s{2,}", " ", t)
-    return t
-
-
 # --- Chat ---
 _threads: Dict[int, Dict] = {}
 _next_id = 1
@@ -202,17 +180,15 @@ def chat(req: ChatRequest, request: Request):
     _guard_api_key(request.headers)
     start = time.time()
 
-    # ensure thread map is initialized safely
     with _lock:
         global _next_id
         tid = req.thread_id or _next_id
-        if req.thread_id is None or tid not in _threads:
+        if req.thread_id is None:
+            _next_id += 1
             _threads[tid] = {"messages": []}
-            if req.thread_id is None:
-                _next_id += 1
         _threads[tid]["messages"].append({"type": "user", "content": req.message})
 
-    # 1) retrieve
+    # 1) retrieve similar FAQs
     try:
         vs = get_faq_vs()
         pairs: List[Tuple] = vs.similarity_search_with_score(req.message, k=3)
@@ -223,21 +199,21 @@ def chat(req: ChatRequest, request: Request):
         sims = []
         print(f"[FAQ RETRIEVAL ERROR] {e}")
 
-    # 2) threshold
+    # 2) threshold -> use CSV answer (default) or LLM rewriter (optional)
     if sims:
         best_doc, best_sim = sims[0]
         if best_sim >= FAQ_SIM_THRESHOLD:
-            faq_a = (best_doc.metadata.get("answer", "") or "").strip()
-            if not STRICT_FAQ:
-                out = faq_a
-            else:
+            faq_a = best_doc.metadata.get("answer", "") or ""
+
+            if FAQ_USE_REWRITER:
                 try:
-                    msgs = FAQ_PROMPT.format_messages(question=req.message, faq_a=faq_a)
-                    ai_msg = _ollama_chat().invoke(msgs)
-                    out = getattr(ai_msg, "content", str(ai_msg)) or faq_a
-                    out = _clean_answer(out) or faq_a
+                    messages = FAQ_PROMPT.format_messages(question=req.message, faq_a=faq_a)
+                    ai_msg = _ollama_llm().invoke(messages)
+                    out = _clean_answer(getattr(ai_msg, "content", str(ai_msg)) or faq_a)
                 except Exception:
-                    out = faq_a
+                    out = _clean_answer(faq_a)
+            else:
+                out = _clean_answer(faq_a)
 
             with _lock:
                 _threads[tid]["messages"].append({"type": "bot", "content": out})
@@ -245,7 +221,7 @@ def chat(req: ChatRequest, request: Request):
             return ChatResponse(
                 thread_id=tid,
                 response=out,
-                elapsed_ms=int((time.time()-start)*1000),
+                elapsed_ms=int((time.time() - start) * 1000),
                 messages=messages,
             )
 
@@ -260,7 +236,7 @@ def chat(req: ChatRequest, request: Request):
     return ChatResponse(
         thread_id=tid,
         response=fallback,
-        elapsed_ms=int((time.time()-start)*1000),
+        elapsed_ms=int((time.time() - start) * 1000),
         messages=messages,
     )
 
@@ -269,20 +245,22 @@ def chat(req: ChatRequest, request: Request):
 def debug_sim(q: str = Query(..., min_length=1)):
     vs = get_faq_vs()
     pairs: List[Tuple] = vs.similarity_search_with_score(q, k=5)
+
     def norm(score: float) -> float:
         s = float(score)
-        return 1.0/(1.0+s) if s > 1.0 else 1.0 - s
+        return 1.0 / (1.0 + s) if s > 1.0 else 1.0 - s
+
     out = []
     for doc, score in pairs:
         out.append({
             "q": doc.page_content[:160],
-            "a": doc.metadata.get("answer","")[:160],
+            "a": doc.metadata.get("answer", "")[:160],
             "raw_score": float(score),
             "sim": round(norm(score), 4),
         })
     return {"query": q, "results": out}
 
-# --- Warm FAISS on boot ---
+# --- Startup warmup ---
 @app.on_event("startup")
 def _warm_faiss():
     global faq_vs
@@ -293,7 +271,7 @@ def _warm_faiss():
     except Exception as e:
         print(f"[STARTUP] FAISS load/build failed: {e}")
 
-# --- Echo debug ---
+# --- Debug echo (for proxy tests) ---
 @app.post("/api/debug/echo")
 def echo(payload: dict):
     return payload
