@@ -140,15 +140,17 @@ def knowledge_reload(csv_path: Optional[str] = Query(default=None)):
 # --- Prompt & sanitizer ---
 FAQ_PROMPT = ChatPromptTemplate.from_template(
     """
-You must reply using ONLY the content in ANSWER.
+You are a FLEXBO product specialist.
 
-Rules:
-- Do not invent or add details not present in ANSWER.
-- Do not say things like “based on the FAQ”, “based on the record”, “from the FAQ”, “from the context”, or similar.
-- Do not mention sources or your process.
-- Keep numbers and units exactly as written.
-- Prefer 1–2 short sentences (or a short bullet list if ANSWER is a list).
-- If you cannot answer using only ANSWER, reply with exactly ANSWER.
+TASK:
+- Respond to the user question using ONLY the content in ANSWER.
+- The reply must sound natural and professional, as if spoken to a customer.
+- DO NOT mention that you are using an FAQ, a record, a context, or a source.
+- DO NOT include meta-text such as "here’s the final reply", "answer:", "user question:", etc.
+- DO NOT restate the question unless absolutely necessary.
+- DO NOT wrap the answer in quotes or code formatting.
+- If ANSWER is already clear and short, return it nearly verbatim.
+- Fix grammar/typos lightly if needed, but never add new facts.
 
 USER QUESTION:
 {question}
@@ -156,9 +158,10 @@ USER QUESTION:
 ANSWER:
 {faq_a}
 
-Final reply (no preface, no meta-text):
+Final reply to customer (one short paragraph or clean list):
 """
 )
+
 
 # aggressively strip meta-prefaces if the model tries anyway
 _META_PATTERNS = [
@@ -171,15 +174,23 @@ _META_RE = re.compile("|".join(_META_PATTERNS), re.IGNORECASE)
 
 def _clean_answer(text: str) -> str:
     t = (text or "").strip()
-    # remove wrapping quotes the model sometimes adds
+
+    # Drop any unwanted meta lines like "User Question:" or "Answer:"
+    lines = []
+    for line in t.splitlines():
+        if re.match(r"^\s*(user question|answer|final reply|here.?s)\b", line, re.I):
+            continue
+        lines.append(line)
+    t = " ".join(lines).strip()
+
+    # Strip leading/trailing quotes or markdown
     if len(t) >= 2 and t[0] in {"'", '"', "“"} and t[-1] in {"'", '"', "”"}:
         t = t[1:-1].strip()
-    # remove any leading meta prefaces we disallow
-    t = _META_RE.sub("", t).strip()
-    # collapse excessive whitespace
-    t = re.sub(r"\s+\n", "\n", t)
-    t = re.sub(r"\n{3,}", "\n\n", t)
+
+    # Collapse whitespace
+    t = re.sub(r"\s{2,}", " ", t)
     return t
+
 
 # --- Chat ---
 _threads: Dict[int, Dict] = {}
