@@ -15,12 +15,12 @@ type LLMType = "llama" | "openai" | "claude";
 
 const tabContent = {
   products: [
-    "What types of aseptic bags do you offer?",
-    "What are the specific features of Flexbo’s aseptic bags?",
+    "What types of aseptic bags do you supply?",
+    "What are the specific features of Flexbo aseptic bags?",
     "Tell me about examples of aseptic packaging solutions",
-    "Do you have custom packaging solutions ?",
+    "Do you have custom packaging solutions?",
     "Which kind of spouts are used in IBC solutions?",
-    "What are aseptic bags used for ?",
+    "What are aseptic bags used for?",
   ],
   solutions: [
     "How can you help with environment-friendly packaging ?",
