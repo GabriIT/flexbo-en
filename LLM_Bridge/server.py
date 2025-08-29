@@ -210,7 +210,7 @@ def chat(req: ChatRequest, request: Request):
 
     # 2) threshold -> use CSV answer (default) or LLM rewriter (optional)
     if sims:
-        best_doc, best_sim = sims[0]
+        best_doc, best_sim, best_raw = sims[0]
         if best_sim >= FAQ_SIM_THRESHOLD:
             faq_a = best_doc.metadata.get("answer", "") or ""
 
