@@ -50,7 +50,7 @@ def _score_to_similarity(score: float) -> float:
     - If score > 1.0, assume 'distance' -> sim = 1/(1+score)
     - Else, assume 'cosine distance' in [0,1] -> sim = 1 - score
     """
-     try:
+    try:
         s = float(score)
     except Exception:
         return 0.0
