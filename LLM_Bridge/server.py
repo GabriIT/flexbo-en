@@ -50,14 +50,14 @@ def _score_to_similarity(score: float) -> float:
     - If score > 1.0, assume 'distance' -> sim = 1/(1+score)
     - Else, assume 'cosine distance' in [0,1] -> sim = 1 - score
     """
-    try:
+     try:
         s = float(score)
     except Exception:
         return 0.0
-    if s > 1.0:
-        return 1.0 / (1.0 + s)
+    # Treat the score as cosine *distance*
     return max(0.0, min(1.0, 1.0 - s))
-
+    
+    
 def _clean_answer(text: str) -> str:
     """Trim quotes/markdown and drop meta-headings if present."""
     t = (text or "").strip()
@@ -194,14 +194,18 @@ def chat(req: ChatRequest, request: Request):
     try:
         vs = get_faq_vs()
         pairs: List[Tuple] = vs.similarity_search_with_score(req.message, k=3)
-        sims = [(d, _score_to_similarity(s)) for d, s in pairs]
+        # sims = [(d, _score_to_similarity(s)) for d, s in pairs]
+        for d, raw in pairs:
+            sim = _score_to_similarity(raw)
+            sims.append((d, sim, raw))   # keep raw for debug
+        # sort by similarity descending        
         sims.sort(key=lambda x: x[1], reverse=True)
         print("[FAQ DEBUG]", [(d.page_content[:40], f"{sim:.3f}") for d, sim in sims])
     except Exception as e:
         sims = []
         print(f"[FAQ RETRIEVAL ERROR] {e}")
         traceback.print_exc()  # <-- add this for visibility
-        
+
 
     # 2) threshold -> use CSV answer (default) or LLM rewriter (optional)
     if sims:
@@ -276,8 +280,6 @@ def embed_ping():
         return {"ok": ok, "status": r.status_code, "len": len(r.json().get("embedding", []))}
     except Exception as e:
         return {"ok": False, "error": str(e)}
-
-
 
 
 # --- Startup warmup ---
