@@ -3,6 +3,8 @@ import os
 import re
 import time
 import threading
+import traceback
+import requests
 from typing import Dict, List, Optional, Tuple
 
 from fastapi import FastAPI, HTTPException, Request, Query
@@ -198,6 +200,8 @@ def chat(req: ChatRequest, request: Request):
     except Exception as e:
         sims = []
         print(f"[FAQ RETRIEVAL ERROR] {e}")
+        traceback.print_exc()  # <-- add this for visibility
+        
 
     # 2) threshold -> use CSV answer (default) or LLM rewriter (optional)
     if sims:
@@ -259,6 +263,22 @@ def debug_sim(q: str = Query(..., min_length=1)):
             "sim": round(norm(score), 4),
         })
     return {"query": q, "results": out}
+
+# --- Debug embeddings ping ---
+@app.get("/api/debug/embed-ping")
+def embed_ping():
+    try:
+        # a tiny “do you embed?” check through Ollama’s embeddings path
+        # LangChain hides it; we'll just do a raw ping
+        base = OLLAMA_URL.rstrip("/")
+        r = requests.post(f"{base}/api/embeddings", json={"model": os.getenv("EMBED_MODEL", "nomic-embed-text"), "prompt": "ping"})
+        ok = (r.status_code == 200) and "embedding" in r.json()
+        return {"ok": ok, "status": r.status_code, "len": len(r.json().get("embedding", []))}
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+
+
+
 
 # --- Startup warmup ---
 @app.on_event("startup")
