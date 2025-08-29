@@ -195,6 +195,7 @@ def chat(req: ChatRequest, request: Request):
         vs = get_faq_vs()
         pairs: List[Tuple] = vs.similarity_search_with_score(req.message, k=3)
         # sims = [(d, _score_to_similarity(s)) for d, s in pairs]
+        sims = []
         for d, raw in pairs:
             sim = _score_to_similarity(raw)
             sims.append((d, sim, raw))   # keep raw for debug
