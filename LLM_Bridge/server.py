@@ -201,7 +201,7 @@ def chat(req: ChatRequest, request: Request):
             sims.append((d, sim, raw))   # keep raw for debug
         # sort by similarity descending        
         sims.sort(key=lambda x: x[1], reverse=True)
-        print("[FAQ DEBUG]", [(d.page_content[:40], f"{sim:.3f}") for d, sim in sims])
+        print("[FAQ DEBUG]", [(d.page_content[:40], f"{sim:.3f}") for d, sim,raw in sims])
     except Exception as e:
         sims = []
         print(f"[FAQ RETRIEVAL ERROR] {e}")
