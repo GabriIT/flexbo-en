@@ -20,28 +20,6 @@ const Contact = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // const handleSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   setIsSubmitting(true);
-    
-  //   // Simulate form submission
-  //   setTimeout(() => {
-  //     toast({
-  //       title: "Message Sent",
-  //       description: "Thank you for your message. We will get back to you shortly.",
-  //       duration: 5000,
-  //     });
-  //     setFormData({
-  //       name: '',
-  //       email: '',
-  //       phone: '',
-  //       company: '',
-  //       message: ''
-  //     });
-  //     setIsSubmitting(false);
-  //   }, 1500);
-  // };
-
   const handleSubmit = async (e: React.FormEvent) => {
        e.preventDefault();
        setIsSubmitting(true);
@@ -114,12 +92,7 @@ const Contact = () => {
         </div>
       </section>
 
-     
-
-
-
-
-      {/* Contact Information & Form */}
+           {/* Contact Information & Form */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -270,19 +243,14 @@ const Contact = () => {
                       Send Message
                       <Send size={16} className="ml-2" />
                     </>
-                  )}
-               
-               
-               
+                  )}              
+                              
                 </button>
               </form>
             </motion.div>
           </div>
         </div>
       </section>
-
-
-
 
       {/* Map */}
       <section className="py-16 bg-gray-50">
@@ -310,7 +278,7 @@ const Contact = () => {
             className="h-96 rounded-lg overflow-hidden shadow-md"
           >
             <img 
-              src="/media/Flexbo_map1.jpg" 
+              src="/media/Flexbo_map2_0.jpg" 
               alt="Office Location Map" 
               className="w-full h-full object-cover" 
             />
