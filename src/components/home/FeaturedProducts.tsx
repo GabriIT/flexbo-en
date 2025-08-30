@@ -6,6 +6,16 @@ import { add } from 'date-fns';
 
 // ─── Featured products data ─────────────────────────────────────────────
 const featuredProducts = [
+
+// New video card - To be added last so it appears at the end
+  {
+    id: "aseptic-bags",
+    title: 'Flexbo Presentation',
+    category: "Aseptic Bags",
+    src: '/media/Flexbo_Introduction_EN.mp4',
+    mediaType: 'video', 
+  },
+
   {
     id: 'aseptic-bags',
     title: 'Premium Aseptic Bags',
@@ -53,14 +63,7 @@ const featuredProducts = [
 },
 
 
-  // New video card - To be added last so it appears at the end
-  {
-    id: "aseptic-bags",
-    title: 'Flexbo Presentation',
-    category: "Aseptic Bags",
-    src: '/media/Flexbo_Introduction_EN.mp4',
-    mediaType: 'video', 
-  },
+  
 
 ];
 
