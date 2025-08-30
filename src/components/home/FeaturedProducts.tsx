@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
+import { add } from 'date-fns';
 
 // ─── Featured products data ─────────────────────────────────────────────
 const featuredProducts = [
@@ -13,45 +14,53 @@ const featuredProducts = [
     mediaType: 'image',               // ② tell the card it’s an image
   },
   {
-    id: 'Carton or IBC Containers',
+    id: 'ibc-packaging',
     title: 'Logistics IBC Containers',
-    category: 'IBC',
+    category: 'IBC Containers', 
     src: '/media/IBC_Valves.jpg',
     mediaType: 'image',
   },
   {
-    id: 'BIB',
+    id: 'bib',
     title: 'BIB',
-    category: 'Specialty',
+    category: 'BIB',
     src: '/media/HB_bags24.jpg',
     mediaType: 'image',
   },
 
   {
-    id: 'BIB',
+    id: 'bib',
     title: 'More than 40 valves types',
-    category: 'Specialty',
+    category: 'BIB',
     src: '/media/most_common_valves.jpg',
     mediaType: 'image',
   },
 
   
   {
-    id: 'Solvent-Free Laminated Film',
+    id: 'high-barrier-laminates',
     title: 'Environment-friendly solutions',
-    category: 'Film',
+    category: 'Thermo-Laminated Film',
     src: '/media/mPet_TL.jpg',
     mediaType: 'image',
   },
 
-  
+{ id: "aseptic-bags",
+  title: "Premium Aseptic Bags", 
+  category: "Aseptic Bags",
+  src: "/media/aseptic_bag14.jpg",
+  mediaType: "image",
+},
+
+
+  // New video card - To be added last so it appears at the end
   {
-    id: 'Flexbo Intro Video',
+    id: "aseptic-bags",
     title: 'Flexbo Presentation',
-    category: 'Videos',
+    category: "Aseptic Bags",
     src: '/media/Flexbo_Introduction_EN.mp4',
     mediaType: 'video', 
-  }
+  },
 
 ];
 
