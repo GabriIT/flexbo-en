@@ -237,7 +237,7 @@ def chat(req: ChatRequest, request: Request):
     # 3) fallback
     fallback = os.getenv(
         "CONTACT_MESSAGE",
-        "This seems outside my current knowledge base. Please reach out via the Contact page (/contact) and we’ll get back to you quickly."
+        "For this  topic please reach out via the Contact page Tab on Top of Home Page and we get back to you."
     )
     with _lock:
         _threads[tid]["messages"].append({"type": "bot", "content": fallback})
