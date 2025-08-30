@@ -45,6 +45,8 @@ const Header = () => {
             <NavLink to="/products" label="Products" active={location.pathname.includes('/products')} />
             <NavLink to="/about" label="About" active={location.pathname === '/about'} />
             <NavLink to="/contact" label="Contact" active={location.pathname === '/contact'} />
+                      
+            <NavLink to="/certifications" label="Certifications" active={location.pathname === '/certifications'} />
           </nav>
 
           {/* Mobile menu button */}
@@ -65,6 +67,7 @@ const Header = () => {
             <MobileNavLink to="/products" label="Products" active={location.pathname.includes('/products')} />
             <MobileNavLink to="/about" label="About" active={location.pathname === '/about'} />
             <MobileNavLink to="/contact" label="Contact" active={location.pathname === '/contact'} />
+            <MobileNavLink to="/certifications" label="Certifications" active={location.pathname === '/certifications'} />
           </div>
         </div>
       )}

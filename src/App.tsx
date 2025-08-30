@@ -11,6 +11,8 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
+import Certifications from "./pages/Certifications";
+
 import NotFound from "./pages/NotFound";
 
 // Layout Components
@@ -46,6 +48,8 @@ export default function App() {
                   <Route path="/about" element={<About />} />
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/products" element={<Products />} />
+                  <Route path="/certifications" element={<Certifications />} />
+                  
                   <Route path="/products/:id" element={<ProductDetail />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>

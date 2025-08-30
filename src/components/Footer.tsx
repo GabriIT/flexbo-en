@@ -30,6 +30,7 @@ const Footer = () => {
               <FooterLink to="/products" label="Products" />
               <FooterLink to="/about" label="About Us" />
               <FooterLink to="/contact" label="Contact" />
+              <FooterLink to="/certifications" label="Certifications" />
             </nav>
           </div>
 
@@ -37,10 +38,10 @@ const Footer = () => {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Products</h3>
             <nav className="flex flex-col space-y-2">
-              <FooterLink to="/products/BIB" label="BIB" />
-              <FooterLink to="/products/aseptic-packaging" label="Aseptic Bags" />
+              <FooterLink to="/products/bib" label="BIB" />
+              <FooterLink to="/products/aseptic-bags" label="Aseptic Bags" />
               <FooterLink to="/products/ibc-packaging" label="IBC Packaging" />
-              <FooterLink to="/products/high-barrier-laminates" label="Custom Packaging" />
+              <FooterLink to="/products/high-barrier-laminates" label="Custom Packaging" />   
             </nav>
           </div>
 
