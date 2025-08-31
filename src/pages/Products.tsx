@@ -14,17 +14,37 @@ import { PRODUCTS } from "@/data/products";
  * because ProductCard links to /products/${id}.
  */
 const EXTRA_MEDIA: ProductCardProps[] = [
+ 
+{
+    id: "aseptic-bags",
+    title: "Flexbo_Introduction",
+    category: "Aseptic Bags",
+    src: "/Flexbo_Introduction_EN.mp4",
+    poster: "/media/Flexbo_Introduction_EN.jpg",
+    mediaType: "video",
+  },
+ 
   {
     id: "aseptic-bags",
     title: "Install: Open / Close Lid",
     category: "Aseptic Bags",
-    src: "/media/Install_Open_Close_Lid.mp4",
+    src: "/Install_Open_Close_Lid.mp4",
     poster: "/media/Install_Open_Close_Lid.jpg",
     mediaType: "video",
   },
+
+ {
+    id: "aseptic-bags",
+    title: "Install: Open / Close Lid",
+    category: "Aseptic Bags",
+    src: "/Install_tap_valve.mp4",
+    poster: "/media/Install_tap_valve.jpg",
+    mediaType: "video",
+  },
+
 ];
 
-const PLACEHOLDER = "/media/placeholder.png";
+const PLACEHOLDER = "/tjn_location.jpg";
 
 export default function Products() {
   const [activeCategory, setActiveCategory] = useState("all");

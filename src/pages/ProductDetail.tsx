@@ -27,7 +27,7 @@ const benefits = [
   },
 ];
 
-const PLACEHOLDER = "/media/placeholder.png";
+const PLACEHOLDER = "/tjn_location.jpg";
 
 export default function ProductDetail() {
   const { id } = useParams();

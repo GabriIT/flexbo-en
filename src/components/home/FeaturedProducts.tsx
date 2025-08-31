@@ -8,11 +8,15 @@ import { add } from 'date-fns';
 const featuredProducts = [
 
 // New video card - To be added last so it appears at the end
-  {
+  
+    // '/media/Flexbo_Introduction_EN.mp4',
+
+    {
     id: "aseptic-bags",
     title: 'Flexbo Presentation',
     category: "Aseptic Bags",
-    src: '/media/Flexbo_Introduction_EN.mp4',
+    src: "/Flexbo_Introduction_EN.mp4",
+
     mediaType: 'video', 
   },
 
@@ -21,9 +25,10 @@ const featuredProducts = [
     id: 'aseptic-bags',
     title: 'Premium Aseptic Bags',
     category: 'Bags',
-    src: '/media/aseptic_bag14.jpg',   // ① rename image → src
+    src: '/aseptic_bag14.jpg',   // ① rename image → src
     mediaType: 'image',               // ② tell the card it’s an image
   },
+  
   {
     id: 'ibc-packaging',
     title: 'Logistics IBC Containers',
@@ -52,20 +57,28 @@ const featuredProducts = [
     id: 'high-barrier-laminates',
     title: 'Environment-friendly solutions',
     category: 'Thermo-Laminated Film',
-    src: '/media/mPet_TL.jpg',
+    src: '/mPet_TL.jpg',
     mediaType: 'image',
   },
 
-{ id: "aseptic-bags",
-  title: "Premium Aseptic Bags", 
-  category: "Aseptic Bags",
-  src: "/media/aseptic_bag14.jpg",
-  mediaType: "image",
-},
 
+  {
+    id: "aseptic-bags",
+    title: "Install: Open / Close Lid",
+    category: "Aseptic Bags",
+    src: "/Install_Open_Close_Lid.mp4",
+    poster: "/media/Install_Open_Close_Lid.jpg",
+    mediaType: "video",
+  },
 
-  
-
+  {
+    id: "aseptic-bags",
+    title: "Install: Tap Valve",
+    category: "Aseptic Bags",
+    src: "/Install_tap_valve.mp4",
+    poster: "/Install_tap_valve.jpg",
+    mediaType: "video",
+  },
 ];
 
 const FeaturedProducts = () => (

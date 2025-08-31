@@ -25,7 +25,7 @@ export const PRODUCTS: Product[] = [
       "Spout options",
       "Optional color printing",
     ],
-    images: ["/media/aseptic_bag21.jpg", "/media/aseptic_bag14.jpg", "/media/BIB_transparent.jpg"],
+    images: ["/asepticBags21.jpg", "/aseptic_bag14.jpg", "/BIB_transparent.jpg"],
   },
   {
     id: "ibc-packaging",
@@ -72,6 +72,6 @@ export const PRODUCTS: Product[] = [
       "Eco-friendly processing/materials",
       "Fully-tracked manufacturing",
     ],
-    images: ["/media/mPet_TL.jpg"],
+    images: ["/mPet_TL.jpg"],
   },
 ];
