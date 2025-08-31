@@ -114,9 +114,11 @@ const About = () => {
                 loop           // repeat forever
                 muted          // required for autoplay on most browsers
                 playsInline    // prevent iOS full-screen takeover
+                controls       // ← add this
+                poster="/media/Flexbo_Introduction_EN.jpg"  // ← optional thumbnail
               >
-                <source src="/Flexbo_Introduction_EN.mp4" type="video/mp4" />
-                {/* // "/media/Flexbo_Introduction_EN.mp4" type="video/mp4" /> */}
+                <source src="/media/Flexbo_Introduction_EN.mp4" type="video/mp4" />
+               
                 Your browser does not support the video tag.
               </video>  
 

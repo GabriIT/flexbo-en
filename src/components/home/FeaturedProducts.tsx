@@ -12,11 +12,10 @@ const featuredProducts = [
     // '/media/Flexbo_Introduction_EN.mp4',
 
     {
-    id: "aseptic-bags",
-    title: 'Flexbo Presentation',
-    category: "Aseptic Bags",
-    src: "/Flexbo_Introduction_EN.mp4",
-
+    id: "flexbo-video",
+    title: "Flexbo_Introduction",
+    category: "Videos",
+    src: "media/Flexbo_Introduction_EN.mp4",
     mediaType: 'video', 
   },
 
@@ -25,7 +24,7 @@ const featuredProducts = [
     id: 'aseptic-bags',
     title: 'Premium Aseptic Bags',
     category: 'Bags',
-    src: '/aseptic_bag14.jpg',   // ① rename image → src
+    src: 'media/aseptic_bag14.jpg',   // ① rename image → src
     mediaType: 'image',               // ② tell the card it’s an image
   },
   
@@ -45,6 +44,14 @@ const featuredProducts = [
   },
 
   {
+    id: 'high-barrier-laminates',
+    title: 'Environment-friendly solutions',
+    category: 'Thermo-Laminated Film',
+    src: 'media/mPet_TL.jpg',
+    mediaType: 'image',
+  },
+
+  {
     id: 'bib',
     title: 'More than 40 valves types',
     category: 'BIB',
@@ -52,31 +59,21 @@ const featuredProducts = [
     mediaType: 'image',
   },
 
-  
   {
-    id: 'high-barrier-laminates',
-    title: 'Environment-friendly solutions',
-    category: 'Thermo-Laminated Film',
-    src: '/mPet_TL.jpg',
-    mediaType: 'image',
-  },
-
-
-  {
-    id: "aseptic-bags",
-    title: "Install: Open / Close Lid",
-    category: "Aseptic Bags",
-    src: "/Install_Open_Close_Lid.mp4",
-    poster: "/media/Install_Open_Close_Lid.jpg",
+    id: "OpenCloseInstall-video",
+    title: "Install Open / Close Lid",
+    category: "Videos",
+    src: "/media/Install_Open_Close_Lid.mp4",
+    poster: "/media/most_common_valves.jpg",
     mediaType: "video",
   },
 
   {
-    id: "aseptic-bags",
-    title: "Install: Tap Valve",
-    category: "Aseptic Bags",
-    src: "/Install_tap_valve.mp4",
-    poster: "/Install_tap_valve.jpg",
+    id: "InstallTapValve-video",
+    title: "Install Tap Valve",
+    category: "Videos",
+    src: "media/Install_tap_valve.mp4",
+    poster: "/media/most_common_valves.jpg",
     mediaType: "video",
   },
 ];

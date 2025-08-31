@@ -15,32 +15,32 @@ import { PRODUCTS } from "@/data/products";
  */
 const EXTRA_MEDIA: ProductCardProps[] = [
  
-{
-    id: "aseptic-bags",
-    title: "Flexbo_Introduction",
-    category: "Aseptic Bags",
-    src: "/Flexbo_Introduction_EN.mp4",
-    poster: "/media/Flexbo_Introduction_EN.jpg",
-    mediaType: "video",
-  },
+// {
+//     id: "flexbo-video",
+//     title: "Flexbo_Introduction",
+//     category: "Videos",
+//     src: "/Flexbo_Introduction_EN.mp4",
+//     poster: "/media/Flexbo_Introduction_EN.jpg",
+//     mediaType: "video",
+//   },
  
-  {
-    id: "aseptic-bags",
-    title: "Install: Open / Close Lid",
-    category: "Aseptic Bags",
-    src: "/Install_Open_Close_Lid.mp4",
-    poster: "/media/Install_Open_Close_Lid.jpg",
-    mediaType: "video",
-  },
+//   {
+//     id: "OpenCloseInstall-video",
+//     title: "Install Open / Close Lid",
+//     category: "Videos",
+//     src: "/Install_Open_Close_Lid.mp4",
+//     poster: "/media/most_common_valves.jpg",
+//     mediaType: "video",
+//   },
 
- {
-    id: "aseptic-bags",
-    title: "Install: Open / Close Lid",
-    category: "Aseptic Bags",
-    src: "/Install_tap_valve.mp4",
-    poster: "/media/Install_tap_valve.jpg",
-    mediaType: "video",
-  },
+//  {
+//     id: "InstallTapValve-video",
+//     title: "Install Tap Valve",
+//     category: "Videos",
+//     src: "/Install_tap_valve.mp4",
+//     poster: "/media/most_common_valves.jpg",
+//     mediaType: "video",
+//   },
 
 ];
 
