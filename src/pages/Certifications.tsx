@@ -24,7 +24,7 @@ export default function Certifications() {
           <CertCard title="ISO 9001, ISO 14001" details="Quality Management System." />
           <CertCard title="BRC " details="Food-contact manufacturing best practices." />
           <CertCard title="FDA Compliance" details="Materials compliant for specific food-contact uses." />
-          <CertCard title="EU 10/2010" details="Materials intended to come into contact with food." />
+          <CertCard title="EU 10/2011" details="Materials intended to come into contact with food." />
         </div>
       </section>
     </div>
