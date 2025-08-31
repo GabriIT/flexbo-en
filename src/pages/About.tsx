@@ -107,14 +107,18 @@ const About = () => {
               viewport={{ once: true }}
               className="relative"
             >
+               <br /><br />
               <video
                 className="w-full h-full object-cover"
                 autoPlay       // play immediately
                 loop           // repeat forever
                 muted          // required for autoplay on most browsers
                 playsInline    // prevent iOS full-screen takeover
+                controls       // ← add this
+                poster="/media/Flexbo_Introduction_EN.jpg"  // ← optional thumbnail
               >
                 <source src="/media/Flexbo_Introduction_EN.mp4" type="video/mp4" />
+               
                 Your browser does not support the video tag.
               </video>  
 
@@ -125,6 +129,8 @@ const About = () => {
                 alt="Our Workshop" 
                 className="rounded-lg shadow-lg w-full"
               /> */}
+              <br /><br />
+
               <div className="absolute -bottom-6 -right-6 bg-white p-4 rounded-lg shadow-lg hidden md:block">
                 <Award size={40} className="text-primary" />
                 <p className="mt-2 font-medium text-sm text-gray-900">Excellence in Packaging</p>
@@ -142,7 +148,7 @@ const About = () => {
                 Our Story
               </span>
               <h2 className="text-3xl font-bold text-gray-900">
-                Creating Premium Packaging Since 2012
+                Creating Premium Packaging Since 2011
               </h2>
               <p className="text-gray-600">
                 Flexbo Packaging was founded with a mission to provide reliable, effective and environment-friendly 

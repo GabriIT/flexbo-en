@@ -1,9 +1,7 @@
 // src/lib/api.ts
 function baseUrl() {
-  const raw = import.meta.env.VITE_BACKEND_URL ?? "";
-  const val = raw.trim();
-  if (val === "" || val === "/") return "";   // same-origin
-  return val.replace(/\/+$/, "");             // strip trailing slash
+  const raw = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
+  return raw.replace(/\/+$/, ""); // strip trailing slash
 }
 
 export async function sendChat(message: string, threadId?: number) {
