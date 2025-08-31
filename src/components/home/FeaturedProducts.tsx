@@ -15,7 +15,7 @@ const featuredProducts = [
     id: "flexbo-video",
     title: "Flexbo_Introduction",
     category: "Videos",
-    src: "media/Flexbo_Introduction_EN.mp4",
+    src: "/media/Flexbo_Introduction_EN.mp4",
     mediaType: 'video', 
   },
 
@@ -24,7 +24,7 @@ const featuredProducts = [
     id: 'aseptic-bags',
     title: 'Premium Aseptic Bags',
     category: 'Bags',
-    src: 'media/aseptic_bag14.jpg',   // ① rename image → src
+    src: '/media/aseptic_bag14.jpg',   // ① rename image → src
     mediaType: 'image',               // ② tell the card it’s an image
   },
   
