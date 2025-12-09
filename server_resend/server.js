@@ -3,6 +3,7 @@ import 'dotenv/config';          // ← loads .env into process.env
 import express from 'express';
 import cors    from 'cors';
 import path    from 'path';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import forwardHandler from './api/forward.js';
 
 // ───────── DEBUG ─ log every mount path ─────────
@@ -34,6 +35,14 @@ app.use(cors());
 app.use(express.json());
 app.use('/media', express.static('/media')); // static media files from VPS assets
 // --- API -----------
+// Proxy /api/chat to Python backend
+const pyBackend = process.env.PY_BACKEND || 'http://127.0.0.1:8000';
+app.use('/api/chat', createProxyMiddleware({
+  target: pyBackend,
+  changeOrigin: true,
+  pathRewrite: { '^/api/chat': '/api/chat' }
+}));
+
 app.post('/api/forward', forwardHandler);
 
 // --- Static React build -----------
