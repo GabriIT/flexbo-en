@@ -35,14 +35,22 @@ app.use(cors());
 app.use(express.json());
 app.use('/media', express.static('/media')); // static media files from VPS assets
 // --- API -----------
-// Proxy /api/chat to Python backend
-const pyBackend = process.env.PY_BACKEND || 'http://127.0.0.1:8000';
-app.use('/api/chat', createProxyMiddleware({
-  target: pyBackend,
-  changeOrigin: true
-}));
-
+// Email forwarding (Node.js handler)
 app.post('/api/forward', forwardHandler);
+
+// Proxy all other /api/* to Python backend (except /api/forward)
+const pyBackend = process.env.PY_BACKEND || 'http://127.0.0.1:8000';
+app.use('/api/', (req, res, next) => {
+  // Skip /api/forward - handle locally
+  if (req.path === '/forward') {
+    return next();
+  }
+  // Proxy everything else to Python backend
+  createProxyMiddleware({
+    target: pyBackend,
+    changeOrigin: true
+  })(req, res, next);
+});
 
 // --- Static React build -----------
 // const dist = path.join(path.resolve(), 'dist');   // vite build output
