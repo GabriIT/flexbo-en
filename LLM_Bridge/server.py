@@ -27,9 +27,8 @@ from .polish_answer import polish_answer   # ensure LLM_Bridge/polish_answer.py 
 # Load .env that sits next to this file
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"))
 
-DB_URL = os.getenv("RAG_DB_URL")
-if not DB_URL:
-    raise RuntimeError("RAG_DB_URL not set (put it in LLM_Bridge/.env or export it)")
+DB_URL = os.getenv("RAG_DB_URL", "postgresql://user:pass@localhost/dummy")
+# RAG_DB_URL is optional - using dummy default if not provided
 
 MODEL_NAME = os.getenv("OLLAMA_MODEL", "llama3.2:latest")
 EMBED_MODEL = os.getenv("EMBED_MODEL", "nomic-embed-text")
