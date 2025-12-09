@@ -310,7 +310,7 @@ const Contact = () => {
             className="h-96 rounded-lg overflow-hidden shadow-md"
           >
             <img 
-              src="/media/Flexbo_map1.jpg" 
+              src="media/tjn_location.jpg"
               alt="Office Location Map" 
               className="w-full h-full object-cover" 
             />

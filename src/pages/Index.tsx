@@ -21,12 +21,12 @@ const Index = () => {
 
   return (
     <div className="overflow-hidden">
-      {/* ChatBot Component */}
+      {/* ChatBot Component
       <ChatBotModal 
         isOpen={isOpen} 
         onClose={toggleChat} 
         defaultLLM={defaultLLM}
-      />
+      /> */}
 
       {/* Hero Section */}
       <HeroSection />

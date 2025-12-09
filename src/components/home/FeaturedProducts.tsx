@@ -2,9 +2,24 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
+import { add } from 'date-fns';
 
 // ─── Featured products data ─────────────────────────────────────────────
 const featuredProducts = [
+
+// New video card - To be added last so it appears at the end
+  
+    // '/media/Flexbo_Introduction_EN.mp4',
+
+    {
+    id: "flexbo-video",
+    title: "Flexbo_Introduction",
+    category: "Videos",
+    src: "/media/Flexbo_Introduction_EN.mp4",
+    mediaType: 'video', 
+  },
+
+
   {
     id: 'aseptic-bags',
     title: 'Premium Aseptic Bags',
@@ -12,47 +27,55 @@ const featuredProducts = [
     src: '/media/aseptic_bag14.jpg',   // ① rename image → src
     mediaType: 'image',               // ② tell the card it’s an image
   },
+  
   {
-    id: 'Carton or IBC Containers',
+    id: 'ibc-packaging',
     title: 'Logistics IBC Containers',
-    category: 'IBC',
+    category: 'IBC Containers', 
     src: '/media/IBC_Valves.jpg',
     mediaType: 'image',
   },
   {
-    id: 'BIB',
+    id: 'bib',
     title: 'BIB',
-    category: 'Specialty',
+    category: 'BIB',
     src: '/media/HB_bags24.jpg',
     mediaType: 'image',
   },
 
   {
-    id: 'BIB',
+    id: 'high-barrier-laminates',
+    title: 'Environment-friendly solutions',
+    category: 'Thermo-Laminated Film',
+    src: 'media/mPet_TL.jpg',
+    mediaType: 'image',
+  },
+
+  {
+    id: 'bib',
     title: 'More than 40 valves types',
-    category: 'Specialty',
+    category: 'BIB',
     src: '/media/most_common_valves.jpg',
     mediaType: 'image',
   },
 
-  
   {
-    id: 'Solvent-Free Laminated Film',
-    title: 'Environment-friendly solutions',
-    category: 'Film',
-    src: '/media/mPet_TL.jpg',
-    mediaType: 'image',
+    id: "OpenCloseInstall-video",
+    title: "Install Open / Close Lid",
+    category: "Videos",
+    src: "/media/Install_Open_Close_Lid.mp4",
+    poster: "/media/most_common_valves.jpg",
+    mediaType: "video",
   },
 
-  
   {
-    id: 'Flexbo Intro Video',
-    title: 'Flexbo Presentation',
-    category: 'Videos',
-    src: '/media/Flexbo_Introduction_EN.mp4',
-    mediaType: 'video', 
-  }
-
+    id: "InstallTapValve-video",
+    title: "Install Tap Valve",
+    category: "Videos",
+    src: "media/Install_tap_valve.mp4",
+    poster: "/media/most_common_valves.jpg",
+    mediaType: "video",
+  },
 ];
 
 const FeaturedProducts = () => (

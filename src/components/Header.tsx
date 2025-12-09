@@ -43,8 +43,11 @@ const Header = () => {
           <nav className="hidden md:flex items-center space-x-8">
             <NavLink to="/" label="Home" active={location.pathname === '/'} />
             <NavLink to="/products" label="Products" active={location.pathname.includes('/products')} />
-            <NavLink to="/about" label="About" active={location.pathname === '/about'} />
+            
             <NavLink to="/contact" label="Contact" active={location.pathname === '/contact'} />
+                      
+            <NavLink to="/certifications" label="Certifications" active={location.pathname === '/certifications'} />
+            <NavLink to="/about" label="About" active={location.pathname === '/about'} />
           </nav>
 
           {/* Mobile menu button */}
@@ -63,9 +66,10 @@ const Header = () => {
           <div className="px-2 pt-2 pb-3 space-y-1">
             <MobileNavLink to="/" label="Home" active={location.pathname === '/'} />
             <MobileNavLink to="/products" label="Products" active={location.pathname.includes('/products')} />
-            <MobileNavLink to="/about" label="About" active={location.pathname === '/about'} />
+           
             <MobileNavLink to="/contact" label="Contact" active={location.pathname === '/contact'} />
-          </div>
+            <MobileNavLink to="/certifications" label="Certifications" active={location.pathname === '/certifications'} />
+            <MobileNavLink to="/about" label="About" active={location.pathname === '/about'} />         </div>
         </div>
       )}
     </header>
