@@ -10,9 +10,9 @@ from pydantic import BaseModel, Field
 
 from dotenv import load_dotenv
 
-from sqlalchemy import create_engine, text as sql_text, bindparam, event
-from pgvector.sqlalchemy import Vector
-from pgvector.psycopg import register_vector
+# # from sqlalchemy import create_engine, text as sql_text, bindparam, event
+# # from pgvector.sqlalchemy import Vector
+# # from pgvector.psycopg import register_vector
 
 from langchain_community.llms import Ollama
 from langchain_community.embeddings import OllamaEmbeddings
@@ -52,9 +52,9 @@ print(f"Using DB_URL: {DB_URL}")
 print(f"Using OLLAMA_HOST: {OLLAMA_HOST}")
 
 # ---------------- Infra ----------------
-engine = create_engine(DB_URL, future=True)
-
-@event.listens_for(engine, "connect")
+# engine = create_engine(DB_URL, future=True)
+# 
+# @event.listens_for(engine, "connect")
 def register_vector_on_connect(dbapi_connection, connection_record):
     try:
         register_vector(dbapi_connection)  # registers pgvector for psycopg3
