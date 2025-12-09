@@ -39,8 +39,7 @@ app.use('/media', express.static('/media')); // static media files from VPS asse
 const pyBackend = process.env.PY_BACKEND || 'http://127.0.0.1:8000';
 app.use('/api/chat', createProxyMiddleware({
   target: pyBackend,
-  changeOrigin: true,
-  pathRewrite: { '^/api/chat': '/api/chat' }
+  changeOrigin: true
 }));
 
 app.post('/api/forward', forwardHandler);
