@@ -16,6 +16,7 @@ from dotenv import load_dotenv
 
 from langchain_community.llms import Ollama
 from langchain_community.embeddings import OllamaEmbeddings
+from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
@@ -132,31 +133,43 @@ CITED_ANSWER_PROMPT = ChatPromptTemplate.from_messages([
      "QUESTION:\n{question}\n\nCONTEXT SNIPPETS (ordered):\n{snippets}\n"),
 ])
 
-# ---------------- Search (pgvector) ----------------
+# ---------------- Search (FAISS) ----------------
+# Load FAISS index from knowledge_loader
+try:
+    from LLM_Bridge.knowledge_loader import build_or_load_vectorstore
+    vectorstore, _ = build_or_load_vectorstore()
+    print("✓ FAISS vectorstore loaded from FAQ CSV")
+except Exception as e:
+    print(f"⚠ FAISS loading failed: {e}")
+    vectorstore = None
+
 def search_kb(query: str, k: int):
-    vec = emb.embed_query(query)  # list[float], length EMBED_DIM
-    q = sql_text("""
-        SELECT id, source_type, url, title, section_anchor, content,
-               1 - (embedding <=> :vec) AS score
-        FROM kb_chunks
-        ORDER BY embedding <=> :vec
-        LIMIT :k
-    """).bindparams(
-        bindparam("vec", value=vec, type_=Vector(EMBED_DIM)),
-        bindparam("k", value=k)
-    )
-    with engine.begin() as conn:
-        rows = conn.execute(q).mappings().all()
-    return rows
+    """Search FAISS index for FAQ matches"""
+    if not vectorstore:
+        return []
+    try:
+        docs = vectorstore.similarity_search_with_score(query, k=k)
+        results = []
+        for doc, score in docs:
+            results.append({
+                "title": "FAQ Answer",
+                "content": doc.metadata.get("answer", doc.page_content),
+                "score": float(score),
+                "url": None
+            })
+        return results
+    except Exception as e:
+        print(f"⚠ FAISS search error: {e}")
+        return []
 
 def rows_to_snippets(rows):
     blocks = []
-    for i, r in enumerate(rows, start=1):
-        title = r.get("title") or (r.get("url") or "Untitled")
-        url = r.get("url")
-        body = r.get("content", "")
-        snippet = body if len(body) <= 700 else body[:700] + "..."
-        blocks.append(f"[{i}] {title} — {snippet} ({url})")
+    for i, row in enumerate(rows, start=1):
+        title = row.get("title", "FAQ")
+        content = row.get("content", "")
+        score = row.get("score", 0)
+        snippet = content if len(content) <= 700 else content[:700] + "..."
+        blocks.append(f"[{i}] {title} (confidence: {score:.1%}): {snippet}")
     return "\n\n".join(blocks)
 
 # ---------------- Models ----------------
