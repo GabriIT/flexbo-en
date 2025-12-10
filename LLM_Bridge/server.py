@@ -60,7 +60,7 @@ def register_vector_on_connect(dbapi_connection, connection_record):
     except Exception:
         pass
 
-emb = OllamaEmbeddings(model=EMBED_MODEL)
+# emb = OllamaEmbeddings(model=EMBED_MODEL)  # Not needed - using simple FAQ matching
 
 def _guard_api_key(headers) -> None:
     if not REQUIRE_API_KEY:
