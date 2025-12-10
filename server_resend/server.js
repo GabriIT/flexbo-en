@@ -1,29 +1,31 @@
-import 'dotenv/config';          // ← loads .env into process.env
-
+import 'dotenv/config';
 import express from 'express';
-import cors    from 'cors';
-import path    from 'path';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import forwardHandler from './api/forward.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname  = path.dirname(__filename);
+
 const app  = express();
-const port = process.env.PORT || 3000;   // Dokku/Heroku will inject PORT
+const port = process.env.PORT || 5000;
+const PY_BACKEND = process.env.PY_BACKEND || 'http://127.0.0.1:8000';
 
-app.use(cors());
+console.log(`[Server] Python backend at: ${PY_BACKEND}`);
+
+// Parse JSON globally for all routes that need it
 app.use(express.json());
-app.use('/media', express.static('/media')); // static media files from VPS assets
+app.use(express.urlencoded({ extended: false }));
 
-// --- API -----------
 // Email forwarding (Node.js handler)
 app.post('/api/forward', forwardHandler);
 
 // Proxy all other /api/* to Python backend
-const PY_BACKEND = process.env.PY_BACKEND || 'http://127.0.0.1:8000';
-console.log(`[Server] Python backend at: ${PY_BACKEND}`);
-
 const apiProxy = createProxyMiddleware({
   target: PY_BACKEND,
-  changeOrigin: true,
+  changeOrigin: false,
+  logLevel: 'warn',
   pathRewrite: (path) => '/api' + path,  // Add /api prefix back for FastAPI
   onProxyReq(proxyReq, req, res) {
     if (req.body && typeof req.body === 'object') {
@@ -32,20 +34,23 @@ const apiProxy = createProxyMiddleware({
       proxyReq.setHeader('Content-Length', Buffer.byteLength(body));
       proxyReq.write(body);
     }
+  },
+  onError(err, req, res) {
+    console.error('[PROXY:ERROR]', req.method, req.path, err?.message);
+    if (!res.headersSent) res.writeHead(502, { 'Content-Type': 'text/plain' });
+    res.end('Proxy error');
   }
 });
 
-app.use('/api/', (req, res, next) => {
-  if (req.path === '/forward') {
-    return next();  // /api/forward handled locally above
-  }
-  apiProxy(req, res, next);
-});
+app.use('/api/', apiProxy);
 
-// --- Static React build -----------
+// Static media files
+app.use('/media', express.static('/media'));
+
+// Static React build
 const dist = path.join(path.resolve(), 'dist');
 app.use(express.static(dist));
-app.get(/^\/(?!api).*/, (_, res) =>
+app.get(/^\/(?!api|media).*/, (_, res) =>
   res.sendFile(path.join(dist, 'index.html'))
 );
 
