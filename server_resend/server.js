@@ -20,15 +20,16 @@ const PY_BACKEND = process.env.PY_BACKEND || 'http://127.0.0.1:8000';
 console.log(`[Server] Python backend at: ${PY_BACKEND}`);
 
 // Helper to forward request to Python backend
-function forwardToPython(method, path, body, res) {
+function forwardToPython(method, pyPath, body, headers, res) {
   const url = new URL(PY_BACKEND);
   const options = {
     hostname: url.hostname,
     port: url.port,
-    path: path,
+    path: pyPath,
     method: method,
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      ...headers  // Forward all headers including auth
     }
   };
   
@@ -47,6 +48,7 @@ function forwardToPython(method, path, body, res) {
     res.status(502).json({ error: 'Bad Gateway' });
   });
   
+  req.setTimeout(30000);
   if (body) {
     req.write(JSON.stringify(body));
   }
@@ -58,20 +60,23 @@ app.post('/api/forward', forwardHandler);
 
 // Proxy GET endpoints
 app.get('/api/health', (req, res) => {
-  forwardToPython('GET', '/api/health', null, res);
+  forwardToPython('GET', '/api/health', null, {}, res);
 });
 
 app.get('/api/debug/sim', (req, res) => {
-  forwardToPython('GET', `/api/debug/sim?q=${req.query.q || ''}`, null, res);
+  const q = req.query.q ? encodeURIComponent(req.query.q) : '';
+  forwardToPython('GET', `/api/debug/sim?q=${q}`, null, {}, res);
 });
 
 // Proxy POST endpoints
 app.post('/api/chat', (req, res) => {
-  forwardToPython('POST', '/api/chat', req.body, res);
+  const headers = req.headers['x-api-key'] ? { 'x-api-key': req.headers['x-api-key'] } : {};
+  forwardToPython('POST', '/api/chat', req.body, headers, res);
 });
 
 app.post('/api/debug/echo', (req, res) => {
-  forwardToPython('POST', '/api/debug/echo', req.body, res);
+  const headers = req.headers['x-api-key'] ? { 'x-api-key': req.headers['x-api-key'] } : {};
+  forwardToPython('POST', '/api/debug/echo', req.body, headers, res);
 });
 
 // Static files
