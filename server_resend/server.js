@@ -24,9 +24,7 @@ console.log(`[Server] Python backend at: ${PY_BACKEND}`);
 const apiProxy = createProxyMiddleware({
   target: PY_BACKEND,
   changeOrigin: true,
-  pathRewrite: {
-    '^/api': '/api'  // Keep /api prefix for FastAPI
-  },
+  pathRewrite: (path) => '/api' + path,  // '/chat' -> '/api/chat'
   ws: false,
   timeout: 30000,
   proxyTimeout: 30000,
