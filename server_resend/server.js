@@ -1,93 +1,52 @@
 import 'dotenv/config';          // ← loads .env into process.env
 
 import express from 'express';
-import cors from 'cors';
-import path from 'path';
+import cors    from 'cors';
+import path    from 'path';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import forwardHandler from './api/forward.js';
 
-// ───────── DEBUG ─ log every mount path ─────────
-// import util from 'util';
-// const rProto = express.Router.prototype;
-
-// const log = (verb, p) =>
-//   console.log(`${verb.padEnd(4)}:`, util.inspect(p, { colors: true }));
-
-// // hook .route(path)
-// const _route = rProto.route;
-// rProto.route = function (p) { log('GET ', p); return _route.call(this, p); };
-
-// // hook .use([path], fn)
-// const _use = rProto.use;
-// rProto.use = function (p) {
-//   // .use(fn)   → first arg is a function, path defaults to '/'
-//   const path = typeof p === 'function' ? '/' : p;
-//   log('USE ', path);
-//   return _use.apply(this, arguments);
-// };
-// ────────────────────────────────────────────────
-
-
-const app = express();
+const app  = express();
 const port = process.env.PORT || 3000;   // Dokku/Heroku will inject PORT
 
 app.use(cors());
 app.use(express.json());
 app.use('/media', express.static('/media')); // static media files from VPS assets
+
 // --- API -----------
 // Email forwarding (Node.js handler)
 app.post('/api/forward', forwardHandler);
 
-// Proxy /api/chat and other Python endpoints
-const pyBackend = process.env.PY_BACKEND || 'http://127.0.0.1:8000';
-console.log(`[Server] Python backend configured at: ${pyBackend}`);
+// Proxy all other /api/* to Python backend
+const PY_BACKEND = process.env.PY_BACKEND || 'http://127.0.0.1:8000';
+console.log(`[Server] Python backend at: ${PY_BACKEND}`);
 
-// Debug middleware
-app.use((req, res, next) => {
-  if (req.path.startsWith('/api/')) {
-    console.log(`[Routing] ${req.method} ${req.path}`);
+const apiProxy = createProxyMiddleware({
+  target: PY_BACKEND,
+  changeOrigin: true,
+  pathRewrite: (path) => '/api' + path,  // Add /api prefix back for FastAPI
+  onProxyReq(proxyReq, req, res) {
+    if (req.body && typeof req.body === 'object') {
+      const body = JSON.stringify(req.body);
+      proxyReq.setHeader('Content-Type', 'application/json');
+      proxyReq.setHeader('Content-Length', Buffer.byteLength(body));
+      proxyReq.write(body);
+    }
   }
-  next();
 });
-console.log(`[Server] Python backend configured at: ${pyBackend}`);
 
-// Debug middleware
-app.use((req, res, next) => {
-  if (req.path.startsWith('/api/')) {
-    console.log(`[Routing] ${req.method} ${req.path}`);
+app.use('/api/', (req, res, next) => {
+  if (req.path === '/forward') {
+    return next();  // /api/forward handled locally above
   }
-  next();
+  apiProxy(req, res, next);
 });
-app.use('/api/chat', createProxyMiddleware({
-  target: pyBackend,
-  changeOrigin: true
-}));
-app.use('/api/health', createProxyMiddleware({
-  target: pyBackend,
-  changeOrigin: true
-}));
-app.use('/api/thread', createProxyMiddleware({
-  target: pyBackend,
-  changeOrigin: true
-}));
-app.use('/api/knowledge', createProxyMiddleware({
-  target: pyBackend,
-  changeOrigin: true
-}));
 
 // --- Static React build -----------
-// const dist = path.join(path.resolve(), 'dist');   // vite build output
-// app.use(express.static(dist));
-// app.get('*', (_, res) => res.sendFile(path.join(dist, 'index.html')));
-
-
-// serve built React files (prod)
 const dist = path.join(path.resolve(), 'dist');
 app.use(express.static(dist));
-// app.get('/*', (_, res) => res.sendFile(path.join(dist, 'index.html')));
 app.get(/^\/(?!api).*/, (_, res) =>
   res.sendFile(path.join(dist, 'index.html'))
 );
 
 app.listen(port, () => console.log(`Server listening on ${port}`));
-
