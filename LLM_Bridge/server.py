@@ -40,14 +40,11 @@ def health():
 
 @app.post("/api/chat")
 def chat(req: ChatRequest, request: Request):
-    print(f"[CHAT] Message: {req.message[:50]}, API key required: {REQUIRE_API_KEY}")
-    
-    if REQUIRE_API_KEY:
-        key = request.headers.get("x-api-key")
-        print(f"[CHAT] Checking API key: {key}")
-        if key != API_KEY:
-            print(f"[CHAT] API key check failed")
-            raise HTTPException(status_code=401, detail="Invalid API key")
+    # API key disabled for testing
+    # if REQUIRE_API_KEY:
+    #     key = request.headers.get("x-api-key")
+    #     if key != API_KEY:
+    #         raise HTTPException(status_code=401, detail="Invalid API key")
     
     start = time.time()
     response = "Please contact support"
