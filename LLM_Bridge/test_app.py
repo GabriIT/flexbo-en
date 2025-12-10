@@ -2,10 +2,6 @@ from fastapi import FastAPI
 
 app = FastAPI(title="Test App")
 
-@app.get("/api/test")
-def test():
-    return {"message": "test successful"}
-
 @app.get("/api/health")  
 def health():
     return {"status": "ok"}
