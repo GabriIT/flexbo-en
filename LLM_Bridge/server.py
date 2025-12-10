@@ -199,10 +199,17 @@ _next_id = 1
 _lock = threading.Lock()
 
 # ---------------- Routes ----------------
-
 @app.get("/api/health")
 def health():
-    return {"status": "ok"}
+    return {
+        "status": "ok",
+        "model": MODEL_NAME,
+        "embed_model": EMBED_MODEL,
+        "db": DB_URL.split("@")[-1],  # hide credentials
+        "kb_topk": KB_TOPK,
+        "kb_confidence": KB_CONFIDENCE,
+        "embed_dim": EMBED_DIM,
+    }
 
 @app.post("/api/chat", response_model=ChatResponse)
 def chat(req: ChatRequest, request: Request):
@@ -235,15 +242,16 @@ def chat(req: ChatRequest, request: Request):
         top_score = float(rows[0].get("score") or 0.0)
         if top_score >= KB_CONFIDENCE:
             try:
-                snippets = rows_to_snippets(rows)
-                llm = Ollama(model=MODEL_NAME, temperature=0.2)
-                prompt_msgs = CITED_ANSWER_PROMPT.format_messages(question=req.message, snippets=snippets)
-                output = StrOutputParser().invoke(llm.invoke(prompt_msgs))
-                # polish style (strip meta-talk, collapse blanks)
-                output = polish_answer(output)
+                # Return FAQ content directly (no Ollama needed for FAQ-based chatbot)
+                output = rows[0].get("content", "")
+                if not output:
+                    output = rows_to_snippets(rows)
+                else:
+                    # Limit to reasonable length
+                    output = output if len(output) <= 800 else output[:800] + "..."
             except Exception as e:
-                print(f"[KB LLM ERROR] {e}")
-                output = rows[0].get("content")[:600] + "..."
+                print(f"[KB RETRIEVAL ERROR] {e}")
+                output = CONTACT_MESSAGE
 
             # top 3 typed sources
             for i, r in enumerate(rows[:3], start=1):
