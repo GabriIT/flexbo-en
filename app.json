@@ -1,0 +1,17 @@
+{
+  "name": "flexbo",
+  "description": "Flexbo Aseptic Packaging - FAQ Chatbot",
+  "website": "https://flexbo.athenalabo.com",
+  "repository": "https://github.com/GabriIT/flexbo-en",
+  "keywords": ["flexbo", "packaging", "chatbot"],
+  "env": {
+    "PY_BACKEND": {
+      "description": "Python FastAPI backend URL",
+      "value": "http://127.0.0.1:8000"
+    },
+    "NODE_ENV": {
+      "description": "Node environment",
+      "value": "production"
+    }
+  }
+}
