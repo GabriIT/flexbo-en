@@ -15,8 +15,6 @@ from dotenv import load_dotenv
 # # from pgvector.psycopg import register_vector
 
 from langchain_community.llms import Ollama
-from langchain_community.embeddings import OllamaEmbeddings
-from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
@@ -134,32 +132,32 @@ CITED_ANSWER_PROMPT = ChatPromptTemplate.from_messages([
 ])
 
 # ---------------- Search (FAISS) ----------------
-# Load FAISS index from knowledge_loader
+# Load FAQ store (no embeddings needed)
 try:
-    from LLM_Bridge.knowledge_loader import build_or_load_vectorstore
-    vectorstore, _ = build_or_load_vectorstore()
-    print("✓ FAISS vectorstore loaded from FAQ CSV")
+    from LLM_Bridge.simple_faq_loader import get_faq_store
+    faq_store = get_faq_store()
+    print("✓ FAQ store loaded from CSV")
 except Exception as e:
-    print(f"⚠ FAISS loading failed: {e}")
-    vectorstore = None
+    print(f"⚠ FAQ loading failed: {e}")
+    faq_store = None
 
 def search_kb(query: str, k: int):
-    """Search FAISS index for FAQ matches"""
-    if not vectorstore:
+    """Search FAQ store for matching answers"""
+    if not faq_store:
         return []
     try:
-        docs = vectorstore.similarity_search_with_score(query, k=k)
+        qa_results = faq_store.similarity_search(query, k=k)
         results = []
-        for doc, score in docs:
+        for qa in qa_results:
             results.append({
-                "title": "FAQ Answer",
-                "content": doc.metadata.get("answer", doc.page_content),
-                "score": float(score),
+                "title": "FAQ",
+                "content": qa["answer"],
+                "score": 1.0,
                 "url": None
             })
         return results
     except Exception as e:
-        print(f"⚠ FAISS search error: {e}")
+        print(f"⚠ FAQ search error: {e}")
         return []
 
 def rows_to_snippets(rows):
