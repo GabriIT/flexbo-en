@@ -56,17 +56,16 @@ def _guard_api_key(headers) -> None:
 
 def search_faq(query: str, k: int = 3) -> List[Dict]:
     """Search FAQ and return matching results."""
-    if not faq_store or not faq_store.documents:
+    if not faq_store or not faq_store.qa_pairs:
         return []
     
     try:
         results = faq_store.similarity_search_with_score(query, k=k)
         output = []
-        for doc, score in results:
-            answer = doc.metadata.get("answer", "")
+        for result, score in results:
             output.append({
-                "question": doc.page_content,
-                "answer": answer,
+                "question": result.get("question", ""),
+                "answer": result.get("answer", ""),
                 "score": float(score)
             })
         return output
@@ -107,7 +106,7 @@ _lock = threading.Lock()
 def health():
     return {
         "status": "ok",
-        "faq_count": len(faq_store.documents) if faq_store else 0,
+        "faq_count": len(faq_store.qa_pairs) if faq_store else 0,
     }
 
 @app.post("/api/chat", response_model=ChatResponse)
