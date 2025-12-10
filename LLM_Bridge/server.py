@@ -6,7 +6,7 @@ Uses simple keyword-based FAQ matching (no Ollama or embeddings required)
 import os
 import time
 import threading
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 from fastapi import FastAPI, HTTPException, Request, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -27,15 +27,27 @@ CONTACT_MESSAGE = os.getenv(
     "This seems outside my current knowledge base. Please reach out via the Contact page (/contact) and we'll get back to you quickly."
 )
 
-# --- Load FAQ Store ---
-print("[STARTUP] Loading FAQ store...")
-try:
-    from .simple_faq_loader import get_faq_store
-    faq_store = get_faq_store()
-    print(f"✓ FAQ store loaded with {len(faq_store.documents)} Q&A pairs")
-except Exception as e:
-    print(f"✗ FAQ loading failed: {e}")
-    faq_store = None
+# --- FAQ Store ---
+faq_store = None
+
+def load_faq_store():
+    """Load FAQ store on startup."""
+    global faq_store
+    try:
+        from .simple_faq_loader import get_faq_store
+        faq_store = get_faq_store()
+        count = len(faq_store.qa_pairs) if faq_store and hasattr(faq_store, 'qa_pairs') else 0
+        print(f"✓ [STARTUP] FAQ store loaded with {count} Q&A pairs")
+        return faq_store
+    except Exception as e:
+        print(f"✗ [STARTUP] FAQ loading failed: {e}")
+        import traceback
+        traceback.print_exc()
+        faq_store = None
+        return None
+
+# Load FAQ on module import
+faq_store = load_faq_store()
 
 # --- FastAPI App ---
 app = FastAPI(title="Flexbo FAQ Backend", version="3.0.0")
@@ -54,28 +66,33 @@ def _guard_api_key(headers) -> None:
     if headers.get("x-api-key") != API_KEY:
         raise HTTPException(status_code=401, detail="Invalid API key")
 
-def search_faq(query: str, k: int = 3) -> List[Dict]:
-    """Search FAQ and return matching results."""
-    if not faq_store or not faq_store.qa_pairs:
+def search_faq(query: str, k: int = 3) -> List[Tuple[Dict, float]]:
+    """Search FAQ and return list of (qa_dict, score) tuples."""
+    if not faq_store:
+        print("[FAQ SEARCH] FAQ store not available")
+        return []
+    
+    if not hasattr(faq_store, 'qa_pairs') or not faq_store.qa_pairs:
+        print(f"[FAQ SEARCH] FAQ store has no qa_pairs")
         return []
     
     try:
+        if not hasattr(faq_store, 'similarity_search_with_score'):
+            print("[FAQ SEARCH] FAQ store missing similarity_search_with_score method")
+            return []
+        
         results = faq_store.similarity_search_with_score(query, k=k)
-        output = []
-        for result, score in results:
-            output.append({
-                "question": result.get("question", ""),
-                "answer": result.get("answer", ""),
-                "score": float(score)
-            })
-        return output
+        print(f"[FAQ SEARCH] Found {len(results)} results for: {query[:50]}")
+        return results
     except Exception as e:
         print(f"[FAQ SEARCH ERROR] {e}")
+        import traceback
+        traceback.print_exc()
         return []
 
 # --- Models ---
 class Message(BaseModel):
-    type: str  # 'user' | 'bot'
+    type: str
     content: str
 
 class Source(BaseModel):
@@ -104,9 +121,10 @@ _lock = threading.Lock()
 # --- Endpoints ---
 @app.get("/api/health")
 def health():
+    count = len(faq_store.qa_pairs) if faq_store and hasattr(faq_store, 'qa_pairs') else 0
     return {
         "status": "ok",
-        "faq_count": len(faq_store.qa_pairs) if faq_store else 0,
+        "faq_count": count,
     }
 
 @app.post("/api/chat", response_model=ChatResponse)
@@ -134,41 +152,35 @@ def chat(req: ChatRequest, request: Request):
     try:
         results = search_faq(req.message, k=5)
         
-        if results and results[0]["score"] >= KB_CONFIDENCE:
-            # Use the best matching FAQ answer
-            best = results[0]
-            response_text = best["answer"]
+        if results and len(results) > 0:
+            best_qa, best_score = results[0]
             
-            # Limit answer length
-            if len(response_text) > 800:
-                response_text = response_text[:800] + "..."
-            
-            # Add sources
-            for i, result in enumerate(results[:3], start=1):
-                sources.append(Source(
-                    index=i,
-                    title="FAQ",
-                    url=None,
-                    score=result["score"],
-                    source_type="faq"
-                ))
-            
-            print(f"[FAQ MATCH] Score {best['score']:.3f}: {best['question'][:50]}...")
-        else:
-            if results:
-                print(f"[FAQ NO MATCH] Score {results[0]['score']:.3f} below threshold {KB_CONFIDENCE}")
+            if best_score >= KB_CONFIDENCE:
+                response_text = best_qa.get("answer", "")
+                if len(response_text) > 800:
+                    response_text = response_text[:800] + "..."
+                
+                for i, (qa, score) in enumerate(results[:3], start=1):
+                    sources.append(Source(
+                        index=i,
+                        title="FAQ",
+                        url=None,
+                        score=score,
+                        source_type="faq"
+                    ))
+                print(f"[FAQ MATCH] Score {best_score:.3f}")
             else:
-                print(f"[FAQ NO MATCH] No results found")
+                print(f"[FAQ NO MATCH] Score {best_score:.3f} < {KB_CONFIDENCE}")
+        else:
+            print(f"[FAQ NO MATCH] No results found")
     
     except Exception as e:
-        print(f"[ERROR] Chat endpoint: {e}")
+        print(f"[ERROR] Chat: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-    # 2) Fallback
     if not response_text:
         response_text = CONTACT_MESSAGE
 
-    # 3) Add to thread and respond
     with _lock:
         _threads[tid]["messages"].append({"type": "bot", "content": response_text})
         messages = [Message(**m) for m in _threads[tid]["messages"]]
@@ -186,12 +198,11 @@ def chat(req: ChatRequest, request: Request):
 def debug_sim(q: str = Query(..., min_length=1)):
     """Debug FAQ similarity search."""
     results = search_faq(q, k=5)
-    return {
-        "query": q,
-        "results": results
-    }
+    output = [{"q": qa.get("question"), "a": qa.get("answer")[:80], "score": round(score, 3)} 
+              for qa, score in results]
+    return {"query": q, "results": output}
 
 @app.post("/api/debug/echo")
 def echo(payload: dict):
-    """Echo endpoint for debugging."""
+    """Echo endpoint."""
     return payload
