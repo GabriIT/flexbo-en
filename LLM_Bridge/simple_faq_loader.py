@@ -66,6 +66,45 @@ class SimpleFAQStore:
         # Sort by match count descending
         scored.sort(key=lambda x: x[0], reverse=True)
         return [qa for _, qa in scored[:k]]
+    
+    def similarity_search_with_score(self, query: str, k: int = 5) -> List[tuple]:
+        """Search returning (qa_dict, score) tuples"""
+        if not self.qa_pairs:
+            return []
+        
+        query_lower = query.lower()
+        query_words = set(w for w in query_lower.split() if len(w) > 2)
+        if not query_words:
+            query_words = set(query_lower.split())
+        
+        scored = []
+        max_matches = len(query_words)
+        
+        for qa in self.qa_pairs:
+            q_text = qa["question"].lower()
+            
+            # Count word matches
+            q_words = set(w for w in q_text.split() if len(w) > 2)
+            if not q_words:
+                q_words = set(q_text.split())
+            
+            matches = len(query_words & q_words)
+            
+            # Boost for substring match
+            substring_boost = 0
+            if query_lower in q_text:
+                substring_boost = max_matches * 2
+            
+            # Normalize score to 0-1 range
+            score = (matches + substring_boost) / max(max_matches, 1)
+            score = min(1.0, score)  # Cap at 1.0
+            
+            if score > 0:
+                scored.append((qa, score))
+        
+        # Sort by score descending
+        scored.sort(key=lambda x: x[1], reverse=True)
+        return scored[:k]
 
 # Global instance
 _faq_store = SimpleFAQStore()
