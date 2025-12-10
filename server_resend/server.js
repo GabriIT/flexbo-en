@@ -32,22 +32,23 @@ function forwardToPython(method, pyPath, body, headers, res) {
       ...headers  // Forward all headers including auth
     }
   };
-  
+
   const req = http.request(options, (proxyRes) => {
     let data = '';
     proxyRes.on('data', (chunk) => { data += chunk; });
     proxyRes.on('end', () => {
+      console.log(`[Forward] Response from ${method} ${pyPath}: ${proxyRes.statusCode}`);
       res.status(proxyRes.statusCode);
       res.set('Content-Type', 'application/json');
       res.send(data);
     });
   });
-  
+
   req.on('error', (err) => {
-    console.error('Proxy error:', err);
+    console.error('[Forward] Proxy error:', err);
     res.status(502).json({ error: 'Bad Gateway' });
   });
-  
+
   req.setTimeout(30000);
   if (body) {
     req.write(JSON.stringify(body));
@@ -70,6 +71,7 @@ app.get('/api/debug/sim', (req, res) => {
 
 // Proxy POST endpoints
 app.post('/api/chat', (req, res) => {
+  console.log('[/api/chat] Received request:', JSON.stringify(req.body));
   const headers = req.headers['x-api-key'] ? { 'x-api-key': req.headers['x-api-key'] } : {};
   forwardToPython('POST', '/api/chat', req.body, headers, res);
 });
