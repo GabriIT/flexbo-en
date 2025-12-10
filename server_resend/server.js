@@ -1,8 +1,8 @@
 import 'dotenv/config';          // ← loads .env into process.env
 
 import express from 'express';
-import cors    from 'cors';
-import path    from 'path';
+import cors from 'cors';
+import path from 'path';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import forwardHandler from './api/forward.js';
 
@@ -28,7 +28,7 @@ import forwardHandler from './api/forward.js';
 // ────────────────────────────────────────────────
 
 
-const app  = express();
+const app = express();
 const port = process.env.PORT || 3000;   // Dokku/Heroku will inject PORT
 
 app.use(cors());
@@ -40,6 +40,24 @@ app.post('/api/forward', forwardHandler);
 
 // Proxy /api/chat and other Python endpoints
 const pyBackend = process.env.PY_BACKEND || 'http://127.0.0.1:8000';
+console.log(`[Server] Python backend configured at: ${pyBackend}`);
+
+// Debug middleware
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api/')) {
+    console.log(`[Routing] ${req.method} ${req.path}`);
+  }
+  next();
+});
+console.log(`[Server] Python backend configured at: ${pyBackend}`);
+
+// Debug middleware
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api/')) {
+    console.log(`[Routing] ${req.method} ${req.path}`);
+  }
+  next();
+});
 app.use('/api/chat', createProxyMiddleware({
   target: pyBackend,
   changeOrigin: true
@@ -68,8 +86,8 @@ const dist = path.join(path.resolve(), 'dist');
 app.use(express.static(dist));
 // app.get('/*', (_, res) => res.sendFile(path.join(dist, 'index.html')));
 app.get(/^\/(?!api).*/, (_, res) =>
-      res.sendFile(path.join(dist, 'index.html'))
-   );
+  res.sendFile(path.join(dist, 'index.html'))
+);
 
 app.listen(port, () => console.log(`Server listening on ${port}`));
 
