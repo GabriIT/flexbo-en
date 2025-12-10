@@ -199,17 +199,10 @@ _next_id = 1
 _lock = threading.Lock()
 
 # ---------------- Routes ----------------
+
 @app.get("/api/health")
 def health():
-    return {
-        "status": "ok",
-        "model": MODEL_NAME,
-        "embed_model": EMBED_MODEL,
-        "db": DB_URL.split("@")[-1],  # hide credentials
-        "kb_topk": KB_TOPK,
-        "kb_confidence": KB_CONFIDENCE,
-        "embed_dim": EMBED_DIM,
-    }
+    return {"status": "ok"}
 
 @app.post("/api/chat", response_model=ChatResponse)
 def chat(req: ChatRequest, request: Request):
