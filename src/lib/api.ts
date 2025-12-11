@@ -11,7 +11,7 @@ export async function sendChat(message: string, threadId?: number) {
   const url = `${baseUrlValue}/api/chat`;
   console.log('[API] Sending chat to:', url);
   console.log('[API] Message:', message, 'ThreadId:', threadId);
-  
+
   const res = await fetch(url, {
     method: "POST",
     headers: {
@@ -24,7 +24,7 @@ export async function sendChat(message: string, threadId?: number) {
   console.log('[API] Response status:', res.status);
   const text = await res.text();
   console.log('[API] Response text:', text);
-  
+
   if (!res.ok) throw new Error(`Backend error ${res.status}: ${text}`);
   const parsed = JSON.parse(text) as { thread_id: number; response: string };
   console.log('[API] Parsed response:', parsed);
