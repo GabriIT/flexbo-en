@@ -2,3 +2,5 @@ User-agent: *
 Allow: /
 
 Sitemap: https://flexbo-en.athenalabo.com/sitemap.xml
+
+

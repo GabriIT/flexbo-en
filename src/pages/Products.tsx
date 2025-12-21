@@ -63,9 +63,9 @@ const allProducts: Product[] = [
 
   // ─── Film ────────────────────────────────────────────────────
   {
-    id: 'Thermo-Laminated Film',
-    title: 'Thermo-Laminated Film',
-    category: 'Thermo-Laminated Film',
+    id: 'Thermo-Laminated-Film',
+    title: 'Thermo-Laminated-Film',
+    category: 'Thermo-Laminated-Film',
     src: '/media/mPet_TL.jpg',
     mediaType: 'image',
   },
