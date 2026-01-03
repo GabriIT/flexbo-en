@@ -70,13 +70,15 @@ const AboutSection = () => {
               ))}
             </div>
 
-            <Link
-              to="/contact"
+            <a
+              href="/media/Flexbo_Introduction_EN.mp4"
               className="inline-flex items-center text-primary font-medium"
+              target="_blank"
+              rel="noopener noreferrer"
             >
               <PlayCircle size={20} className="mr-2" />
               Watch our introduction video
-            </Link>
+            </a>
           </motion.div>
 
           {/* Visual */}

@@ -83,7 +83,7 @@ const SeoPageLayout = ({ hero, sections, relatedLinks, cta }: SeoPageLayoutProps
           className="py-16 border-b border-gray-100 scroll-mt-24"
         >
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div>
                 {section.eyebrow && (
                   <p className="text-sm font-medium text-primary uppercase tracking-wider mb-2">
