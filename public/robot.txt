@@ -3,12 +3,3 @@ Allow: /
 
 # Explicit sitemap locations for Google Search Console & Bing Webmaster Tools
 Sitemap: https://www.flexbo.athenalabo.com/sitemap.xml
-Sitemap: https://flexbo.athenalabo.com/sitemap.xml
-Sitemap: https://flexbo-en.athenalabo.com/sitemap.xml
-
-# Preferred host declaration for crawlers that honor it
-Host: www.flexbo.athenalabo.com
-
-# Industry backlinks confirming Flexbo's marketplace presence
-# https://flexbo.en.alibaba.com/
-# https://flexbo.alibaba.com/
