@@ -1,307 +1,130 @@
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { CheckCircle, Globe, Leaf, Award, Users, ChevronRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { motion } from "framer-motion";
+import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
 
-// Values data
-const values = [
-  {
-    icon: <CheckCircle size={24} className="text-primary" />,
-    title: 'Quality Assurance',
-    description: 'We maintain rigorous quality control at every stage of production.'
-  },
-  {
-    icon: <Leaf size={24} className="text-primary" />,
-    title: 'Sustainability',
-    description: 'Committed to eco-friendly materials and sustainable production methods.'
-  },
-  {
-    icon: <Globe size={24} className="text-primary" />,
-    title: 'Global Standards',
-    description: 'Our products meet international quality and safety standards.'
-  },
-  {
-    icon: <Users size={24} className="text-primary" />,
-    title: 'Customer Focus',
-    description: 'We tailor our services to meet each client\'s specific needs and vision.'
-  }
-];
+const SITE_ORIGIN = "https://www.flexbo.athenalabo.com";
 
-// Timeline data
-const timeline = [
-  {
-    year: '2011',
-    title: 'Company Founded',
-    description: 'Started as a small clean room workshop with a vision for quality aseptic packaging relying on Italian packaging technology.'
-  },
-  {
-    year: '2014',
-    title: 'International Expansion',
-    description: 'Serving mainly European clients, establishing global partnerships.'
-  },
+export default function About() {
+  const canonical = `${SITE_ORIGIN}/about`;
+  const title = "About Flexbo | Aseptic Packaging & High-Barrier Flexible Solutions";
+  const description =
+    "Flexbo provides B2B flexible packaging solutions for liquid food and industrial logistics, including aseptic bags and high-barrier laminates designed for shelf-life, safety and performance.";
 
-  {
-    year: '2015',
-    title: 'First Asian Giant Themo-Lamination machine',
-    description: 'Highest Productivity through Patented Technology, establishing global partnerships.'
-  },
-
-  {
-    year: '2016',
-    title: 'Invention Patents and Sustainability Initiative',
-    description: 'Launched five new patented inventions for eco-friendly solutions, focusing on sustainable materials.'
-  },
-  {
-    year: '2017',
-    title: 'Modern Facility',
-    description: 'Moved to a larger production facility with triple capacity and state-of-the-art equipment.'
-  },
-  {
-    year: '2018',
-    title: 'Developing Three Invention Patents and Design Innovation Awards',
-    description: 'Recognized for excellence in packaging design and innovation.'
-  },
-  {
-    year: '2025',
-    title: 'Digital Transformation',
-    description: 'Implemented digital management of production processes for greater efficiency.'
-  }
-];
-
-const About = () => {
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  useEffect(() => {
-    setIsLoaded(true);
-  }, []);
+  const orgJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Flexbo",
+    url: SITE_ORIGIN,
+    description,
+    logo: `${SITE_ORIGIN}/favicon.ico`,
+  };
 
   return (
-    <div className="pt-20">
-      {/* Hero Section */}
-      <section className="relative bg-gray-50 py-24">
+    <div className="pt-20 pb-16">
+      <Helmet>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="About Flexbo" />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+
+        <script type="application/ld+json">{JSON.stringify(orgJsonLd)}</script>
+      </Helmet>
+
+      <section className="bg-gray-50 py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 20 }}
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center max-w-3xl mx-auto"
+            className="max-w-3xl mx-auto text-center"
           >
-            <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl md:text-5xl">
-              About Us
-            </h1>
-            <p className="mt-4 text-lg text-gray-600">
-              We're dedicated to creating B2B packaging solutions that secure products integrity in global logistics.
+            <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl md:text-5xl">About Flexbo</h1>
+            <p className="mt-5 text-lg text-gray-700">
+              We design and supply <strong>aseptic packaging</strong> and <strong>high-barrier</strong> flexible
+              solutions for safe global logistics — focused on quality, performance and reliable supply.
             </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Our Story */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7 }}
-              viewport={{ once: true }}
-              className="relative"
-            >
-               <br /><br />
-              <video
-                className="w-full h-full object-cover"
-                autoPlay       // play immediately
-                loop           // repeat forever
-                muted          // required for autoplay on most browsers
-                playsInline    // prevent iOS full-screen takeover
-                controls       // ← add this
-                poster="/media/Flexbo_Introduction_EN.jpg"  // ← optional thumbnail
+            <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+              <Link
+                to="/products"
+                className="inline-flex items-center justify-center px-6 py-3 rounded-md bg-primary text-white font-medium text-sm hover:bg-primary/90 transition-colors"
               >
-                <source src="/media/Flexbo_Introduction_EN.mp4" type="video/mp4" />
-               
-                Your browser does not support the video tag.
-              </video>  
-
-
-
-              {/* <img 
-                src="https://images.unsplash.com/photo-1605000798985-4c28c779cc2e?q=80&w=2071&auto=format&fit=crop" 
-                alt="Our Workshop" 
-                className="rounded-lg shadow-lg w-full"
-              /> */}
-              <br /><br />
-
-              <div className="absolute -bottom-6 -right-6 bg-white p-4 rounded-lg shadow-lg hidden md:block">
-                <Award size={40} className="text-primary" />
-                <p className="mt-2 font-medium text-sm text-gray-900">Excellence in Packaging</p>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7 }}
-              viewport={{ once: true }}
-              className="space-y-6"
-            >
-              <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">
-                Our Story
-              </span>
-              <h2 className="text-3xl font-bold text-gray-900">
-                Creating Premium Packaging Since 2011
-              </h2>
-              <p className="text-gray-600">
-                Flexbo Packaging was founded with a mission to provide reliable, effective and environment-friendly 
-                packaging solutions. Over the years, we've developed new technologies becoming a global packaging partner serving clients around the world.
-              </p>
-              <p className="text-gray-600">
-                Our journey has been driven by innovation, quality, environment-consciousness. 
-                We secure that large and small packaging is a safe and
-                reliable tool for moving and store goods in a global economy.
-              </p>
-              <p className="text-gray-600">
-                Today, we continue to push the boundaries of packaging design and manufacturing,
-                utilizing sustainable materials and cutting-edge technology to create
-                performing and efficient solutions.
-              </p>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Our Values */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="text-center max-w-3xl mx-auto mb-16"
-          >
-            <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">
-              Our Values
-            </span>
-            <h2 className="mt-2 text-3xl font-bold text-gray-900">
-              What Drives Us Forward
-            </h2>
-            <p className="mt-4 text-lg text-gray-600">
-              Our core values shape every decision we make and every product we create.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {values.map((value, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="bg-white p-6 rounded-lg shadow-sm"
+                Explore Products
+              </Link>
+              <Link
+                to="/contact"
+                className="inline-flex items-center justify-center px-6 py-3 rounded-md bg-white text-gray-900 font-medium text-sm border border-gray-200 hover:bg-gray-50 transition-colors"
               >
-                <div className="mb-4">{value.icon}</div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  {value.title}
-                </h3>
-                <p className="text-gray-600">
-                  {value.description}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Company Timeline */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="text-center max-w-3xl mx-auto mb-16"
-          >
-            <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">
-              Our Journey
-            </span>
-            <h2 className="mt-2 text-3xl font-bold text-gray-900">
-              Company Timeline
-            </h2>
-            <p className="mt-4 text-lg text-gray-600">
-              Milestones that have shaped our growth and evolution over the years.
-            </p>
-          </motion.div>
-
-          <div className="relative">
-            {/* Timeline line */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-0.5 bg-gray-200 hidden md:block"></div>
-            
-            <div className="space-y-12">
-              {timeline.map((item, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  className={`flex flex-col ${
-                    index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
-                  } items-center`}
-                >
-                  <div className="md:w-1/2 flex flex-col items-center md:items-end md:pr-12 md:text-right">
-                    <span className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-1">
-                      {item.year}
-                    </span>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                      {item.title}
-                    </h3>
-                    <p className="text-gray-600 max-w-md">
-                      {item.description}
-                    </p>
-                  </div>
-                  
-                  <div className="hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white z-10 my-4 md:my-0">
-                    <div className="w-2 h-2 rounded-full bg-white"></div>
-                  </div>
-                  
-                  <div className="md:w-1/2 md:pl-12 hidden md:block"></div>
-                </motion.div>
-              ))}
+                Contact Us
+              </Link>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            viewport={{ once: true }}
-            className="max-w-2xl mx-auto text-center"
-          >
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">
-              Want to Work Together?
-            </h2>
-            <p className="text-lg text-gray-600 mb-8">
-              Reach out to discuss your packaging needs and how we can help bring your vision to life.
-            </p>
-            <Link
-              to="/contact"
-              className="inline-flex items-center px-6 py-3 rounded-md bg-primary text-white font-medium text-sm hover:bg-primary/90 transition-colors"
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="lg:col-span-2 space-y-6"
             >
-              Contact Us
-              <ChevronRight size={16} className="ml-1" />
-            </Link>
-          </motion.div>
+              <h2 className="text-2xl font-bold text-gray-900">What we do</h2>
+              <p className="text-gray-700">
+                Flexbo supports brands and industrial partners with flexible packaging solutions that protect liquids during filling, shipping and storage. Our focus includes aseptic bags and high-barrier laminated structures designed to help extend shelf-life and maintain product quality.
+              </p>
+
+              <h3 className="text-xl font-semibold text-gray-900">Aseptic packaging focus</h3>
+              <p className="text-gray-700">
+                Aseptic packaging is a system approach: sterilized product, sterilized packaging, controlled filling and barrier protection. When designed correctly, it helps reduce contamination risk and supports stable distribution chains.
+              </p>
+
+              <h3 className="text-xl font-semibold text-gray-900">How we help</h3>
+              <ul className="list-disc pl-5 space-y-2 text-gray-700">
+                <li>Product selection guidance (aseptic bags, bag-in-box, IBC liners, high-barrier laminates)</li>
+                <li>Specification alignment for barrier, shelf-life, logistics and handling</li>
+                <li>Support for sampling, iterations and scaling</li>
+              </ul>
+            </motion.div>
+
+            <motion.aside
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.55, delay: 0.05 }}
+              className="p-6 rounded-xl bg-gray-50 border border-gray-100 space-y-4"
+            >
+              <h3 className="text-lg font-semibold text-gray-900">Quick facts</h3>
+              <div className="text-sm text-gray-700 space-y-2">
+                <p>
+                  <span className="font-medium">Domain:</span> athenalabo.com
+                </p>
+                <p>
+                  <span className="font-medium">Brand:</span> Flexbo
+                </p>
+                <p>
+                  <span className="font-medium">Core topics:</span> aseptic bags, high-barrier laminates, liquid packaging
+                </p>
+              </div>
+
+              <div className="pt-2">
+                <Link
+                  to="/products"
+                  className="inline-flex items-center justify-center w-full px-5 py-3 rounded-md bg-white text-gray-900 font-medium text-sm border border-gray-200 hover:bg-gray-50 transition-colors"
+                >
+                  Browse products
+                </Link>
+              </div>
+            </motion.aside>
+          </div>
         </div>
       </section>
     </div>
   );
-};
-
-export default About;
+}

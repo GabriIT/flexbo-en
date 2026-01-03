@@ -1,5 +1,16 @@
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+import { createRoot } from "react-dom/client";
+import App from "./App.tsx";
+import "./index.css";
+import { HelmetProvider } from "react-helmet-async";
 
-createRoot(document.getElementById("root")!).render(<App />);
+const container = document.getElementById("root");
+
+if (!container) {
+  throw new Error("Root container missing");
+}
+
+createRoot(container).render(
+  <HelmetProvider>
+    <App />
+  </HelmetProvider>
+);

@@ -1,50 +1,30 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
+import { Helmet } from "react-helmet-async";
 import ProductCard, { ProductCardProps } from "@/components/ProductCard";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PRODUCTS } from "@/data/products";
 
+const SITE_ORIGIN = "https://www.flexbo.athenalabo.com";
+const PLACEHOLDER = "/tjn_location.jpg";
+
 /**
  * EXTRA MEDIA TILES (e.g., demo videos) that should appear in the grid
- * alongside products. Per your request, this video uses:
- *   - id: "aseptic-bags"
- *   - category: "Aseptic Bags"
- *
- * Clicking it will route to /products/aseptic-bags (same as the product),
- * because ProductCard links to /products/${id}.
+ * alongside products.
  */
-const EXTRA_MEDIA: ProductCardProps[] = [
- 
-// {
-//     id: "flexbo-video",
-//     title: "Flexbo_Introduction",
-//     category: "Videos",
-//     src: "/Flexbo_Introduction_EN.mp4",
-//     poster: "/media/Flexbo_Introduction_EN.jpg",
-//     mediaType: "video",
-//   },
- 
-//   {
-//     id: "OpenCloseInstall-video",
-//     title: "Install Open / Close Lid",
-//     category: "Videos",
-//     src: "/Install_Open_Close_Lid.mp4",
-//     poster: "/media/most_common_valves.jpg",
-//     mediaType: "video",
-//   },
+const EXTRA_MEDIA: ProductCardProps[] = [];
 
-//  {
-//     id: "InstallTapValve-video",
-//     title: "Install Tap Valve",
-//     category: "Videos",
-//     src: "/Install_tap_valve.mp4",
-//     poster: "/media/most_common_valves.jpg",
-//     mediaType: "video",
-//   },
+function absUrl(pathOrUrl: string): string {
+  if (!pathOrUrl) return `${SITE_ORIGIN}${PLACEHOLDER}`;
+  if (pathOrUrl.startsWith("http://") || pathOrUrl.startsWith("https://")) return pathOrUrl;
+  return `${SITE_ORIGIN}${pathOrUrl.startsWith("/") ? "" : "/"}${pathOrUrl}`;
+}
 
-];
-
-const PLACEHOLDER = "/tjn_location.jpg";
+function toMetaDescription(text?: string, max = 160) {
+  const s = (text ?? "").replace(/\s+/g, " ").trim();
+  if (!s) return "";
+  return s.length > max ? `${s.slice(0, max - 1).trim()}…` : s;
+}
 
 export default function Products() {
   const [activeCategory, setActiveCategory] = useState("all");
@@ -61,7 +41,7 @@ export default function Products() {
       id: p.id,
       title: p.title,
       category: p.category,
-      src: p.images[0] ?? PLACEHOLDER,
+      src: p.images?.[0] ?? PLACEHOLDER,
       mediaType: "image",
     }));
     return [...productCards, ...EXTRA_MEDIA];
@@ -72,8 +52,47 @@ export default function Products() {
     return allCards.filter((c) => c.category === activeCategory);
   }, [activeCategory, allCards]);
 
+  const canonical = `${SITE_ORIGIN}/products`;
+  const title = "Products | Flexbo Aseptic Bags, High-Barrier Laminates & IBC Packaging";
+  const description = toMetaDescription(
+    "Explore Flexbo packaging solutions: aseptic bags for liquid food, high-barrier laminates, bag-in-box and IBC packaging. Designed for safety, shelf-life and reliable global logistics."
+  );
+
+  // JSON-LD: ItemList of products
+  const itemListJsonLd = useMemo(() => {
+    const items = PRODUCTS.map((p, idx) => ({
+      "@type": "ListItem",
+      position: idx + 1,
+      url: `${SITE_ORIGIN}/products/${encodeURIComponent(p.id)}`,
+      name: p.title,
+      image: absUrl(p.images?.[0] ?? PLACEHOLDER),
+    }));
+
+    return {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: "Flexbo Products",
+      itemListElement: items,
+    };
+  }, []);
+
   return (
     <div className="pt-20">
+      <Helmet>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+
+        {/* OpenGraph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Flexbo Products" />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+
+        {/* JSON-LD */}
+        <script type="application/ld+json">{JSON.stringify(itemListJsonLd)}</script>
+      </Helmet>
+
       {/* Hero */}
       <section className="bg-gray-50 py-24">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -83,12 +102,17 @@ export default function Products() {
             transition={{ duration: 0.6 }}
             className="text-center max-w-3xl mx-auto"
           >
-            <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl md:text-5xl">
-              Our Products
-            </h1>
+            <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl md:text-5xl">Our Products</h1>
+
             <p className="mt-4 text-lg text-gray-600">
-              Discover our premium range of packaging solutions designed for brands that value
-              quality and performance.
+              Flexbo provides flexible packaging solutions for liquid food and industrial logistics —
+              including <strong>aseptic bags</strong>, <strong>high-barrier laminates</strong>,
+              bag-in-box solutions and IBC packaging. Built for shelf-life, safety and performance.
+            </p>
+
+            <p className="mt-4 text-base text-gray-600">
+              Browse by category to find the best fit for your filling line, distribution chain and
+              barrier requirements.
             </p>
           </motion.div>
         </div>
@@ -123,10 +147,10 @@ export default function Products() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
             {filtered.map((card, index) => (
               <motion.div
-                key={`${card.category}-${card.id}-${index}`} // include index to avoid key clash with same id/category
+                key={`${card.category}-${card.id}-${index}`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
+                transition={{ duration: 0.5, delay: 0.15 + index * 0.05 }}
               >
                 <ProductCard {...card} />
               </motion.div>
