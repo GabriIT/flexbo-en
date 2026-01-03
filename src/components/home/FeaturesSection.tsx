@@ -44,7 +44,7 @@ const FeaturesSection = () => {
             Our Commitment to Excellence
           </h2>
           <p className="mt-4 text-lg text-gray-600">
-            We go beyond creating packaging - we help build memorable brand experiences.
+            We go beyond creating packaging.
           </p>
         </motion.div>
 
