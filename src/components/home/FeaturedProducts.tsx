@@ -2,86 +2,71 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
-import { add } from 'date-fns';
 
-// ─── Featured products data ─────────────────────────────────────────────
 const featuredProducts = [
-
-// New video card - To be added last so it appears at the end
-  
-    // '/media/Flexbo_Introduction_EN.mp4',
-
-    {
-    id: "flexbo-video",
-    title: "Flexbo_Introduction",
-    category: "Videos",
-    src: "/media/Flexbo_Introduction_EN.mp4",
-    mediaType: 'video', 
+  {
+    id: 'flexbo-video',
+    title: 'Flexbo Introduction',
+    category: 'Video',
+    src: '/media/Flexbo_Introduction_EN.mp4',
+    mediaType: 'video',
   },
-
-
   {
     id: 'aseptic-bags',
     title: 'Premium Aseptic Bags',
     category: 'Bags',
-    src: '/media/aseptic_bag14.jpg',   // ① rename image → src
-    mediaType: 'image',               // ② tell the card it’s an image
+    src: '/media/aseptic_bag14.jpg',
+    mediaType: 'image',
   },
-  
   {
     id: 'ibc-packaging',
-    title: 'Logistics IBC Containers',
-    category: 'IBC Containers', 
+    title: 'IBC Packaging',
+    category: 'IBC Containers',
     src: '/media/IBC_Valves.jpg',
     mediaType: 'image',
   },
   {
     id: 'bib',
-    title: 'BIB',
-    category: 'BIB',
+    title: 'BIB Solutions',
+    category: 'Bag-in-Box',
     src: '/media/HB_bags24.jpg',
     mediaType: 'image',
   },
-
   {
-    id: 'high-barrier-laminates',
-    title: 'Environment-friendly solutions',
+    id: 'thermo-laminated-film',
+    title: 'Environment-Friendly Films',
     category: 'Thermo-Laminated Film',
-    src: 'media/mPet_TL.jpg',
+    src: '/media/mPet_TL.jpg',
     mediaType: 'image',
   },
-
   {
-    id: 'bib',
-    title: 'More than 40 valves types',
-    category: 'BIB',
+    id: 'valves',
+    title: 'Valve Catalog',
+    category: 'Components',
     src: '/media/most_common_valves.jpg',
     mediaType: 'image',
   },
-
   {
-    id: "OpenCloseInstall-video",
-    title: "Install Open / Close Lid",
-    category: "Videos",
-    src: "/media/Install_Open_Close_Lid.mp4",
-    poster: "/media/most_common_valves.jpg",
-    mediaType: "video",
+    id: 'open-close-video',
+    title: 'Install Open / Close Lid',
+    category: 'Video',
+    src: '/media/Install_Open_Close_Lid.mp4',
+    poster: '/media/most_common_valves.jpg',
+    mediaType: 'video',
   },
-
   {
-    id: "InstallTapValve-video",
-    title: "Install Tap Valve",
-    category: "Videos",
-    src: "media/Install_tap_valve.mp4",
-    poster: "/media/most_common_valves.jpg",
-    mediaType: "video",
+    id: 'tap-valve-video',
+    title: 'Install Tap Valve',
+    category: 'Video',
+    src: '/media/Install_tap_valve.mp4',
+    poster: '/media/most_common_valves.jpg',
+    mediaType: 'video',
   },
 ];
 
 const FeaturedProducts = () => (
   <section className="py-20 bg-white">
     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-      {/* Heading */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -96,11 +81,10 @@ const FeaturedProducts = () => (
           Featured Products
         </h2>
         <p className="mt-4 text-lg text-gray-600">
-          Discover our most popular packaging solutions designed to elevate your brand experience.
+          Explore aseptic bag and bag-in-box highlights referenced across Liquid Aseptic Bags Market.md.
         </p>
       </motion.div>
 
-      {/* Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
         {featuredProducts.map((product, index) => (
           <motion.div
@@ -110,13 +94,11 @@ const FeaturedProducts = () => (
             transition={{ duration: 0.5, delay: index * 0.1 }}
             viewport={{ once: true }}
           >
-            {/* just spread – the object already has src + mediaType */}
             <ProductCard {...product} />
           </motion.div>
         ))}
       </div>
 
-      {/* Link */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}

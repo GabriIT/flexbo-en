@@ -14,7 +14,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "aseptic-bags",
     title: "Aseptic Bags",
-    category: "Aseptic Bags",
+    category: "aseptic-bags-liquid-bags",
     price: "Euro 1.20 - 8.00",
     minOrder: "2000 units",
     description:
@@ -30,7 +30,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "ibc-packaging",
     title: "IBC Packaging",
-    category: "IBC Containers",
+    category: "IBC-containers",
     price: "Euro 6 - 30",
     minOrder: "50 units",
     description:
@@ -46,7 +46,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "bib",
     title: "Premium Barrier Bags",
-    category: "BIB",
+    category: "BIB-liquid-bags",
     price: "Euro 0.50 - 4.00",
     minOrder: "50 units",
     description:
@@ -62,7 +62,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "high-barrier-laminates",
     title: "Wide Thermo-laminated High-Barrier Film",
-    category: "Thermo-Laminated Film",
+    category: "thermo-laminated-film",
     price: "Custom quote",
     minOrder: "1,000 meters",
     description:

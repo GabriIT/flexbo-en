@@ -1,28 +1,28 @@
-
 import { motion } from 'framer-motion';
-import { Package2, Zap, Truck, Users } from 'lucide-react';
+import { ShieldCheck, Zap, Globe, Leaf } from 'lucide-react';
 
-// Features data
 const features = [
   {
-    icon: <Package2 className="w-6 h-6" />,
-    title: 'Premium Materials',
-    description: 'Sourced from sustainable suppliers with quality in mind.'
+    icon: ShieldCheck,
+    title: 'Certified Quality',
+    description: 'Manufactured in clean rooms with ISO, EU, FDA, and GMP certifications.'
   },
   {
-    icon: <Zap className="w-6 h-6" />,
-    title: 'Custom Designs',
-    description: 'Tailored solutions that reflect your brand identity.'
+    icon: Zap,
+    title: 'Fast Lead Times',
+    description: 'Pallet orders ship in about a week and full containers in two/three, supporting just-in-time programs.'
   },
   {
-    icon: <Truck className="w-6 h-6" />,
-    title: 'Global Shipping',
-    description: 'Efficient delivery to your warehouse anywhere in the world.'
+    icon: Globe,
+    title: 'Global Market Insight',
+    description: 'We keep up with the Liquid Aseptic Bags Market requirements and dynamic changes \
+    to secure alignment with emerging trends.'
   },
   {
-    icon: <Users className="w-6 h-6" />,
-    title: 'Expert Support',
-    description: 'Our team provides guidance through the entire process.'
+    icon: Leaf,
+    title: 'Sustainable Materials',
+    description: 'Recycle-ready laminates, mono-material structures and spouts, high-barrier EVOH films\
+    meet upcoming year 2030 PPWR (EU Packaging and Packaging Waste Regulation) targets.'
   }
 ];
 
@@ -35,40 +35,37 @@ const FeaturesSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="text-center max-w-2xl mx-auto mb-16"
+          className="text-center max-w-2xl mx-auto mb-12"
         >
-          <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">
-            Why Choose Us
-          </span>
-          <h2 className="mt-2 text-3xl font-bold text-gray-900 sm:text-4xl">
-            Our Commitment to Excellence
+          <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">Why Flexbo</p>
+          <h2 className="mt-2 text-3xl font-bold text-gray-900">
+            Built on research, automation, and sustainability
           </h2>
-          <p className="mt-4 text-lg text-gray-600">
-            We go beyond creating packaging.
+          <p className="mt-4 text-gray-600">
+            Our manufacturing, material and design knowledge fuels smarter product development.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {features.map((feature, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              className="p-6 rounded-lg border border-gray-100 bg-white hover:shadow-md transition-shadow"
-            >
-              <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-700 mb-4">
-                {feature.icon}
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                {feature.title}
-              </h3>
-              <p className="text-gray-600">
-                {feature.description}
-              </p>
-            </motion.div>
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {features.map((feature, index) => {
+            const Icon = feature.icon;
+            return (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="p-6 rounded-2xl border border-gray-100 shadow-sm bg-gray-50"
+              >
+                <div className="text-primary mb-4">
+                  <Icon size={28} />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900">{feature.title}</h3>
+                <p className="mt-2 text-gray-600">{feature.description}</p>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>

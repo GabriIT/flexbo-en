@@ -1,52 +1,104 @@
-
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { CheckCircle, PlayCircle } from 'lucide-react';
+
+const aboutFeatures = [
+  'Clean-room manufacturing with AI-assisted quality control',
+  'Italian thermo-lamination and patented film technology',
+  'Global supply footprint with 1–3 week lead times',
+];
+
+const quickLinkCards = [
+  {
+    title: 'Liquid Aseptic Bags Market Overview',
+    description: 'Learn how aseptic bags power beverage, dairy, and industrial logistics.',
+    to: '/liquid-bags#flexbo-liquid-bags'
+  },
+  {
+    title: 'Bag-in-Box Configurations',
+    description: 'Explore taps, valves, and corrugated outers tailored to liquids.',
+    to: '/aseptic-bag-in-box#what-are-the-benefits-of-bib-and-aseptic-bags'
+  },
+];
 
 const AboutSection = () => {
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20 bg-gray-50" id="about">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          {/* Text Content */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
             viewport={{ once: true }}
             className="space-y-6"
           >
-            <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">
-              About Us
-            </span>
-            <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">
-              Manufacturing Aseptic Packaging Since 2011            </h2>
-            <p className="text-lg text-gray-600">
-              At Flexbo Packaging, we combine traditional craftsmanship with modern technology to create packaging solutions that stand out. Our commitment to quality and sustainability drives every decision we make.
-            </p>
-            <p className="text-gray-600">
-              With a global client base spanning retail, cosmetics, food, and more, we understand the importance of packaging in transportation, storage and securing your brand value.
-            </p>
+            <div>
+              <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">
+                Who we are
+              </p>
+              <h2 className="mt-2 text-3xl font-bold text-gray-900">
+                Global innovation for flexible liquid packaging
+              </h2>
+              <p className="mt-4 text-gray-600">
+                Flexbo Packaging supplies premium aseptic bags, bag-in-box systems, and IBC liners manufactured
+                in clean-room facilities. Our Liquid Aseptic Bags experience and knowledge support
+                beverage, dairy, and industrial brands deploy sterile and aseptic solutions worldwide.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              {aboutFeatures.map((feature) => (
+                <div key={feature} className="flex items-start">
+                  <CheckCircle className="text-primary mt-1 mr-3" size={20} />
+                  <p className="text-gray-700">{feature}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {quickLinkCards.map((card) => (
+                <Link
+                  key={card.to}
+                  to={card.to}
+                  className="p-4 rounded-xl bg-white shadow-sm border border-gray-100 hover:shadow-md transition"
+                >
+                  <p className="text-lg font-semibold text-gray-900">{card.title}</p>
+                  <p className="mt-2 text-sm text-gray-600">{card.description}</p>
+                </Link>
+              ))}
+            </div>
+
             <Link
-              to="/about"
-              className="inline-flex items-center text-sm font-medium text-gray-900 hover:text-primary transition-colors"
+              to="/contact"
+              className="inline-flex items-center text-primary font-medium"
             >
-              Learn More About Us
-              <ArrowRight size={16} className="ml-1" />
+              <PlayCircle size={20} className="mr-2" />
+              Watch our introduction video
             </Link>
           </motion.div>
 
+          {/* Visual */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7 }}
+            transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="relative aspect-video lg:aspect-square overflow-hidden rounded-lg"
-          >           
-            {/* <img
-              src="https://images.unsplash.com/photo-1628566880119-0a035ee1ae72?q=80&w=2068&auto=format&fit=crop"
-              alt="Our Workshop"
-              className="w-full h-full object-cover"
-            /> */}
+            className="relative"
+          >
+            <div className="relative rounded-2xl overflow-hidden shadow-xl">
+              <img
+                src="/media/Flexbo_Introduction_EN.jpg"
+                alt="Flexbo facilities"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-primary/10"></div>
+            </div>
+            <div className="absolute -bottom-6 -right-6 bg-white rounded-xl shadow-lg p-6 w-56">
+              <p className="text-3xl font-bold text-primary">1500L</p>
+              <p className="text-sm text-gray-500">Maximum aseptic liner capacity</p>
+            </div>
           </motion.div>
         </div>
       </div>

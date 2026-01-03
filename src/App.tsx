@@ -12,6 +12,12 @@ import Contact from "./pages/Contact";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
 import Certifications from "./pages/Certifications";
+import LiquidBags from "./pages/LiquidBags";
+import AsepticBags from "./pages/AsepticBags";
+import LiquidAsepticBags from "./pages/LiquidAsepticBags";
+import AsepticBagInBox from "./pages/AsepticBagInBox";
+import AsepticPackagingMaterials from "./pages/AsepticPackagingMaterials";
+import FaqAsepticBags from "./pages/FaqAsepticBags";
 
 import NotFound from "./pages/NotFound";
 
@@ -49,6 +55,12 @@ export default function App() {
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/products" element={<Products />} />
                   <Route path="/certifications" element={<Certifications />} />
+                  <Route path="/liquid-bags" element={<LiquidBags />} />
+                  <Route path="/aseptic-bags" element={<AsepticBags />} />
+                  <Route path="/liquid-aseptic-bags" element={<LiquidAsepticBags />} />
+                  <Route path="/aseptic-bag-in-box" element={<AsepticBagInBox />} />
+                  <Route path="/aseptic-packaging-materials" element={<AsepticPackagingMaterials />} />
+                  <Route path="/faq/aseptic-bags" element={<FaqAsepticBags />} />
                   
                   <Route path="/products/:id" element={<ProductDetail />} />
                   <Route path="*" element={<NotFound />} />

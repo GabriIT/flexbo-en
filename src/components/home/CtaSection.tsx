@@ -1,37 +1,34 @@
-
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 
 const CtaSection = () => {
   return (
-    <section className="py-20 bg-gray-900 text-white relative overflow-hidden">
-      <div className="absolute inset-0 z-0 opacity-20">
-        <img
-          src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=1974&auto=format&fit=crop"
-          alt="Background"
-          className="w-full h-full object-cover"
-        />
-      </div>
+    <section className="py-20 bg-primary text-white relative overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
           viewport={{ once: true }}
-          className="max-w-2xl mx-auto text-center"
+          className="max-w-3xl mx-auto text-center"
         >
-          <h2 className="text-3xl font-bold sm:text-4xl mb-6">
-            Ready to secure your product for Global Logistics ?
+          <p className="text-sm uppercase tracking-widest text-white/80">
+            Let’s plan your next aseptic packaging run
+          </p>
+          <h2 className="mt-4 text-3xl sm:text-4xl font-bold">
+            Ready to secure your product for global logistics ?
           </h2>
-          <p className="text-lg text-gray-300 mb-8">
-            Let's discuss how our packaging solutions can secure long shelf-life, freshness, long-term storage without
-            temperature conditioning.
+          <p className="mt-6 text-lg text-white/90">
+            Share your liquid, connector, and barrier requirements. We will combine insights
+            and know-how to recommend the optimal bag-in-box or IBC liner setup.
           </p>
           <Link
             to="/contact"
-            className="inline-flex items-center px-6 py-3 rounded-md bg-white text-gray-900 font-medium text-sm hover:bg-gray-100 transition-colors"
+            className="inline-flex items-center justify-center px-6 py-3 mt-8 bg-white text-primary font-semibold rounded-lg shadow-lg hover:bg-gray-100 transition"
           >
-            Contact Us Today
+            Contact us today
+            <ArrowRight className="ml-2" size={18} />
           </Link>
         </motion.div>
       </div>
