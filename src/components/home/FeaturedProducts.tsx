@@ -27,14 +27,14 @@ const featuredProducts = [
   },
   {
     id: 'bib',
-    title: 'BIB Solutions',
+    title: 'BIB Stand-up Solutions',
     category: 'Bag-in-Box',
     src: '/media/HB_bags24.jpg',
     mediaType: 'image',
   },
   {
     id: 'thermo-laminated-film',
-    title: 'Environment-Friendly Films',
+    title: 'Environment-Friendly Mono-Material Solutions',
     category: 'Thermo-Laminated Film',
     src: '/media/mPet_TL.jpg',
     mediaType: 'image',
@@ -81,7 +81,7 @@ const FeaturedProducts = () => (
           Featured Products
         </h2>
         <p className="mt-4 text-lg text-gray-600">
-          Explore aseptic bag and bag-in-box highlights referenced across Liquid Aseptic Bags Market.md.
+          Explore aseptic bag, bag-in-box, IBC and custom-made solutions in our portfolio.
         </p>
       </motion.div>
 

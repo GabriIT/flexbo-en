@@ -5,7 +5,7 @@ const features = [
   {
     icon: ShieldCheck,
     title: 'Certified Quality',
-    description: 'Manufactured in clean rooms with ISO, EU, FDA, and GMP certifications.'
+    description: 'Manufactured in clean rooms with ISO, EU-Food-compliant, FDA, FSCC and GMP certifications.'
   },
   {
     icon: Zap,

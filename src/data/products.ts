@@ -46,7 +46,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "bib",
     title: "Premium Barrier Bags",
-    category: "BIB-liquid-bags",
+    category: "Stand-up_&_BIB-liquid-bags",
     price: "Euro 0.50 - 4.00",
     minOrder: "50 units",
     description:

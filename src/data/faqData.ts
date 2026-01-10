@@ -62,13 +62,13 @@ export const faqData: FaqItem[] = [
   {
     question: 'Do you offer rush production?',
     answer:
-      'Yes. When projects are urgent, let us know the reason and we can schedule quick production, as indicated in the FAQ list.',
+      'Yes. When projects are urgent, let us know the reason and we can schedule quick production.',
     category: 'Ordering & Logistics'
   },
   {
     question: 'How do I place a bulk order?',
     answer:
-      'Send the volume, barrier, and connector requirements by email or phone (contacts are on the Contact page). Our sales team replies within 24 hours per the FAQ commitment.',
+      'Send the volume, barrier, and connector requirements by email or phone (contacts are on the Contact page). Our sales team replies within 24 hours.',
     category: 'Ordering & Logistics'
   },
   {
@@ -80,7 +80,7 @@ export const faqData: FaqItem[] = [
   {
     question: 'How do you ensure product quality and traceability?',
     answer:
-      'We maintain full traceability from granule to finished bag. Every lot passes periodic mechanical and barrier tests aligned with EU, FDA, and GMP certifications.',
+      'We maintain full traceability from granule to finished bag. Every lot passes periodic mechanical and barrier tests. The production environment and operation are designed aligned with BRC, GMP ISO 9001, ISO 14001, EU 10/2011, FDA, and GMP requirements.',
     category: 'Quality & Compliance'
   },
   {

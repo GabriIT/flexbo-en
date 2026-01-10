@@ -26,7 +26,7 @@ const faqSections: SeoSection[] = [
   {
     id: 'faq-liquid-aseptic-bib',
     eyebrow: 'FAQ',
-    title: 'FAQ – Liquid aseptic BIB',
+    title: 'FAQ – Orders and Logistics',
     description:
       'Ordering logistics, rush production, and typical response times when planning bag-in-box projects.',
     points: faqData
@@ -36,7 +36,7 @@ const faqSections: SeoSection[] = [
   {
     id: 'faq-quality',
     eyebrow: 'Quality',
-    title: 'FAQ – Quality & certifications',
+    title: 'FAQ – Quality & Certifications',
     description:
       'Shelf-life, quality control and materials.',
     points: buildFaqPoints('Quality & Compliance'),

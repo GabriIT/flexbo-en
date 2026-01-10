@@ -10,7 +10,7 @@ export default function Certifications() {
             <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl md:text-5xl">Certifications</h1>
             <p className="mt-4 text-lg text-gray-600">
               Our quality system and materials meet international standards for food safety and industrial logistics.
-              Good Manufacturing Process (GMP), BRC, ISO, FDA, EU 10/2011, Halal, Kosher, FSC22000, ISO9001, ISO14001,
+              Good Manufacturing Process (GMP), BRC, ISO, FDA, EU 10/2011, Halal, Kosher, FSCC22000, ISO9001, ISO14001,
               Bisphenol A, Nonylphenol (NP), Phtalate, Migrations, MOAH, covering most regions of the world requirements.
               <br />Certifications are available upon clients' request.
             </p>
