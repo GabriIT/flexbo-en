@@ -28,47 +28,61 @@ const HeroSection = () => {
 
       {/* Content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 z-10">
-        <div className="max-w-3xl space-y-6">
-          <span
-            className={`inline-block px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-white text-xs font-medium tracking-wide transition-all duration-1000 ease-out ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-              }`}
-          >
-            High Quality Packaging Solutions
-          </span>
+        <div className="grid items-center gap-10 lg:grid-cols-[1.15fr_0.85fr]">
+          <div className="max-w-3xl space-y-6">
+            <span
+              className={`inline-block px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-white text-xs font-medium tracking-wide transition-all duration-1000 ease-out ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                }`}
+            >
+              High Quality Packaging Solutions
+            </span>
 
-          <h2
-            className={`text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight transition-all duration-1000 delay-150 ease-out ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-              }`}
-          >
-            Aseptic Packaging Solutions<br /> High Barrier Bags and Flexible IBC Container For Storage and Transportation
-          </h2>
+            <h2
+              className={`text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight transition-all duration-1000 delay-150 ease-out ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                }`}
+            >
+              Aseptic Packaging Solutions<br /> High Barrier Bags and Flexible IBC Container For Storage and Transportation
+            </h2>
 
-          <p
-            className={`text-lg md:text-xl text-white/80 max-w-xl transition-all duration-1000 delay-300 ease-out ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-              }`}
-          >
-            Secure your concentrated products with our premium aseptic packaging solutions designed and produced with <br />
-            state-of-the-art Technology, Quality and the best selection of raw materials.
-          </p>
+            <p
+              className={`text-lg md:text-xl text-white/80 max-w-xl transition-all duration-1000 delay-300 ease-out ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                }`}
+            >
+              Secure your concentrated products with our premium aseptic packaging solutions designed and produced with <br />
+              state-of-the-art Technology, Quality and the best selection of raw materials.
+            </p>
+
+            <div
+              className={`pt-4 flex flex-wrap gap-4 transition-all duration-1000 delay-500 ease-out ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                }`}
+            >
+              <Link
+                to="/products"
+                className="inline-flex items-center px-5 py-3 rounded-md bg-white text-gray-900 font-medium text-sm transition-all hover:shadow-lg hover:bg-gray-50"
+              >
+                Explore Products
+                <ChevronRight size={16} className="ml-1" />
+              </Link>
+
+              <Link
+                to="/contact"
+                className="inline-flex items-center px-5 py-3 rounded-md bg-white/10 backdrop-blur-sm text-white font-medium text-sm transition-all hover:bg-white/20"
+              >
+                Get in Touch
+              </Link>
+            </div>
+          </div>
 
           <div
-            className={`pt-4 flex flex-wrap gap-4 transition-all duration-1000 delay-500 ease-out ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            className={`flex justify-center lg:justify-end transition-all duration-1000 delay-200 ease-out ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
               }`}
           >
-            <Link
-              to="/products"
-              className="inline-flex items-center px-5 py-3 rounded-md bg-white text-gray-900 font-medium text-sm transition-all hover:shadow-lg hover:bg-gray-50"
-            >
-              Explore Products
-              <ChevronRight size={16} className="ml-1" />
-            </Link>
-
-            <Link
-              to="/contact"
-              className="inline-flex items-center px-5 py-3 rounded-md bg-white/10 backdrop-blur-sm text-white font-medium text-sm transition-all hover:bg-white/20"
-            >
-              Get in Touch
-            </Link>
+            <img
+              src="/media/cert.png"
+              alt="Certification seals"
+              className="w-full max-w-xs sm:max-w-sm lg:max-w-md object-contain drop-shadow-lg"
+              loading="lazy"
+            />
           </div>
         </div>
       </div>
