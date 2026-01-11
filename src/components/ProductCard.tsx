@@ -41,6 +41,7 @@ export default function ProductCard({
           <video
             className={`w-full h-full object-cover transition-opacity duration-700 ${isLoaded ? "opacity-100" : "opacity-0"}`}
             controls        // ← native controls include fullscreen
+            controlsList="nodownload"
             autoPlay
             loop
             muted
