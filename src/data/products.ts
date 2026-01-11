@@ -46,7 +46,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "bib",
     title: "Premium Barrier Bags",
-    category: "Stand-up_&_BIB-liquid-bags",
+    category: "Stand-up & BIB liquid-bags",
     price: "Euro 0.50 - 4.00",
     minOrder: "50 units",
     description:
@@ -74,4 +74,22 @@ export const PRODUCTS: Product[] = [
     ],
     images: ["/media/mPet_TL.jpg"],
   },
+
+  {
+    id: 'valve',
+    title: 'Valve Catalog',
+    category: 'Valves & Spouts',
+    price: "Depend on Quantities, Type",
+    minOrder: "1,000 pcs",
+    description:
+      "Valves and Spouts in different sizes for all liquid bags requirements",
+    features: [
+      "Customized if needed",
+      "Eco-friendly processing/materials",
+      "Fully-tracked manufacturing",
+    ],
+    images: ['/media/valves/12_most_common_valves.jpg'],
+  },
+
+
 ];

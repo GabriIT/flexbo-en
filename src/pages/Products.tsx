@@ -100,20 +100,31 @@ export default function Products() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center max-w-3xl mx-auto"
+            className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10"
           >
-            <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl md:text-5xl">Our Products</h1>
+            <div className="text-center lg:text-left lg:max-w-3xl">
+              <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl md:text-5xl">Our Products</h1>
 
-            <p className="mt-4 text-lg text-gray-600">
-              Flexbo provides flexible packaging solutions for liquid food and industrial logistics —
-              including <strong>aseptic bags</strong>, <strong>high-barrier laminates</strong>,
-              bag-in-box solutions and IBC packaging. Built for shelf-life, safety and performance.
-            </p>
+              <p className="mt-4 text-lg text-gray-600">
+                Flexbo provides flexible packaging solutions for liquid food and industrial logistics
+                including <strong>aseptic bags</strong>, <strong>high-barrier laminates</strong>,
+                bag-in-box solutions and IBC packaging. Built for shelf-life, safety and performance.
+              </p>
 
-            <p className="mt-4 text-base text-gray-600">
-              Browse by category to find the best fit for your filling line, distribution chain and
-              barrier requirements.
-            </p>
+              <p className="mt-4 text-base text-gray-600">
+                Browse by category to find the best fit for your filling line, distribution chain and
+                barrier requirements.
+              </p>
+            </div>
+
+            <div className="flex justify-center lg:justify-end lg:flex-1">
+              <img
+                src="/media/cert.png"
+                alt="Certification badge"
+                className="w-full max-w-xs sm:max-w-sm lg:max-w-md object-contain"
+                loading="lazy"
+              />
+            </div>
           </motion.div>
         </div>
       </section>
@@ -129,7 +140,7 @@ export default function Products() {
           >
             <Tabs defaultValue="all" className="w-full" onValueChange={setActiveCategory}>
               <div className="flex justify-center">
-                <TabsList className="bg-gray-100 p-1 overflow-x-auto">
+                <TabsList className="bg-gray-100 p-1 h-auto flex-wrap gap-2">
                   {CATEGORIES.map((category) => (
                     <TabsTrigger
                       key={category.value}
@@ -144,7 +155,7 @@ export default function Products() {
             </Tabs>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 lg:gap-8">
             {filtered.map((card, index) => (
               <motion.div
                 key={`${card.category}-${card.id}-${index}`}
