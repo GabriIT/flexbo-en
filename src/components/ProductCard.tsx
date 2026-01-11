@@ -78,11 +78,8 @@ export default function ProductCard({
         </span>
 
         {mediaType === "video" ? (
-          // For videos, only the title is a link so native controls remain usable
-          <h3 className="mt-1 text-lg font-medium text-gray-900 group-hover:text-black transition-colors">
-            <Link to={to} className="hover:underline">
-              {title}
-            </Link>
+          <h3 className="mt-1 text-lg font-medium text-gray-900">
+            {title}
           </h3>
         ) : (
           // For images, keep plain title; the whole card is clickable anyway
