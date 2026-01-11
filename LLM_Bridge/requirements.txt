@@ -33,7 +33,6 @@ duckduckgo_search==8.1.1
 durationpy==0.10
 email_validator==2.2.0
 emoji==2.14.1
-faiss-cpu==1.12.0
 fastapi==0.111.0
 fastapi-cli==0.0.8
 filelock @ file:///home/conda/feedstock_root/build_artifacts/filelock_1741969488311/work
@@ -105,7 +104,6 @@ orjson==3.11.1
 overrides==7.7.0
 packaging==24.2
 pandas==2.3.1
-pgvector==0.4.1
 pillow @ file:///home/conda/feedstock_root/build_artifacts/pillow_1751481992986/work
 posthog==6.5.0
 primp==0.15.0
