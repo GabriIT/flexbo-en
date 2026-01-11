@@ -5,7 +5,7 @@ import ProductCard, { ProductCardProps } from "@/components/ProductCard";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PRODUCTS } from "@/data/products";
 
-const SITE_ORIGIN = "https://www.flexbo.athenalabo.com";
+const SITE_ORIGIN = "https://www.flexbo-packaging.com";
 const PLACEHOLDER = "/tjn_location.jpg";
 
 /**

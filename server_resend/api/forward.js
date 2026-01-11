@@ -9,8 +9,8 @@ export default async function forwardHandler(req, res) {
 
   try {
     await resend.emails.send({
-      from: 'Website <noreply@flexbo-en.athenalabo.com>',  // ✓ verified domain
-      to:   'vareca@live.com',
+      from: 'Website <noreply@flexbo-packaging.com>',  // ✓ verified domain
+      to: ['vareca@live.com', 'sophia@flexbo.com.cn'],
       subject: `New query from ${name}`,
       html: `<p>${message}</p><p>Reply-to: ${email}</p>`
     });

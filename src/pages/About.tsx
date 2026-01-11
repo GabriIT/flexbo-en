@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 
-const SITE_ORIGIN = "https://www.flexbo.athenalabo.com";
+const SITE_ORIGIN = "https://www.flexbo-packaging.com";
 
 export default function About() {
   const canonical = `${SITE_ORIGIN}/about`;
@@ -103,7 +103,7 @@ export default function About() {
               <h3 className="text-lg font-semibold text-gray-900">Quick facts</h3>
               <div className="text-sm text-gray-700 space-y-2">
                 <p>
-                  <span className="font-medium">Domain:</span> athenalabo.com
+                  <span className="font-medium">Domain:</span> flexbo-packaging.com
                 </p>
                 <p>
                   <span className="font-medium">Brand:</span> Flexbo
