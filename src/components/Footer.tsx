@@ -13,12 +13,12 @@ const Footer = () => {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Flexbo Packaging</h3>
             <p className="text-sm text-gray-600 leading-relaxed max-w-xs">
-              Premium packaging solutions for businesses worldwide, combining quality materials with elegant designs.
+              Premium packaging solutions for businesses worldwide, combining quality materials with service.
             </p>
             <div className="flex space-x-4">
-              <SocialLink href="#" icon={<Facebook size={18} />} />
-              <SocialLink href="#" icon={<Instagram size={18} />} />
-              <SocialLink href="#" icon={<Linkedin size={18} />} />
+              {/* <SocialLink href="#" icon={<Facebook size={18} />} />
+              <SocialLink href="#" icon={<Instagram size={18} />} /> */}
+              <SocialLink href="https://www.linkedin.com/company/flexbo-tianjin/posts/?feedView=all" icon={<Linkedin size={18} />} />
             </div>
           </div>
 
@@ -41,7 +41,7 @@ const Footer = () => {
               <FooterLink to="/products/bib" label="BIB" />
               <FooterLink to="/products/aseptic-bags" label="Aseptic Bags" />
               <FooterLink to="/products/ibc-packaging" label="IBC Packaging" />
-              <FooterLink to="/products/high-barrier-laminates" label="Custom Packaging" />   
+              <FooterLink to="/products/high-barrier-laminates" label="Custom Packaging" />
             </nav>
           </div>
 
@@ -77,9 +77,9 @@ const Footer = () => {
 };
 
 const SocialLink = ({ href, icon }: { href: string; icon: React.ReactNode }) => (
-  <a 
-    href={href} 
-    target="_blank" 
+  <a
+    href={href}
+    target="_blank"
     rel="noopener noreferrer"
     className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 text-gray-700 hover:bg-primary hover:text-white transition-colors duration-300"
   >

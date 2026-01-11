@@ -18,6 +18,7 @@ import LiquidAsepticBags from "./pages/LiquidAsepticBags";
 import AsepticBagInBox from "./pages/AsepticBagInBox";
 import AsepticPackagingMaterials from "./pages/AsepticPackagingMaterials";
 import FaqAsepticBags from "./pages/FaqAsepticBags";
+import Valve from "./pages/Valve";
 
 import NotFound from "./pages/NotFound";
 
@@ -61,6 +62,7 @@ export default function App() {
                   <Route path="/aseptic-bag-in-box" element={<AsepticBagInBox />} />
                   <Route path="/aseptic-packaging-materials" element={<AsepticPackagingMaterials />} />
                   <Route path="/faq/aseptic-bags" element={<FaqAsepticBags />} />
+                  <Route path="/valve" element={<Valve />} />
                   
                   <Route path="/products/:id" element={<ProductDetail />} />
                   <Route path="*" element={<NotFound />} />

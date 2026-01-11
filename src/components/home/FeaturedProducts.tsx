@@ -17,6 +17,7 @@ const featuredProducts = [
     category: 'Bags',
     src: '/media/aseptic_bag14.jpg',
     mediaType: 'image',
+    href: '/aseptic-bags',
   },
   {
     id: 'ibc-packaging',
@@ -24,13 +25,15 @@ const featuredProducts = [
     category: 'IBC Containers',
     src: '/media/IBC_Valves.jpg',
     mediaType: 'image',
+    href: '/liquid-bags',
   },
   {
     id: 'bib',
-    title: 'BIB Stand-up Solutions',
+    title: 'BIB',
     category: 'Bag-in-Box',
-    src: '/media/HB_bags24.jpg',
+    src: '/media/BIB_diary.jpg',
     mediaType: 'image',
+    href: '/aseptic-bag-in-box',
   },
   {
     id: 'thermo-laminated-film',
@@ -38,13 +41,15 @@ const featuredProducts = [
     category: 'Thermo-Laminated Film',
     src: '/media/mPet_TL.jpg',
     mediaType: 'image',
+    href: '/aseptic-packaging-materials',
   },
   {
-    id: 'valves',
+    id: 'valve',
     title: 'Valve Catalog',
     category: 'Components',
-    src: '/media/most_common_valves.jpg',
+    src: '/media/valves/12_most_common_valves.jpg',
     mediaType: 'image',
+    href: '/valve',
   },
   {
     id: 'open-close-video',
@@ -81,7 +86,7 @@ const FeaturedProducts = () => (
           Featured Products
         </h2>
         <p className="mt-4 text-lg text-gray-600">
-          Explore aseptic bag, bag-in-box, IBC and custom-made solutions in our portfolio.
+          Explore aseptic bag, bag-in-box, IBC and custom-made solutions.
         </p>
       </motion.div>
 
