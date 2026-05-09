@@ -19,7 +19,7 @@ const AsepticPackagingMaterials = () => {
         { label: 'Clean-room class', value: 'ISO-grade production' },
       ],
       image: {
-        src: '/media/HB_bags24.jpg',
+        src: `${import.meta.env.BASE_URL}media/HB_bags24.jpg`,
         alt: 'Aseptic bag production line'
       }
     },
@@ -40,7 +40,7 @@ const AsepticPackagingMaterials = () => {
         { label: 'Recyclability', value: '95% recyclable designs' },
       ],
       image: {
-        src: '/media/mPet_TL.jpg',
+        src: `${import.meta.env.BASE_URL}media/mPet_TL.jpg`,
         alt: 'Multi-layer films'
       }
     }

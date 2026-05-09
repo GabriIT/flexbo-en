@@ -119,7 +119,7 @@ export default function Products() {
 
             <div className="flex justify-center lg:justify-end lg:flex-1">
               <img
-                src="/media/cert.png"
+                src={`${import.meta.env.BASE_URL}media/cert.png`}
                 alt="Certification badge"
                 className="w-full max-w-xs sm:max-w-sm lg:max-w-md object-contain"
                 loading="lazy"

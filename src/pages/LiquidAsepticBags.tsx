@@ -19,7 +19,7 @@ const LiquidAsepticBags = () => {
         { label: 'Shelf life', value: '12–18 months at ambient' }
       ],
       image: {
-        src: '/media/IBCBagHB22.jpg',
+        src: `${import.meta.env.BASE_URL}media/IBCBagHB22.jpg`,
         alt: 'Aseptic bag and outer support'
       }
     },
@@ -41,7 +41,7 @@ const LiquidAsepticBags = () => {
         { label: 'Forecast', value: '$6.4B by 2034' }
       ],
       image: {
-        src: '/media/wine_v.jpg',
+        src: `${import.meta.env.BASE_URL}media/wine_v.jpg`,
         alt: 'Liquid aseptic bag tap'
       }
     }

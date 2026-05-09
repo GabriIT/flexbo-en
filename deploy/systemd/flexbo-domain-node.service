@@ -1,0 +1,24 @@
+[Unit]
+Description=Flexbo domain Node frontend and mail API
+After=network.target flexbo-domain-python.service
+Wants=flexbo-domain-python.service
+
+[Service]
+Type=simple
+User=flexbo
+Group=flexbo
+WorkingDirectory=/opt/flexbo-domain
+EnvironmentFile=/etc/flexbo-domain/flexbo.env
+Environment=NODE_ENV=production
+Environment=HOST=127.0.0.1
+Environment=PORT=18320
+Environment=PY_BACKEND=http://127.0.0.1:18321
+ExecStart=/usr/bin/node server_resend/server.js
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+

@@ -78,7 +78,7 @@ const HeroSection = () => {
               }`}
           >
             <img
-              src="/media/cert.png"
+              src={`${import.meta.env.BASE_URL}media/cert.png`}
               alt="Certification seals"
               className="w-full max-w-xs sm:max-w-sm lg:max-w-md object-contain drop-shadow-lg"
               loading="lazy"

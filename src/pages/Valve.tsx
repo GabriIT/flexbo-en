@@ -2,18 +2,18 @@ import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 
 const valves = [
-  { id: 'valve-01', code: 'F01', description: 'Dairy 1"', image: '/media/valves/01_Dairy.jpg' },
-  { id: 'valve-02', code: 'F02', description: 'Intasept', image: '/media/valves/02_Intasept.jpg' },
-  { id: 'valve-03', code: 'F03', description: 'Retail', image: '/media/valves/03_Retail.jpg' },
-  { id: 'valve-04', code: 'F04', description: 'Wine / Olive Oil', image: '/media/valves/04_Wine_Olive_Oil.jpg' },
-  { id: 'valve-05', code: 'F05', description: '1" Various', image: '/media/valves/05_1_Inch.jpg' },
-  { id: 'valve-06', code: 'F06', description: '2" IBC', image: '/media/valves/06_2_Inch_IBC.jpg' },
-  { id: 'valve-07', code: 'F07', description: 'Discharge 2"', image: '/media/valves/07_Discharge_2_Inch_Valve.jpg' },
-  { id: 'valve-08', code: 'F08', description: '1" Elpo', image: '/media/valves/08_1_Inch_Elpo.jpg' },
-  { id: 'valve-09', code: 'F09', description: '2", 3 Filler" IBC', image: '/media/valves/09_2_3_Inches_IBC.jpg' },
-  { id: 'valve-10', code: 'F10', description: 'Franrica 2"', image: '/media/valves/10_Franrica_2_Inches.jpg' },
-  { id: 'valve-11', code: 'F11', description: '1" Dairy with Tube', image: '/media/valves/11_1_Inch_Dairy_with_Tube.jpg' },
-  { id: 'valve-12', code: 'F12', description: '1" Various', image: '/media/valves/12_most_common_valves.jpg' },
+  { id: 'valve-01', code: 'F01', description: 'Dairy 1"', image: `${import.meta.env.BASE_URL}media/valves/01_Dairy.jpg` },
+  { id: 'valve-02', code: 'F02', description: 'Intasept', image: `${import.meta.env.BASE_URL}media/valves/02_Intasept.jpg` },
+  { id: 'valve-03', code: 'F03', description: 'Retail', image: `${import.meta.env.BASE_URL}media/valves/03_Retail.jpg` },
+  { id: 'valve-04', code: 'F04', description: 'Wine / Olive Oil', image: `${import.meta.env.BASE_URL}media/valves/04_Wine_Olive_Oil.jpg` },
+  { id: 'valve-05', code: 'F05', description: '1" Various', image: `${import.meta.env.BASE_URL}media/valves/05_1_Inch.jpg` },
+  { id: 'valve-06', code: 'F06', description: '2" IBC', image: `${import.meta.env.BASE_URL}media/valves/06_2_Inch_IBC.jpg` },
+  { id: 'valve-07', code: 'F07', description: 'Discharge 2"', image: `${import.meta.env.BASE_URL}media/valves/07_Discharge_2_Inch_Valve.jpg` },
+  { id: 'valve-08', code: 'F08', description: '1" Elpo', image: `${import.meta.env.BASE_URL}media/valves/08_1_Inch_Elpo.jpg` },
+  { id: 'valve-09', code: 'F09', description: '2", 3 Filler" IBC', image: `${import.meta.env.BASE_URL}media/valves/09_2_3_Inches_IBC.jpg` },
+  { id: 'valve-10', code: 'F10', description: 'Franrica 2"', image: `${import.meta.env.BASE_URL}media/valves/10_Franrica_2_Inches.jpg` },
+  { id: 'valve-11', code: 'F11', description: '1" Dairy with Tube', image: `${import.meta.env.BASE_URL}media/valves/11_1_Inch_Dairy_with_Tube.jpg` },
+  { id: 'valve-12', code: 'F12', description: '1" Various', image: `${import.meta.env.BASE_URL}media/valves/12_most_common_valves.jpg` },
 ];
 
 const Valve = () => {

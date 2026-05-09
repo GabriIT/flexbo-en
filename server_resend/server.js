@@ -10,6 +10,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = process.env.PORT || 3000;
+const host = process.env.HOST;
 
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
@@ -88,6 +89,6 @@ app.get(/^\/(?!api|media).*/, (_, res) =>
   res.sendFile(path.join(dist, 'index.html'))
 );
 
-app.listen(port, () => {
-  console.log(`[Server] Listening on ${port}`);
+app.listen(port, host, () => {
+  console.log(`[Server] Listening on ${host || '0.0.0.0'}:${port}`);
 });

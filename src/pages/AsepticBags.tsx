@@ -19,7 +19,7 @@ const AsepticBags = () => {
         { label: 'Shelf-life', value: 'Up to 12–24 months' },
       ],
       image: {
-        src: '/media/Flexbo_Introduction_EN.jpg',
+        src: `${import.meta.env.BASE_URL}media/Flexbo_Introduction_EN.jpg`,
         alt: 'Flexbo aseptic bag production'
       }
     },
@@ -41,7 +41,7 @@ const AsepticBags = () => {
         { label: 'Spouts QA', value: ' 100% safe' },
       ],
       image: {
-        src: '/media/BIB_transparent.jpg',
+        src: `${import.meta.env.BASE_URL}media/BIB_transparent.jpg`,
         alt: 'Bag-in-box tap dispensing'
       }
     }

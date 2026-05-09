@@ -1,110 +1,152 @@
-Running the code:
+# Flexbo V2 Non-Dokku Deployment
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Flexbo V2 is a clone of the `flexbo-packaging` branch prepared for a non-Dokku deployment at:
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+- Temporary URL: `http://154.12.245.254/flexbo/`
+- App directory on VPS: `/opt/flexbo-V2`
+- Media directory on VPS: `/var/www/flexbo-v2/media`
+- Environment file: `/etc/flexbo-v2/flexbo.env`
+- Node/Express service: `flexbo-v2-node` on `127.0.0.1:18310`
+- FastAPI FAQ service: `flexbo-v2-python` on `127.0.0.1:18311`
 
-# Step 3: Install the necessary dependencies.
-npm i
+The public nginx server keeps ports `80/443`; the app services bind only to localhost so they do not conflict with existing apps, mailcow, Postgres, or Docker services.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+## Architecture
+
+- React + Vite builds to `dist`.
+- Vite production base is `/flexbo/`.
+- Node/Express in `server_resend/server.js` serves `dist`, handles `/api/forward`, and proxies chat endpoints to FastAPI.
+- FastAPI in `LLM_Bridge/server.py` serves `/api/health` and `/api/chat`.
+- nginx maps:
+  - `/flexbo/` to Node
+  - `/flexbo/api/` to Node API routes
+  - `/flexbo/media/` to `/var/www/flexbo-v2/media`
+
+## Local Build Check
+
+```bash
+cd /home/gabri/apps-2025/flexbo-V2
+npm install
+npm run build
 ```
 
-## What technologies are used for this project?
+Production builds should not contain browser calls to `localhost:8000`. The default API path is derived from `import.meta.env.BASE_URL`, so production calls go to `/flexbo/api/...`.
 
-This project is built with .
+## First VPS Deployment
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Run these commands from the local machine unless noted otherwise.
 
----
+```bash
+ssh contabo-night 'sudo install -d -o root -g root -m 755 /etc/flexbo-v2 && sudo install -d -o ubuntu -g ubuntu -m 755 /tmp/flexbo-V2-upload'
+rsync -az --delete --exclude .git --exclude node_modules --exclude dist --exclude .venv /home/gabri/apps-2025/flexbo-V2/ contabo-night:/tmp/flexbo-V2-upload/
+```
 
-## Project Description
+On the target VPS:
 
-- A Flexbo website, dokku deployed flexbo-en with persistent storage
-- Server backend in Go to manage Postgresql db
-- server_resend is a Express server to forward email from the website
+```bash
+sudo useradd --system --create-home --home-dir /opt/flexbo-home --shell /usr/sbin/nologin flexbo || true
+sudo install -d -o flexbo -g flexbo -m 755 /opt/flexbo-V2
+sudo rsync -a --delete /tmp/flexbo-V2-upload/ /opt/flexbo-V2/
+sudo chown -R flexbo:flexbo /opt/flexbo-V2
 
--Added Procfile to run in container server_resend/forward.js
--Both server_resend and media are served through buildpack node
+sudo install -d -o flexbo -g flexbo -m 755 /var/www/flexbo-v2/media
+sudo rsync -a --delete /opt/flexbo-V2/public/media/ /var/www/flexbo-v2/media/
+sudo chown -R flexbo:flexbo /var/www/flexbo-v2
 
-# Pending
+sudo tee /etc/flexbo-v2/flexbo.env >/dev/null <<'EOF'
+NODE_ENV=production
+PORT=18310
+HOST=127.0.0.1
+PY_BACKEND=http://127.0.0.1:18311
+API_KEY=secret
+REQUIRE_API_KEY=false
+ALLOW_ORIGINS=*
+KB_CONFIDENCE=0.25
+RESEND_API_KEY=replace_with_resend_key
+VITE_API_KEY=secret
+EOF
+sudo chown root:flexbo /etc/flexbo-v2/flexbo.env
+sudo chmod 640 /etc/flexbo-v2/flexbo.env
 
--For Server, Go App for Postgresql I will need to add it as well
+cd /opt/flexbo-V2
+sudo -u flexbo npm ci
+sudo -u flexbo npm run build
+sudo -u flexbo python3 -m venv .venv
+sudo -u flexbo .venv/bin/pip install --upgrade pip
+sudo -u flexbo .venv/bin/pip install -r requirements.txt
+```
 
-# Why using nginx.conf
+Install services:
 
-nginx.conf followed by a line-by-line breakdown.
-(The comments that start with # are only for you and are not part of the file.)
-server {
-listen 80; # ①
-server*name *; # ②
+```bash
+sudo cp /opt/flexbo-V2/deploy/systemd/flexbo-v2-python.service /etc/systemd/system/
+sudo cp /opt/flexbo-V2/deploy/systemd/flexbo-v2-node.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now flexbo-v2-python flexbo-v2-node
+```
 
-    root /usr/share/nginx/html;         # ③
-    index index.html;                   # ④
+Add nginx routing by inserting the contents of `deploy/nginx/flexbo-v2-location.conf` inside the existing default server block in `/etc/nginx/sites-available/cn-flash-cards`, before the final `include` line.
 
-    # Serve user-uploaded images / videos
-    location /media/ {                  # ⑤
-        try_files $uri $uri/ =404;      # ⑥
-    }
+```bash
+sudo nginx -t
+sudo systemctl reload nginx
+```
 
-    # React-Router / SPA fallback
-    location / {                        # ⑦
-        try_files $uri /index.html;     # ⑧
-    }
+## Verification
 
-    # Security header example
-    add_header X-Content-Type-Options nosniff;   # ⑨
+```bash
+systemctl status flexbo-v2-python --no-pager
+systemctl status flexbo-v2-node --no-pager
+curl http://127.0.0.1:18311/api/health
+curl http://127.0.0.1:18310/api/health
+curl -I http://154.12.245.254/flexbo/
+curl http://154.12.245.254/flexbo/api/health
+curl -I http://154.12.245.254/flexbo/media/Flexbo_Introduction_EN.jpg
+```
 
-}
+Email test:
 
-#
+```bash
+curl -X POST http://154.12.245.254/flexbo/api/forward \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"Flexbo V2 test","email":"test@example.com","message":"Deployment test"}'
+```
 
-Directive
-Purpose
-①
-listen 80;
-Tells Nginx to accept HTTP requests on port 80 inside the container (Dokku will map that to whichever external port is exposed).
-②
-server*name *;
-The underscore is a catch-all value. Inside a Dokku container you normally don’t know the public hostname, so this ensures the block responds to any Host header.
-③
-root /usr/share/nginx/html;
-Sets the document-root to the directory where the Dockerfile copied the Vite build output. All static paths are resolved relative to here unless another root or alias overrides them.
-④
-index index.html;
-If the request is / (no file), Nginx will try to serve index.html in the root directory.
-⑤
-location /media/ { ... }
-This block handles every URL that starts with /media/. By mounting your persistent volume at /usr/share/nginx/html/media, user uploads immediately appear under this path.
-⑥
-try_files $uri $uri/ =404;
-Attempt 1: Serve the exact file ($uri). Attempt 2: If the request ends without a trailing slash but there’s a matching directory, serve its index (rare for media). Fail: return 404 so a missing image doesn’t fall through to the SPA handler.
-⑦
-location / { ... }
-This is the “catch-all” for everything else (JavaScript, CSS, JSON, regular page paths, etc.).
-⑧
-try_files $uri /index.html;
-Static first: If the requested file exists (e.g. /favicon.svg, /assets/index-abc123.js), serve it. Otherwise: return index.html so a client-side-routed path like /dashboard still loads the React app and lets React Router display the correct page. Without this fallback, refreshing a deep link would give a 404.
-⑨
-add_header X-Content-Type-Options nosniff;
-Simple security hardening: stops certain MIME-type guessing attacks by telling browsers to trust the declared Content-Type. You can add further headers (HSTS, CSP, etc.) as needed.
+## Updates
 
-Why you need a custom nginx.conf in this setup 1. Single-Page-Application routing
-Vite’s build creates an index.html entry point plus hashed asset files. React Router uses the browser’s History API, so URLs like /about never hit the server in dev mode. In production, Nginx must map every unknown path back to index.html (lines ⑦-⑧). The default Nginx config does not include that fallback, so deep links would 404 without this file. 2. Separate persistent media folder
-You told Dokku to mount /var/lib/dokku/data/storage/flexbo-en-assets ⇒ /usr/share/nginx/html/media.
-The custom location /media/ (lines ⑤-⑥) ensures:
-◦ It’s served efficiently as static files.
-◦ Missing images return 404 instead of falling into the SPA handler (which would otherwise return index.html and mis-lead the browser). 3. Prevent accidental overwrites
-Because the built bundle also lives under /usr/share/nginx/html, you want user uploads kept in their own path (/media) to avoid name clashes with /assets or root-level files. Having that dedicated location block isolates them. 4. Ability to add headers / tuning now or later
-A custom file is your hook to add compression, cache policies, CORS, rate limits, WebSocket upgrades for the Go backend (if you later reverse-proxy it), etc. It’s future-proofing.
-If you relied on the Nginx defaults, only the first request to / would work; every other client-side route would fail, and your uploads directory might not be exposed at all.
+```bash
+rsync -az --delete --exclude .git --exclude node_modules --exclude dist --exclude .venv /home/gabri/apps-2025/flexbo-V2/ contabo-night:/tmp/flexbo-V2-upload/
+ssh contabo-night
+sudo rsync -a --delete --exclude node_modules --exclude .venv /tmp/flexbo-V2-upload/ /opt/flexbo-V2/
+sudo chown -R flexbo:flexbo /opt/flexbo-V2
+cd /opt/flexbo-V2
+sudo -u flexbo npm ci
+sudo -u flexbo npm run build
+sudo -u flexbo .venv/bin/pip install -r requirements.txt
+sudo systemctl restart flexbo-v2-python flexbo-v2-node
+```
 
+## Rollback
 
+Before replacing `/opt/flexbo-V2`, keep a timestamped copy:
+
+```bash
+sudo rsync -a /opt/flexbo-V2/ /opt/flexbo-V2.rollback.$(date +%Y%m%d_%H%M%S)/
+```
+
+To roll back:
+
+```bash
+sudo systemctl stop flexbo-v2-node flexbo-v2-python
+sudo rsync -a --delete /opt/flexbo-V2.rollback.YYYYMMDD_HHMMSS/ /opt/flexbo-V2/
+sudo chown -R flexbo:flexbo /opt/flexbo-V2
+sudo systemctl start flexbo-v2-python flexbo-v2-node
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+## Notes
+
+- Do not install or use Dokku for this deployment.
+- Do not bind Flexbo directly to public ports.
+- Keep `RESEND_API_KEY` only in `/etc/flexbo-v2/flexbo.env`.
+- During the final domain migration, update DNS, nginx host routing, and any canonical SEO metadata separately.

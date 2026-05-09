@@ -16,7 +16,7 @@ const AsepticBagInBox = () => {
         'Provided with taps, spouts or screw caps to keep oxygen out until use.',
       ],
       image: {
-        src: '/media/CustomMadeBags20.jpg',
+        src: `${import.meta.env.BASE_URL}media/CustomMadeBags20.jpg`,
         alt: 'Bag-in-box assembly'
       }
     },
@@ -38,7 +38,7 @@ const AsepticBagInBox = () => {
         { label: 'APAC growth', value: '~9% CAGR' },
       ],
       image: {
-        src: '/media/Flexbo_Introduction_EN.jpg',
+        src: `${import.meta.env.BASE_URL}media/Flexbo_Introduction_EN.jpg`,
         alt: 'Bag-in-box logistics'
       }
     }

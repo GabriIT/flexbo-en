@@ -25,7 +25,7 @@ export const PRODUCTS: Product[] = [
       "Spout options",
       "Optional color printing",
     ],
-    images: ["/media/asepticBags21.jpg", "/media/aseptic_bag14.jpg", "/media/BIB_transparent.jpg"],
+    images: [`${import.meta.env.BASE_URL}media/asepticBags21.jpg`, `${import.meta.env.BASE_URL}media/aseptic_bag14.jpg`, `${import.meta.env.BASE_URL}media/BIB_transparent.jpg`],
   },
   {
     id: "ibc-packaging",
@@ -41,7 +41,7 @@ export const PRODUCTS: Product[] = [
       "Spout sizes/positions and auxiliaries for waste savings",
       "Optional color printing",
     ],
-    images: ["/media/IBC_bag23.jpg", "/media/IBCBagHB22.jpg", "/media/IBC_Valves.jpg"],
+    images: [`${import.meta.env.BASE_URL}media/IBC_bag23.jpg`, `${import.meta.env.BASE_URL}media/IBCBagHB22.jpg`, `${import.meta.env.BASE_URL}media/IBC_Valves.jpg`],
   },
   {
     id: "bib",
@@ -57,7 +57,7 @@ export const PRODUCTS: Product[] = [
       "Many spout options",
       "Optional color printing",
     ],
-    images: ["/media/HB_bags24.jpg", "/media/CustomMadeBags20.jpg", "/media/diary_valves.jpg"],
+    images: [`${import.meta.env.BASE_URL}media/HB_bags24.jpg`, `${import.meta.env.BASE_URL}media/CustomMadeBags20.jpg`, `${import.meta.env.BASE_URL}media/diary_valves.jpg`],
   },
   {
     id: "high-barrier-laminates",
@@ -72,7 +72,7 @@ export const PRODUCTS: Product[] = [
       "Eco-friendly processing/materials",
       "Fully-tracked manufacturing",
     ],
-    images: ["/media/mPet_TL.jpg"],
+    images: [`${import.meta.env.BASE_URL}media/mPet_TL.jpg`],
   },
 
   {
@@ -88,7 +88,7 @@ export const PRODUCTS: Product[] = [
       "Eco-friendly processing/materials",
       "Fully-tracked manufacturing",
     ],
-    images: ['/media/valves/12_most_common_valves.jpg'],
+    images: [`${import.meta.env.BASE_URL}media/valves/12_most_common_valves.jpg`],
   },
 
 

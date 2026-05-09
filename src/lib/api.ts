@@ -1,14 +1,17 @@
 // src/lib/api.ts
-function baseUrl() {
-  const raw = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
-  const url = raw.replace(/\/+$/, ""); // strip trailing slash
-  console.log('[API] baseUrl raw:', raw, '-> processed:', url);
-  return url;
+function apiUrl(path: string) {
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  const explicitBackend = import.meta.env.VITE_BACKEND_URL;
+
+  if (explicitBackend) {
+    return `${explicitBackend.replace(/\/+$/, "")}${normalizedPath}`;
+  }
+
+  return `${import.meta.env.BASE_URL.replace(/\/+$/, "")}${normalizedPath}`;
 }
 
 export async function sendChat(message: string, threadId?: number) {
-  const baseUrlValue = baseUrl();
-  const url = `${baseUrlValue}/api/chat`;
+  const url = apiUrl("/api/chat");
   console.log('[API] Sending chat to:', url);
   console.log('[API] Message:', message, 'ThreadId:', threadId);
 

@@ -71,7 +71,7 @@ const AboutSection = () => {
             </div>
 
             <a
-              href="/media/Flexbo_Introduction_EN.mp4"
+              href={`${import.meta.env.BASE_URL}media/Flexbo_Introduction_EN.mp4`}
               className="inline-flex items-center text-primary font-medium"
               target="_blank"
               rel="noopener noreferrer"
@@ -91,7 +91,7 @@ const AboutSection = () => {
           >
             <div className="relative rounded-2xl overflow-hidden shadow-xl">
               <img
-                src="/media/Flexbo_Introduction_EN.jpg"
+                src={`${import.meta.env.BASE_URL}media/Flexbo_Introduction_EN.jpg`}
                 alt="Flexbo facilities"
                 className="w-full h-full object-cover"
               />

@@ -23,7 +23,7 @@ export default function Certifications() {
             </div>
             <div className="flex justify-center lg:justify-end">
               <img
-                src="/media/cert.png"
+                src={`${import.meta.env.BASE_URL}media/cert.png`}
                 alt="Certification seals"
                 className="w-full max-w-sm rounded-xl object-contain shadow-sm"
                 loading="lazy"

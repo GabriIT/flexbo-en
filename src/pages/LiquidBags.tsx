@@ -20,7 +20,7 @@ const LiquidBags = () => {
         { label: 'Delivery', value: '2–4 weeks' },
       ],
       image: {
-        src: '/media/aseptic_bag14.jpg',
+        src: `${import.meta.env.BASE_URL}media/aseptic_bag14.jpg`,
         alt: 'Flexbo liquid aseptic bags'
       }
     },
@@ -42,7 +42,7 @@ const LiquidBags = () => {
         { label: 'Global volume', value: '>2B liters/year' },
       ],
       image: {
-        src: '/media/BIB_diary.jpg',
+        src: `${import.meta.env.BASE_URL}media/BIB_diary.jpg`,
         alt: 'Bag-in-box usage in dairy and beverage operations'
       }
     }

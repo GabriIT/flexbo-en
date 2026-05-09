@@ -1,0 +1,19 @@
+[Unit]
+Description=Flexbo V2 FastAPI FAQ backend
+After=network.target
+
+[Service]
+Type=simple
+User=flexbo
+Group=flexbo
+WorkingDirectory=/opt/flexbo-V2
+EnvironmentFile=/etc/flexbo-v2/flexbo.env
+ExecStart=/opt/flexbo-V2/.venv/bin/uvicorn LLM_Bridge.server:app --host 127.0.0.1 --port 18311
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+

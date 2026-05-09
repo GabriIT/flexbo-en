@@ -1,0 +1,23 @@
+[Unit]
+Description=Flexbo V2 Node frontend and mail API
+After=network.target flexbo-v2-python.service
+Wants=flexbo-v2-python.service
+
+[Service]
+Type=simple
+User=flexbo
+Group=flexbo
+WorkingDirectory=/opt/flexbo-V2
+EnvironmentFile=/etc/flexbo-v2/flexbo.env
+Environment=NODE_ENV=production
+Environment=HOST=127.0.0.1
+Environment=PORT=18310
+Environment=PY_BACKEND=http://127.0.0.1:18311
+ExecStart=/usr/bin/node server_resend/server.js
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

@@ -14,7 +14,7 @@ export interface ProductCardProps {
   href?: string;     // optional custom link (keep if you added earlier)
 }
 
-const PLACEHOLDER = "/media/placeholder.png";
+const PLACEHOLDER = `${import.meta.env.BASE_URL}media/placeholder.png`;
 
 export default function ProductCard({
   id,

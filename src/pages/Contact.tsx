@@ -59,7 +59,7 @@ const Contact = () => {
        };
     
        try {
-         const res = await fetch('/api/forward', {
+         const res = await fetch(`${import.meta.env.BASE_URL}api/forward`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
            body: JSON.stringify(payload),
